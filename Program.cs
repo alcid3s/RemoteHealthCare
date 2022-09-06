@@ -68,8 +68,8 @@ namespace RemoteHealthCare
         private static void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)
         {
             List<Byte> dataByteList = e.Data.ToList();
-
             List<string> dataTypeList = new List<string>();
+
             string[] dataTypeTempList = {"Type", "Elapsed Time", "Distance Travelled",
             "Speed", "Heart Rate", "Extra Info", "Checksum"};
             dataTypeList.AddRange(dataTypeTempList);

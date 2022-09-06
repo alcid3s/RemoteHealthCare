@@ -10,6 +10,14 @@ namespace RemoteHealthCare
 {
     class Program
     {
+        // Enum is used for presenting the data in the console
+        enum PacketDataState
+        {
+            Standard,
+            MessageIdentifier,
+            Data,
+            Checksum
+        }
         static async Task Main(string[] args)
         {
             int code = 0;
@@ -67,33 +75,48 @@ namespace RemoteHealthCare
 
         private static void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)
         {
-            List<Byte> dataByteList = e.Data.ToList();
-            List<string> dataTypeList = new List<string>();
+            Console.WriteLine($"Packet contains: {e.Data.Count()} bytes");
 
-            string[] dataTypeTempList = {"Type", "Elapsed Time", "Distance Travelled",
-            "Speed", "Heart Rate", "Extra Info", "Checksum"};
-            dataTypeList.AddRange(dataTypeTempList);
+            int y = 0;
+            string[] dataTypes = { "Type", "Elapsed Time", "Distance Travelled", "Speed", "Heart Rate", "Extra Info" };
+            PacketDataState state = PacketDataState.Standard;
 
-            bool newInfo = false;
-            int i = 0;
-            dataByteList.ForEach(byteType =>
+            // Runs through entire packet, beginning with the first 4 bytes which are standard information.
+            for (int i = 0; i < e.Data.Count(); i++)
             {
-                if (byteType == 16 && !newInfo)
+                // printing the data with the corresponding value.
+                if (state == PacketDataState.Data)
                 {
-                    newInfo = true;
-                    Console.WriteLine($"{dataTypeList.ElementAt(i)}: {byteType}");
-                    i++;
-                }
-
-                if (newInfo)
-                {
-                    if (i < dataTypeList.Count)
+                    // Speed is 4 bytes
+                    if (dataTypes.ElementAt(y).Equals("Speed"))
                     {
-                        Console.WriteLine($"{dataTypeList.ElementAt(i)}: {byteType}");
+                        int speed = e.Data.ElementAt(i + 1) + e.Data.ElementAt(i);
+                        Console.WriteLine($"{dataTypes.ElementAt(y)}: {speed}");
                         i++;
                     }
+
+                    // Otherwise just show the value to the corresponding data type.
+                    else
+                    {
+                        Console.WriteLine($"{dataTypes.ElementAt(y)}: {e.Data.ElementAt(i)}");
+                    }
+                    y++;
                 }
-            });
+
+                // Check if the part of the packet checked has changed
+                switch (i)
+                {
+                    case 3:
+                        state = PacketDataState.MessageIdentifier;
+                        break;
+                    case 4:
+                        state = PacketDataState.Data;
+                        break;
+                    case 11:
+                        state = PacketDataState.Checksum;
+                        break;
+                }
+            }
         }
     }
 }

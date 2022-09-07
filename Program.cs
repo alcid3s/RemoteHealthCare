@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define lol 
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +14,7 @@ namespace RemoteHealthCare
     class Program
     {
         // Enum is used for presenting the data in the console
-        enum PacketDataState
+        enum PacketState
         {
             Standard,
             MessageIdentifier,
@@ -79,41 +82,60 @@ namespace RemoteHealthCare
 
             int y = 0;
             string[] dataTypes = { "Type", "Elapsed Time", "Distance Travelled", "Speed", "Heart Rate", "Extra Info" };
-            PacketDataState state = PacketDataState.Standard;
+            PacketState state = PacketState.Standard;
 
+            bool standardPacket = false;
             // Runs through entire packet, beginning with the first 4 bytes which are standard information.
             for (int i = 0; i < e.Data.Count(); i++)
             {
-                // printing the data with the corresponding value.
-                if (state == PacketDataState.Data)
+                // Checking if packet with identifier 1 (0x10) is at location i.
+                if (state == PacketState.MessageIdentifier)
                 {
-                    // Speed is 4 bytes
-                    if (dataTypes.ElementAt(y).Equals("Speed"))
-                    {
-                        int speed = e.Data.ElementAt(i + 1) + e.Data.ElementAt(i);
-                        Console.WriteLine($"{dataTypes.ElementAt(y)}: {speed}");
-                        i++;
-                    }
-
-                    // Otherwise just show the value to the corresponding data type.
+                    if (e.Data.ElementAt(i) == 16)
+                        standardPacket = true;
                     else
+                        standardPacket = false;
+                }
+
+                // printing the data with the corresponding value.
+                else if (state == PacketState.Data && standardPacket)
+                {
+                    string dataType = dataTypes.ElementAt(y);
+                    switch (dataType)
                     {
-                        Console.WriteLine($"{dataTypes.ElementAt(y)}: {e.Data.ElementAt(i)}");
+                        // Speed is 4 bytes, all other data are 2 bytes
+                        case "Speed":
+                            decimal speed = ((e.Data.ElementAt(i + 1) * 0x100) + e.Data.ElementAt(i)) / 1000m;
+                            Console.WriteLine($"{dataType}: {speed} m/s");
+                            i++;
+                            break;
+                        case "Elapsed Time":
+                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i) / 4m} seconds");
+                            break;
+                        case "Distance Travelled":
+                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} meters");
+                            break;
+
+                        // Otherwise just show the value to the corresponding data type.
+                        default:
+                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
+                            break;
                     }
                     y++;
                 }
 
                 // Check if the part of the packet checked has changed
+
                 switch (i)
                 {
                     case 3:
-                        state = PacketDataState.MessageIdentifier;
+                        state = PacketState.MessageIdentifier;
                         break;
                     case 4:
-                        state = PacketDataState.Data;
+                        state = PacketState.Data;
                         break;
                     case 11:
-                        state = PacketDataState.Checksum;
+                        state = PacketState.Checksum;
                         break;
                 }
             }

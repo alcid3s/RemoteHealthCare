@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define lol 
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +13,14 @@ namespace RemoteHealthCare
 {
     class Program
     {
+        // Enum is used for presenting the data in the console
+        enum PacketState
+        {
+            Standard,
+            MessageIdentifier,
+            Data,
+            Checksum
+        }
         static async Task Main(string[] args)
         {
             int code = 0;
@@ -67,33 +78,80 @@ namespace RemoteHealthCare
 
         private static void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)
         {
-            List<Byte> dataByteList = e.Data.ToList();
-            List<string> dataTypeList = new List<string>();
+            Console.WriteLine($"Packet contains: {e.Data.Count()} bytes");
 
-            string[] dataTypeTempList = {"Type", "Elapsed Time", "Distance Travelled",
-            "Speed", "Heart Rate", "Extra Info", "Checksum"};
-            dataTypeList.AddRange(dataTypeTempList);
+            int y = 0;
+            string[] dataTypes = { "Type", "Elapsed Time", "Distance Travelled", "Speed", "Heart Rate", "Extra Info" };
+            PacketState state = PacketState.Standard;
 
-            bool newInfo = false;
-            int i = 0;
-            dataByteList.ForEach(byteType =>
+            if (!Checksum(e.Data))
+                return;
+
+            bool standardPacket = false;
+            // Runs through entire packet, beginning with the first 4 bytes which are standard information.
+            for (int i = 0; i < e.Data.Count(); i++)
             {
-                if (byteType == 16 && !newInfo)
+                // Checking if packet with identifier 1 (0x10) is at location i.
+                if (state == PacketState.MessageIdentifier)
                 {
-                    newInfo = true;
-                    Console.WriteLine($"{dataTypeList.ElementAt(i)}: {byteType}");
-                    i++;
+                    standardPacket = e.Data.ElementAt(i) == 0x10;
                 }
 
-                if (newInfo)
+                // printing the data with the corresponding value.
+                else if (state == PacketState.Data && standardPacket)
                 {
-                    if (i < dataTypeList.Count)
+                    string dataType = dataTypes.ElementAt(y);
+                    switch (dataType)
                     {
-                        Console.WriteLine($"{dataTypeList.ElementAt(i)}: {byteType}");
-                        i++;
+                        // Speed is 4 bytes, all other data are 2 bytes
+                        case "Speed":
+                            decimal speed = ((e.Data.ElementAt(i + 1) * 0x100) + e.Data.ElementAt(i)) / 1000m;
+                            Console.WriteLine($"{dataType}: {speed} m/s");
+                            i++;
+                            break;
+                        case "Elapsed Time":
+                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i) / 4m} seconds");
+                            break;
+                        case "Distance Travelled":
+                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} meters");
+                            break;
+                        case "Heart Rate":
+                            if(e.Data.ElementAt(i) != 0xFF)
+                            {
+                                Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} bpm");
+                            }
+                            break;
+                        default:
+                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
+                            break;
                     }
+                    y++;
                 }
-            });
+
+                // Check if the part of the packet checked has changed
+                switch (i)
+                {
+                    case 3:
+                        state = PacketState.MessageIdentifier;
+                        break;
+                    case 4:
+                        state = PacketState.Data;
+                        break;
+                    case 11:
+                        state = PacketState.Checksum;
+                        break;
+                }
+            }
+        }
+
+        private static bool Checksum(byte[] bytes)
+        {
+            byte checksum = 0;
+
+            foreach (byte b in bytes)
+                checksum ^= b;
+
+            return checksum == 0;
         }
     }
 }

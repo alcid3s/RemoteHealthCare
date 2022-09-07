@@ -84,6 +84,9 @@ namespace RemoteHealthCare
             string[] dataTypes = { "Type", "Elapsed Time", "Distance Travelled", "Speed", "Heart Rate", "Extra Info" };
             PacketState state = PacketState.Standard;
 
+            if (!Checksum(e.Data))
+                return;
+
             bool standardPacket = false;
             // Runs through entire packet, beginning with the first 4 bytes which are standard information.
             for (int i = 0; i < e.Data.Count(); i++)
@@ -91,10 +94,7 @@ namespace RemoteHealthCare
                 // Checking if packet with identifier 1 (0x10) is at location i.
                 if (state == PacketState.MessageIdentifier)
                 {
-                    if (e.Data.ElementAt(i) == 16)
-                        standardPacket = true;
-                    else
-                        standardPacket = false;
+                    standardPacket = e.Data.ElementAt(i) == 0x10;
                 }
 
                 // printing the data with the corresponding value.
@@ -115,8 +115,12 @@ namespace RemoteHealthCare
                         case "Distance Travelled":
                             Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} meters");
                             break;
-
-                        // Otherwise just show the value to the corresponding data type.
+                        case "Heart Rate":
+                            if(e.Data.ElementAt(i) != 0xFF)
+                            {
+                                Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} bpm");
+                            }
+                            break;
                         default:
                             Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
                             break;
@@ -125,7 +129,6 @@ namespace RemoteHealthCare
                 }
 
                 // Check if the part of the packet checked has changed
-
                 switch (i)
                 {
                     case 3:
@@ -139,6 +142,16 @@ namespace RemoteHealthCare
                         break;
                 }
             }
+        }
+
+        private static bool Checksum(byte[] bytes)
+        {
+            byte checksum = 0;
+
+            foreach (byte b in bytes)
+                checksum ^= b;
+
+            return checksum == 0;
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿#define lol 
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -93,9 +90,7 @@ namespace RemoteHealthCare
             {
                 // Checking if packet with identifier 1 (0x10) is at location i.
                 if (state == PacketState.MessageIdentifier)
-                {
                     standardPacket = e.Data.ElementAt(i) == 0x10;
-                }
 
                 // printing the data with the corresponding value.
                 else if (state == PacketState.Data && standardPacket)

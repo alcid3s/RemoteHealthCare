@@ -19,6 +19,7 @@ namespace RemoteHealthCare.Bikes
 
         public int HeartRate { get { return (int)_heartRate; } }
 
+        //toggles the thread running the bike 
         public bool IsRunning { get { return _isRunning; } set { if (!_isRunning && value) Run(); _isRunning = value; } }
 
         public int Gear { get; set; }
@@ -33,18 +34,22 @@ namespace RemoteHealthCare.Bikes
 
         private bool _isRunning;
 
+        //runs the simulation
         private void Run()
         {
             _isRunning = true;
             if (Gear < 1 || Gear > 7)
                 Gear = 4;
-            new Thread(x => Simulate()).Start();
+            new Thread(() => Simulate()).Start();
         }
 
+        //the simulation code
         private void Simulate()
         {
+            //calculation resolution
             double deltaTime = 0.05;
 
+            //amount of time units per notification
             int callTicks = 5;
             int tickCounter = 0;
 
@@ -57,42 +62,58 @@ namespace RemoteHealthCare.Bikes
 
             double targetSpeed = 0;
 
-            IsRunning = true;
-
+            //angle of the pedals
             double pedalAngle = random.NextDouble() * Math.PI; Math.Sin(pedalAngle);
 
             while (IsRunning)
             {
-                if (random.NextDouble() < 0.001 / deltaTime)
-                    targetSpeed = Enumerable.Repeat(random.NextDouble(), 15).Sum() - 1;
+                //occasionally picks a new speed
+                if (random.NextDouble() < deltaTime * 0.25)
+                    targetSpeed = Enumerable.Repeat(random.NextDouble(), 10).Sum() + 1;
+                if (targetSpeed < 3)
+                    targetSpeed = 0;
 
                 double acceleration = 0;
                 double force = 0;
 
+                //when aiming to go faster
                 if (targetSpeed > _speed) 
                 {
+                    //the force is manipulated by the angle of the pedals to get the acceleration
                     force = Math.Min((targetSpeed - _speed), 5);
                     acceleration += (Math.Pow(Math.Sin(pedalAngle), 2) + 0.1) * force;
                     pedalAngle += acceleration * Math.Pow(deltaTime, 2) * Math.PI / Gear;
                 }
-                acceleration -= (_speed + 2) * 0.2 * deltaTime;
+                //friction
+                acceleration -= (_speed + 2) * 0.3 * deltaTime;
 
+                //change the speed by the acceleration (v = a * t)
                 _speed += acceleration * deltaTime;
                 if (_speed < 0)
                     _speed = 0;
 
+                //change the distance by the speed (s = v * t)
                 _distanceTravelled += _speed * deltaTime;
 
+                //changes the heart rate according to the force exerted
                 double interpolate = Math.Pow(0.9, deltaTime);
-                _heartRate = _heartRate * interpolate + (70 + force * 10) * (1 - interpolate);
+                _heartRate = _heartRate * interpolate + (70 + force * 10 + Math.Sqrt(_speed) * 15) * (1 - interpolate);
 
-                if (tickCounter % callTicks == 0)
+                //notifies through OnUpdate; random is to simulate the cases where a value was invalid
+                if (tickCounter % callTicks == 0 && random.NextDouble() < 0.99)
                     OnUpdate();
+
+                //passes one tick
                 tickCounter++;
                 _elapsedTime = tickCounter * deltaTime;
-
                 Thread.Sleep((int)(deltaTime * 1000));
             }
+
+            //resets all info
+            _elapsedTime = 0;
+            _distanceTravelled = 0;
+            _speed = 0;
+            _heartRate = 255;
         }
     }
 }

@@ -75,7 +75,10 @@ namespace RemoteHealthCare
             Console.Read();
             */
 
-            SimulationBike bike = new SimulationBike();
+            SimulationBike simBike = new SimulationBike();
+
+            IBike bike = simBike;
+            //example on how to use delegates; logs info with every update
             bike.OnUpdate += delegate 
             {
                 Console.WriteLine(
@@ -84,7 +87,9 @@ namespace RemoteHealthCare
                     $"Distance: {bike.DistanceTravelled}\n" +
                     $"Heart: {bike.HeartRate}\n");
             };
-            bike.IsRunning = true;
+
+            //activates the simulation bike
+            simBike.IsRunning = true;
         }
 
         private static void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)

@@ -75,7 +75,19 @@ namespace RemoteHealthCare
             Console.Read();
             */
 
+            int code = 0;
+
+            // Kind of bikes available
             SimulationBike simBike = new SimulationBike();
+            RealBike realBike = new RealBike();
+
+            // Measure real heart rate
+            BLE heart = new BLE();
+            code = await heart.OpenDevice("Decathlon Dual HR");
+            await heart.SetService("HeartRate");
+
+            heart.SubscriptionValueChanged += UpdateHeartrateData;
+            await heart.SubscribeToCharacteristic("HeartRateMeasurement");
 
             IBike bike = simBike;
             //example on how to use delegates; logs info with every update
@@ -91,11 +103,21 @@ namespace RemoteHealthCare
             //activates the simulation bike
             simBike.IsRunning = true;
         }
-
-        private static void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)
+        private static void UpdateHeartrateData(object sender, BLESubscriptionValueChangedEventArgs e)
         {
-            Console.WriteLine($"Packet contains: {e.Data.Count()} bytes");
+            float heartrate = 0xFF;
+            for (int i = 0; i < 2; i++)
+            {
+                if (i == 1)
+                {
+                    heartrate = e.Data.ElementAt((i));
+                }
+            }
+            Console.WriteLine($"Heartrate: {heartrate} bpm");
+        }
 
+        private static void UpdateBikeData(object sender, BLESubscriptionValueChangedEventArgs e)
+        {
             int y = 0;
             string[] dataTypes = { "Type", "Elapsed Time", "Distance Travelled", "Speed", "Heart Rate", "Extra Info" };
             PacketState state = PacketState.Standard;
@@ -130,10 +152,6 @@ namespace RemoteHealthCare
                             Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} meters");
                             break;
                         case "Heart Rate":
-                            if(e.Data.ElementAt(i) != 0xFF)
-                            {
-                                Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} bpm");
-                            }
                             break;
                         default:
                             Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");

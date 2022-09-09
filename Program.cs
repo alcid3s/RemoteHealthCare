@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
+using RemoteHealthCare.Bikes;
 
 namespace RemoteHealthCare
 {
@@ -20,6 +21,7 @@ namespace RemoteHealthCare
         }
         static async Task Main(string[] args)
         {
+            /*
             int code = 0;
             BLE bike = new BLE();
             BLE heart = new BLE();
@@ -71,6 +73,23 @@ namespace RemoteHealthCare
             Console.Read();
             Console.Read();
             Console.Read();
+            */
+
+            SimulationBike simBike = new SimulationBike();
+
+            IBike bike = simBike;
+            //example on how to use delegates; logs info with every update
+            bike.OnUpdate += delegate 
+            {
+                Console.WriteLine(
+                    $"Time: {bike.ElapsedTime}\n" +
+                    $"Speed: {bike.Speed}\n" +
+                    $"Distance: {bike.DistanceTravelled}\n" +
+                    $"Heart: {bike.HeartRate}\n");
+            };
+
+            //activates the simulation bike
+            simBike.IsRunning = true;
         }
 
         private static void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)

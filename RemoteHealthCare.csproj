@@ -47,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
+    <Compile Include="Bikes\IBike.cs" />
+    <Compile Include="Bikes\RealBike.cs" />
+    <Compile Include="Bikes\SimulationBike.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

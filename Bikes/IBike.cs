@@ -11,7 +11,6 @@ namespace RemoteHealthCare
     internal interface IBike
     {
         OnUpdate OnUpdate { get; set; }
-
         decimal ElapsedTime { get; }
         int DistanceTravelled { get; }
         decimal Speed { get; }

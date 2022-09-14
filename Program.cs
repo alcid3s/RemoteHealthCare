@@ -12,13 +12,7 @@ namespace RemoteHealthCare
     class Program
     {
         // Enum is used for presenting the data in the console
-        enum PacketState
-        {
-            Standard,
-            MessageIdentifier,
-            Data,
-            Checksum
-        }
+
         static async Task Main(string[] args)
         {
             /*
@@ -75,9 +69,13 @@ namespace RemoteHealthCare
             Console.Read();
             */
 
+            // Kind of bikes available
             SimulationBike simBike = new SimulationBike();
+            RealBike realBike = new RealBike();
 
-            IBike bike = simBike;
+            IBike bike = realBike;
+
+            realBike.Init();
             //example on how to use delegates; logs info with every update
             bike.OnUpdate += delegate 
             {
@@ -88,84 +86,13 @@ namespace RemoteHealthCare
                     $"Heart: {bike.HeartRate}\n");
             };
 
+            while (true) ;
+
             //activates the simulation bike
-            simBike.IsRunning = true;
+            // simBike.IsRunning = true;
         }
+        
 
-        private static void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)
-        {
-            Console.WriteLine($"Packet contains: {e.Data.Count()} bytes");
-
-            int y = 0;
-            string[] dataTypes = { "Type", "Elapsed Time", "Distance Travelled", "Speed", "Heart Rate", "Extra Info" };
-            PacketState state = PacketState.Standard;
-
-            if (!Checksum(e.Data))
-                return;
-
-            bool standardPacket = false;
-            // Runs through entire packet, beginning with the first 4 bytes which are standard information.
-            for (int i = 0; i < e.Data.Count(); i++)
-            {
-                // Checking if packet with identifier 1 (0x10) is at location i.
-                if (state == PacketState.MessageIdentifier)
-                    standardPacket = e.Data.ElementAt(i) == 0x10;
-
-                // printing the data with the corresponding value.
-                else if (state == PacketState.Data && standardPacket)
-                {
-                    string dataType = dataTypes.ElementAt(y);
-                    switch (dataType)
-                    {
-                        // Speed is 4 bytes, all other data are 2 bytes
-                        case "Speed":
-                            decimal speed = ((e.Data.ElementAt(i + 1) * 0x100) + e.Data.ElementAt(i)) / 1000m;
-                            Console.WriteLine($"{dataType}: {speed} m/s");
-                            i++;
-                            break;
-                        case "Elapsed Time":
-                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i) / 4m} seconds");
-                            break;
-                        case "Distance Travelled":
-                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} meters");
-                            break;
-                        case "Heart Rate":
-                            if(e.Data.ElementAt(i) != 0xFF)
-                            {
-                                Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)} bpm");
-                            }
-                            break;
-                        default:
-                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
-                            break;
-                    }
-                    y++;
-                }
-
-                // Check if the part of the packet checked has changed
-                switch (i)
-                {
-                    case 3:
-                        state = PacketState.MessageIdentifier;
-                        break;
-                    case 4:
-                        state = PacketState.Data;
-                        break;
-                    case 11:
-                        state = PacketState.Checksum;
-                        break;
-                }
-            }
-        }
-
-        private static bool Checksum(byte[] bytes)
-        {
-            byte checksum = 0;
-
-            foreach (byte b in bytes)
-                checksum ^= b;
-
-            return checksum == 0;
-        }
+        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -16,13 +17,15 @@ namespace RemoteHealthCare.Network
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
 
-        private string _id = string.Empty;
+        public string Path { get; } 
+        public string Id { get; private set; }
         public Client()
         {
-
+            Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() + "/Json";
+            Id = string.Empty;
         }
 
-        public async Task connect(string ip, int port)
+        public async Task Connect(string ip, int port)
         {
             if (ip == null || port < 1000)
                 throw new MissingFieldException("IP is null or port is already in use");
@@ -76,7 +79,7 @@ namespace RemoteHealthCare.Network
                                 if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
                                 {
                                     lastLocation = i;
-                                    Console.WriteLine("New last location =" + lastLocation);
+                                    Console.WriteLine($"New last location = {lastLocation}");
                                     break;
                                 }
                             }
@@ -90,9 +93,9 @@ namespace RemoteHealthCare.Network
                             break;
 
                         case "tunnel/create":
-                            Console.WriteLine($"res: {jData["data"]}");
-                            _id = jData["data"]["id"].ToObject<string>();
-                            if (_id.Equals(String.Empty))
+                            Console.WriteLine($"will try to save ID.\nres: {jData["data"]}");
+                            Id = jData["data"]["id"].ToObject<string>();
+                            if (Id.Equals(string.Empty))
                                 throw new Exception("Error, couldn't fetch id from tunnel/create");
                             break;
 

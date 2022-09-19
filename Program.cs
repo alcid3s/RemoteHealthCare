@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
+using Newtonsoft.Json.Linq;
 using RemoteHealthCare.Bikes;
 using RemoteHealthCare.Network;
 
@@ -18,7 +20,14 @@ namespace RemoteHealthCare
         {
             // Making connection with the VR server
             Client client = new Client();
-            client.connect("145.48.6.10", 6666);
+            _ = client.Connect("145.48.6.10", 6666);
+
+            Thread.Sleep(1000);
+
+            JObject ob = JObject.Parse(File.ReadAllText(client.Path + "/test.json"));
+            ob["data"]["dest"] = client.Id;
+
+            client.Send(ob.ToString());
 
             //// Kind of bikes available
             //SimulationBike simBike = new SimulationBike();
@@ -42,8 +51,5 @@ namespace RemoteHealthCare
             //activates the simulation bike
             // simBike.IsRunning = true;
         }
-        
-
-        
     }
 }

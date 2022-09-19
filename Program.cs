@@ -17,24 +17,25 @@ namespace RemoteHealthCare
         static async Task Main(string[] args)
         {
             // Making connection with the VR server
-            Client client = new Client("145.48.6.10", 6666);
+            Client client = new Client();
+            client.connect("145.48.6.10", 6666);
 
-            // Kind of bikes available
-            SimulationBike simBike = new SimulationBike();
-            RealBike realBike = new RealBike();
+            //// Kind of bikes available
+            //SimulationBike simBike = new SimulationBike();
+            //RealBike realBike = new RealBike();
 
-            IBike bike = realBike;
+            //IBike bike = realBike;
 
-            realBike.Init();
-            //example on how to use delegates; logs info with every update
-            bike.OnUpdate += delegate
-            {
-                Console.WriteLine(
-                    $"Time: {bike.ElapsedTime}\n" +
-                    $"Speed: {bike.Speed}\n" +
-                    $"Distance: {bike.DistanceTravelled}\n" +
-                    $"Heart: {bike.HeartRate}\n");
-            };
+            //realBike.Init();
+            ////example on how to use delegates; logs info with every update
+            //bike.OnUpdate += delegate
+            //{
+            //    Console.WriteLine(
+            //        $"Time: {bike.ElapsedTime}\n" +
+            //        $"Speed: {bike.Speed}\n" +
+            //        $"Distance: {bike.DistanceTravelled}\n" +
+            //        $"Heart: {bike.HeartRate}\n");
+            //};
 
             while (true) ;
 

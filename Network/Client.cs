@@ -14,14 +14,16 @@ namespace RemoteHealthCare.Network
         private NetworkStream _stream;
 
         private readonly Dictionary<string, Command> _commands;
-		
-		private byte[] _totalBuffer = new byte[0];
-		private byte[] _buffer = new byte[1024];
 
-        public Client() 
-		{ 
-			_commands = new Dictionary<string, Command>();
-		}
+        private byte[] _totalBuffer = new byte[0];
+        private byte[] _buffer = new byte[1024];
+
+        private int test = 0;
+
+        public Client()
+        {
+            _commands = new Dictionary<string, Command>();
+        }
 
         public async Task connect(string ip, int port)
         {
@@ -64,14 +66,34 @@ namespace RemoteHealthCare.Network
                     string data = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
                     JObject jData = JObject.Parse(data);
 
-                    if (_commands.ContainsKey(jData["id"].ToObject<string>()))
+                    if (test == 0)
                     {
-                        Console.WriteLine("Received Command " + jData);
-                        _commands[jData["id"].ToObject<string>()].OnCommandReceived(jData);
+                        //The last location your username is in the list 
+                        int lastLocation = 0;
+
+                        for (int i = 0; jData["data"].ToArray().Length > i; i++)
+                        {
+                            Console.WriteLine($"session id: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
+                            if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
+                            {
+                                lastLocation = i;
+                                Console.WriteLine("New last location =" + lastLocation);
+                            }
+                        }
+
+                        var session = jData["data"].ElementAt(lastLocation)["id"];
+
+                        //JSon message to request a tunnel
+                        String message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session + "\", \"key\" : \"\"}}";
+                        Console.WriteLine($"Sending: {message}");
+                        Send(message);
+
+                        //Dont go through this again
+                        test++;
                     }
                     else
                     {
-                        Console.WriteLine($"Could not find command for {jData["id"]}");
+                        Console.WriteLine($"res: {jData["data"]}");
                     }
                     var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
                     Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);

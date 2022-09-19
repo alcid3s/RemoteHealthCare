@@ -13,16 +13,13 @@ namespace RemoteHealthCare.Network
         private TcpClient _client;
         private NetworkStream _stream;
 
-        private readonly Dictionary<string, Command> _commands;
-
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
 
-        private int test = 0;
-
+        private string _id = string.Empty;
         public Client()
         {
-            _commands = new Dictionary<string, Command>();
+
         }
 
         public async Task connect(string ip, int port)
@@ -30,6 +27,7 @@ namespace RemoteHealthCare.Network
             if (ip == null || port < 1000)
                 throw new MissingFieldException("IP is null or port is already in use");
 
+            Console.WriteLine($"LOOK FOR THIS {Environment.UserName}");
             try
             {
                 _client = new TcpClient();
@@ -66,34 +64,41 @@ namespace RemoteHealthCare.Network
                     string data = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
                     JObject jData = JObject.Parse(data);
 
-                    if (test == 0)
+                    switch (jData["id"].ToObject<string>())
                     {
-                        //The last location your username is in the list 
-                        int lastLocation = 0;
+                        case "session/list":
+                            //The last location your username is in the list 
+                            int lastLocation = 0;
 
-                        for (int i = 0; jData["data"].ToArray().Length > i; i++)
-                        {
-                            Console.WriteLine($"session id: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
-                            if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
+                            for (int i = 0; jData["data"].ToArray().Length > i; i++)
                             {
-                                lastLocation = i;
-                                Console.WriteLine("New last location =" + lastLocation);
+                                Console.WriteLine($"session id: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
+                                if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
+                                {
+                                    lastLocation = i;
+                                    Console.WriteLine("New last location =" + lastLocation);
+                                    break;
+                                }
                             }
-                        }
 
-                        var session = jData["data"].ElementAt(lastLocation)["id"];
+                            var session = jData["data"].ElementAt(lastLocation)["id"];
 
-                        //JSon message to request a tunnel
-                        String message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session + "\", \"key\" : \"\"}}";
-                        Console.WriteLine($"Sending: {message}");
-                        Send(message);
+                            //JSon message to request a tunnel
+                            string message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session + "\", \"key\" : \"\"}}";
+                            Console.WriteLine($"Sending: {message}");
+                            Send(message);
+                            break;
 
-                        //Dont go through this again
-                        test++;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"res: {jData["data"]}");
+                        case "tunnel/create":
+                            Console.WriteLine($"res: {jData["data"]}");
+                            _id = jData["data"]["id"].ToObject<string>();
+                            if (_id.Equals(String.Empty))
+                                throw new Exception("Error, couldn't fetch id from tunnel/create");
+                            break;
+
+                        default:
+                            Console.WriteLine($"res: {jData["data"]}");
+                            break;
                     }
                     var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
                     Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
@@ -119,11 +124,6 @@ namespace RemoteHealthCare.Network
             byte[] data = Encoding.ASCII.GetBytes(message);
             _stream.Write(prefix, 0, prefix.Length);
             _stream.Write(data, 0, data.Length);
-        }
-
-        private void Commands()
-        {
-
         }
     }
 }

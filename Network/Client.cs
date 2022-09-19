@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace RemoteHealthCare.Network
@@ -95,14 +93,15 @@ namespace RemoteHealthCare.Network
 
         public void Send(string message)
         {
-            byte[] packetLength = BitConverter.GetBytes(message.Length);
-            byte[] packet = Encoding.ASCII.GetBytes(message);
-            _stream.Write(packetLength, 0, packetLength.Length);
-            _stream.Write(packet, 0, packet.Length);
+            byte[] prefix = BitConverter.GetBytes(message.Length);
+            byte[] data = Encoding.ASCII.GetBytes(message);
+            _stream.Write(prefix, 0, prefix.Length);
+            _stream.Write(data, 0, data.Length);
+        }
 
+        private void Commands()
+        {
 
-            //IEnumerable<byte> packet = prefix.Concat(data);
-            //_stream.Write(packet.ToArray(), 0, packet.Count());
         }
     }
 }

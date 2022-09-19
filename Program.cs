@@ -16,7 +16,7 @@ namespace RemoteHealthCare
     {
         // Enum is used for presenting the data in the console
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             // Making connection with the VR server
             Client client = new Client();

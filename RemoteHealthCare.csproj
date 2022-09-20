@@ -59,7 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Json\test.json" />
+    <None Include="Json\bike.json" />
+    <None Include="Json\reset.json" />
+    <None Include="Json\terrain.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

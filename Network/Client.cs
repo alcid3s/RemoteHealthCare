@@ -50,8 +50,11 @@ namespace RemoteHealthCare.Network
         }
         public void OnRead(IAsyncResult ar)
         {
+            //make the message darkgray so it isnt as obnoxious
             Console.ForegroundColor = ConsoleColor.DarkGray;
+
             Console.WriteLine("Message sent");
+
             Console.ForegroundColor = ConsoleColor.White;
             
             try
@@ -118,6 +121,18 @@ namespace RemoteHealthCare.Network
                             //throw an error if the id is empty somehow
                             if (Id.Equals(string.Empty))
                                 throw new Exception("Error, couldn't fetch id from tunnel/create");
+                            break;
+
+                        case "tunnel/send":
+
+                            //dont show the callbacks so its easier to debug
+                            if (jData["data"]["data"]["id"].ToObject<string>() == "callback")
+                                break;
+
+
+                            //No handling implemented so write the full response
+                            Console.WriteLine("No handling implemented for the id: " + jData["id"]);
+                            Console.WriteLine($"Server response: {jData}");
                             break;
 
                         default:

@@ -24,10 +24,7 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            JObject ob = JObject.Parse(File.ReadAllText(client.Path + "/test.json"));
-            ob["data"]["dest"] = client.Id;
-
-            client.Send(ob.ToString());
+            client.SetSkyBox(12.6);
 
             //// Kind of bikes available
             //SimulationBike simBike = new SimulationBike();

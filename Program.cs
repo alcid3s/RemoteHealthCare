@@ -28,25 +28,11 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            client.SetSkyBox(16);
+            client.SetSkyBox(12);
 
             client.CreateTerrain();
 
             client.CreateBike();
-
-            client.saveScene("test.json", true);
-
-            while (true)
-            {
-                Thread.Sleep(1000);
-
-                client.resetScene();
-
-                Thread.Sleep(1000);
-
-                client.loadScene("test.json");
-            }
-
 
 
             //// Kind of bikes available
@@ -66,7 +52,8 @@ namespace RemoteHealthCare
             //        $"Heart: {bike.HeartRate}\n");
             //};
 
-            while (true) ;
+            //while (true) ;
+            for (; ; );
 
             //activates the simulation bike
             // simBike.IsRunning = true;

@@ -69,12 +69,21 @@ namespace RemoteHealthCare.Network
 
             var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
 
+            Random random = new Random();
+
             for (var i = 0; i < 256; i++)
                 for (var j = 0; j < 256; j++)
-                    heights.Add(0);
+                    heights.Add(random.NextDouble() * 1);
 
             Console.WriteLine("terrain json sent");
             Send(terrain.ToString());
+
+            //add a node to show the terrain
+            JObject node = JObject.Parse(File.ReadAllText(Path + "/terrainnode.json"));
+            node["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {node}");
+            Send(node.ToString());
         }
 
         public void OnRead(IAsyncResult ar)

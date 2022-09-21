@@ -65,7 +65,8 @@ namespace RemoteHealthCare
             //        $"Heart: {bike.HeartRate}\n");
             //};
 
-            while (true) ;
+            //while (true) ;
+            for (; ; );
 
             //activates the simulation bike
             // simBike.IsRunning = true;

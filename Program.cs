@@ -38,7 +38,9 @@ namespace RemoteHealthCare
 
             client.AddRoute();
 
-            Thread.Sleep(1000);
+
+            //wait for the node and route id
+            while (client.nodeId == null || client.routeId == null) ;
 
             client.FollowRoute(client.routeId, client.nodeId);
 

@@ -15,7 +15,7 @@
             "file": "data/NetworkEngine/models/bike/bike_anim.fbx",
             "cullbackfaces": true,
             "animated": true,
-            "animation": "bike_anim.fbx"
+            "animation": "Armature|Fietsen"
           }
         }
       }

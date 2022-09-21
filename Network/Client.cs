@@ -58,6 +58,8 @@ namespace RemoteHealthCare.Network
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
             ob["data"]["dest"] = Id;
             ob["data"]["data"]["data"]["time"] = time;
+
+            Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
         public void CreateTerrain()
@@ -74,27 +76,7 @@ namespace RemoteHealthCare.Network
             Console.WriteLine("terrain json sent");
             Send(terrain.ToString());
         }
-        public void CreateBike()
-        {
-            JObject bike = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
-            bike["data"]["dest"] = Id;
 
-            Console.WriteLine($"message: {bike}");
-            Send(bike.ToString());
-        }
-        private void CreateTunnel()
-        {
-            JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
-            ob["data"]["dest"] = Id;
-            Send(ob.ToString());
-        }
-
-        public void ResetScene() 
-        {
-            JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
-            ob["data"]["dest"] = Id;
-            Send(ob.ToString());
-        }
         public void OnRead(IAsyncResult ar)
         {
             //make the message darkgray so it isnt as obnoxious
@@ -172,9 +154,28 @@ namespace RemoteHealthCare.Network
 
                         case "tunnel/send":
 
+                            string tunnelId = jData["data"]["data"]["id"].ToObject<string>();
+
                             //dont show the callbacks so its easier to debug
-                            if (jData["data"]["data"]["id"].ToObject<string>() == "callback")
+                            if (tunnelId == "callback")
+                            {
+                                Console.WriteLine("callback");
                                 break;
+                            }
+
+                            if (tunnelId == "scene/node/add")
+                            { 
+                                this.nodeId = jData["data"]["data"]["data"]["uuid"].ToObject<string>();
+                                Console.WriteLine("node id: " + this.nodeId);
+                                break;
+                            }
+
+                            if (tunnelId == "route/add")
+                            {
+                                this.routeId = jData["data"]["data"]["data"]["uuid"].ToObject<string>();
+                                Console.WriteLine("route id: " + this.routeId);
+                                break;
+                            }
 
 
                             //No handling implemented so write the full response
@@ -214,6 +215,8 @@ namespace RemoteHealthCare.Network
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/get_scene.json"));
             ob["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
 
@@ -224,6 +227,8 @@ namespace RemoteHealthCare.Network
             ob["data"]["dest"] = Id;
             ob["data"]["data"]["data"]["filename"] = sceneName;
             var overwrite = ob["data"]["data"]["data"]["heights"] as JArray;
+
+            Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
 
@@ -232,6 +237,59 @@ namespace RemoteHealthCare.Network
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/load_scene.json"));
             ob["data"]["dest"] = Id;
             ob["data"]["data"]["data"]["filename"] = sceneName;
+
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+        }
+
+        private void CreateTunnel()
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
+            ob["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+        }
+
+        public void ResetScene()
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
+            ob["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+        }
+
+        public void CreateBike()
+        {
+            JObject bike = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
+            bike["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {bike}");
+            Send(bike.ToString());
+        }
+
+        public void AddRoute()
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/add_route.json"));
+            ob["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+        }
+
+        public string routeId;
+        public string nodeId;
+
+        public void FollowRoute(string routeId, string nodeId)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/follow_route.json"));
+            ob["data"]["dest"] = Id;
+
+            ob["data"]["data"]["data"]["route"] = routeId;
+            ob["data"]["data"]["data"]["node"] = nodeId;
+
+            Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
     }

@@ -28,26 +28,23 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
+            client.ResetScene();
+
             client.SetSkyBox(16);
 
             client.CreateTerrain();
 
             client.CreateBike();
 
-            client.SaveScene("test.json", true);
-            
+            client.AddRoute();
+
+            Thread.Sleep(1000);
+
+            client.FollowRoute(client.routeId, client.nodeId);
+
             //laat zien dat we een scene kan inladen en resetten 
 
-            while (true)
-            {
-                Thread.Sleep(1000);
 
-                client.ResetScene();
-
-                Thread.Sleep(1000);
-
-                client.LoadScene("test.json");
-            }
 
 
 

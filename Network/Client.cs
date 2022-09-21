@@ -20,7 +20,7 @@ namespace RemoteHealthCare.Network
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
 
-        public string Path { get; } 
+        public string Path { get; }
         public string Id { get; private set; }
         public Client()
         {
@@ -50,9 +50,31 @@ namespace RemoteHealthCare.Network
             CreateTunnel();
         }
 
+        public void CreateTerrain()
+        {
+            JObject terrain = JObject.Parse(File.ReadAllText(Path + "/terrain.json"));
+            terrain["data"]["dest"] = Id;
+
+            var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
+
+            for (var i = 0; i < 256; i++)
+                for (var j = 0; j < 256; j++)
+                    heights.Add(0);
+
+            Console.WriteLine($"message: {terrain}");
+            Send(terrain.ToString());
+        }
+        public void CreateBike()
+        {
+            JObject bike = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
+            bike["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {bike}");
+            Send(bike.ToString());
+        }
         private void CreateTunnel()
         {
-            JObject ob = JObject.Parse(File.ReadAllText(Path + "/test.json"));
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
             ob["data"]["dest"] = Id;
             Send(ob.ToString());
         }
@@ -64,7 +86,7 @@ namespace RemoteHealthCare.Network
             Console.WriteLine("Message sent");
 
             Console.ForegroundColor = ConsoleColor.White;
-            
+
             try
             {
                 int rc = _stream.EndRead(ar);
@@ -118,7 +140,7 @@ namespace RemoteHealthCare.Network
                             if (jData["data"]["status"].ToObject<string>() == "error")
                             {
                                 Console.WriteLine("Error while making a tunnel with server, are you running NetwerkEngine?");
-                                Console.WriteLine("Server error message:\n" + jData["data"]); 
+                                Console.WriteLine("Server error message:\n" + jData["data"]);
                                 break;
                             }
 
@@ -157,7 +179,6 @@ namespace RemoteHealthCare.Network
             }
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
         }
-
         private static byte[] Concat(byte[] b1, byte[] b2, int count)
         {
             byte[] r = new byte[b1.Length + count];
@@ -165,7 +186,6 @@ namespace RemoteHealthCare.Network
             System.Buffer.BlockCopy(b2, 0, r, b1.Length, count);
             return r;
         }
-
         public void Send(string message)
         {
             byte[] prefix = BitConverter.GetBytes(message.Length);
@@ -173,7 +193,6 @@ namespace RemoteHealthCare.Network
             _stream.Write(prefix, 0, prefix.Length);
             _stream.Write(data, 0, data.Length);
         }
-
         public void SetSkyBox(double time)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));

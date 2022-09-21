@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
-using Newtonsoft.Json;
+using Newtonsoft.Json;
+
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Serialization;
+
 using RemoteHealthCare.Bikes;
 using RemoteHealthCare.Network;
 
@@ -26,29 +28,13 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            client.SetSkyBox(12.6);
+            client.SetSkyBox(19);
 
-            JObject terrain = JObject.Parse(File.ReadAllText(client.Path + "/terrain.json"));
-            terrain["data"]["dest"] = client.Id;
-
-            var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
-
-            for (var i = 0; i < 256; i++)
-                 for (var j = 0; j < 256; j++)
-                     heights.Add(0);
-     
-            Console.WriteLine("message: " + terrain);
+            client.CreateTerrain();
 
-            client.Send("" + terrain);
+            client.CreateBike();
 
 
-
-            JObject bike = JObject.Parse(File.ReadAllText(client.Path + "/bike.json"));
-            bike["data"]["dest"] = client.Id;
-
-            Console.WriteLine("message: " + bike);
-
-            client.Send(bike.ToString());
 
             //// Kind of bikes available
             //SimulationBike simBike = new SimulationBike();

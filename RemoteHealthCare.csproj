@@ -61,6 +61,11 @@
     <None Include="App.config" />
     <None Include="Json\bike.json" />
     <None Include="Json\get_scene.json" />
+    <None Include="Json\delete_node.json" />
+    <None Include="Json\find_node.json" />
+    <None Include="Json\add_route.json" />
+    <None Include="Json\follow_route.json" />
+    <None Include="Json\update_node.json" />
     <None Include="Json\load_scene.json" />
     <None Include="Json\save_scene.json" />
     <None Include="Json\reset.json" />

@@ -30,9 +30,11 @@ namespace RemoteHealthCare.Network
 
         public async Task Connect(string ip, int port)
         {
+            //checking if it is a valid IP
             if (ip == null || port < 1000)
                 throw new MissingFieldException("IP is null or port is already in use");
 
+            //trying to make a connection with server
             try
             {
                 _client = new TcpClient();
@@ -46,6 +48,7 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine(e.Message);
             }
 
+            //creating tunnel to send data 
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
             CreateTunnel();
         }
@@ -86,7 +89,7 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
-        public void resetScene() 
+        public void ResetScene() 
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
             ob["data"]["dest"] = Id;
@@ -207,7 +210,7 @@ namespace RemoteHealthCare.Network
             _stream.Write(prefix, 0, prefix.Length);
             _stream.Write(data, 0, data.Length);
         }
-        public void getScene()
+        public void GetScene()
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/get_scene.json"));
             ob["data"]["dest"] = Id;
@@ -215,7 +218,7 @@ namespace RemoteHealthCare.Network
         }
 
         //TODO put overwrite funcion in
-        public void saveScene(String sceneName, bool overwriteFile)
+        public void SaveScene(String sceneName, bool overwriteFile)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/save_scene.json"));
             ob["data"]["dest"] = Id;
@@ -224,7 +227,7 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
-        public void loadScene(String sceneName)
+        public void LoadScene(String sceneName)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/load_scene.json"));
             ob["data"]["dest"] = Id;

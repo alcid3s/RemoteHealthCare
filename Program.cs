@@ -34,17 +34,19 @@ namespace RemoteHealthCare
 
             client.CreateBike();
 
-            client.saveScene("test.json", true);
+            client.SaveScene("test.json", true);
+            
+            //laat zien dat we een scene kan inladen en resetten 
 
             while (true)
             {
                 Thread.Sleep(1000);
 
-                client.resetScene();
+                client.ResetScene();
 
                 Thread.Sleep(1000);
 
-                client.loadScene("test.json");
+                client.LoadScene("test.json");
             }
 
 

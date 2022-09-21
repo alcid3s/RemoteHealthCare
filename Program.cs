@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
-using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Serialization;
 using RemoteHealthCare.Bikes;
 using RemoteHealthCare.Network;
 
@@ -26,23 +26,16 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            JObject reset = JObject.Parse(File.ReadAllText(client.Path + "/reset.json"));
-            reset["data"]["dest"] = client.Id;
-
-            Console.WriteLine("message: " + reset);
-
-            client.Send(reset.ToString());
-
-
+            client.SetSkyBox(12.6);
 
             JObject terrain = JObject.Parse(File.ReadAllText(client.Path + "/terrain.json"));
-            terrain["data"]["dest"] = client.Id;
-
-            var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
-
-            for (var i = 0; i < 256; i++)
-                 for (var j = 0; j < 256; j++)
-                     heights.Add(0);
+            terrain["data"]["dest"] = client.Id;
+
+            var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
+
+            for (var i = 0; i < 256; i++)
+                 for (var j = 0; j < 256; j++)
+                     heights.Add(0);
      
             Console.WriteLine("message: " + terrain);
 

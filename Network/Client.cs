@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,7 +33,6 @@ namespace RemoteHealthCare.Network
             if (ip == null || port < 1000)
                 throw new MissingFieldException("IP is null or port is already in use");
 
-            Console.WriteLine($"LOOK FOR THIS {Environment.UserName}");
             try
             {
                 _client = new TcpClient();
@@ -47,6 +47,14 @@ namespace RemoteHealthCare.Network
             }
 
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+            CreateTunnel();
+        }
+
+        private void CreateTunnel()
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/test.json"));
+            ob["data"]["dest"] = Id;
+            Send(ob.ToString());
         }
         public void OnRead(IAsyncResult ar)
         {
@@ -115,7 +123,7 @@ namespace RemoteHealthCare.Network
                             }
 
                             //Get the tunnel id and save it
-                            Console.WriteLine($"will try to save ID from:\nServer response Data: {jData["data"]}");
+                            Console.WriteLine($"\nServer response Data: {jData["data"]}");
                             Id = jData["data"]["id"].ToObject<string>();
 
                             //throw an error if the id is empty somehow
@@ -136,8 +144,7 @@ namespace RemoteHealthCare.Network
                             break;
 
                         default:
-                            //No handling implemented so write the full response
-                            Console.WriteLine("No handling implemented for the id: " + jData["id"]);
+                            // Server response for other functions
                             Console.WriteLine($"Server response: {jData}");
                             break;
                     }
@@ -165,6 +172,14 @@ namespace RemoteHealthCare.Network
             byte[] data = Encoding.ASCII.GetBytes(message);
             _stream.Write(prefix, 0, prefix.Length);
             _stream.Write(data, 0, data.Length);
+        }
+
+        public void SetSkyBox(double time)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["time"] = time;
+            Send(ob.ToString());
         }
     }
 }

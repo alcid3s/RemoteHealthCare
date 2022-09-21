@@ -36,15 +36,17 @@ namespace RemoteHealthCare
 
             client.saveScene("test.json", true);
 
-            Thread.Sleep(3000);
+            while (true)
+            {
+                Thread.Sleep(1000);
 
-            client.resetScene();
+                client.resetScene();
 
-            Thread.Sleep(3000);
+                Thread.Sleep(1000);
 
-            client.loadScene("test.json");
+                client.loadScene("test.json");
+            }
 
-            client.getScene();
 
 
             //// Kind of bikes available

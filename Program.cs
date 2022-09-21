@@ -28,11 +28,24 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            client.SetSkyBox(19);
+            client.SetSkyBox(16);
 
             client.CreateTerrain();
 
             client.CreateBike();
+
+            client.saveScene("test.json", true);
+
+            Thread.Sleep(3000);
+
+            client.resetScene();
+
+            Thread.Sleep(3000);
+
+            client.loadScene("test.json");
+
+            client.getScene();
+
 
             //// Kind of bikes available
             //SimulationBike simBike = new SimulationBike();

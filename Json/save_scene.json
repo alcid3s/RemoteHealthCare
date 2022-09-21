@@ -1,0 +1,13 @@
+{
+  "id": "tunnel/send",
+  "data": {
+    "dest": "",
+    "data": {
+      "id": "scene/save",
+      "data": {
+        "filename": "",
+        "overwrite": false
+      }
+    }
+  }
+}

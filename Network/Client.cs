@@ -68,7 +68,7 @@ namespace RemoteHealthCare.Network
                 for (var j = 0; j < 256; j++)
                     heights.Add(0);
 
-            Console.WriteLine($"message: {terrain}");
+            Console.WriteLine("terrain json sent");
             Send(terrain.ToString());
         }
         public void CreateBike()
@@ -80,6 +80,13 @@ namespace RemoteHealthCare.Network
             Send(bike.ToString());
         }
         private void CreateTunnel()
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
+            ob["data"]["dest"] = Id;
+            Send(ob.ToString());
+        }
+
+        public void resetScene() 
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
             ob["data"]["dest"] = Id;
@@ -199,6 +206,30 @@ namespace RemoteHealthCare.Network
             byte[] data = Encoding.ASCII.GetBytes(message);
             _stream.Write(prefix, 0, prefix.Length);
             _stream.Write(data, 0, data.Length);
+        }
+        public void getScene()
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/get_scene.json"));
+            ob["data"]["dest"] = Id;
+            Send(ob.ToString());
+        }
+
+        //TODO put overwrite funcion in
+        public void saveScene(String sceneName, bool overwriteFile)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/save_scene.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["filename"] = sceneName;
+            var overwrite = ob["data"]["data"]["data"]["heights"] as JArray;
+            Send(ob.ToString());
+        }
+
+        public void loadScene(String sceneName)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/load_scene.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["filename"] = sceneName;
+            Send(ob.ToString());
         }
     }
 }

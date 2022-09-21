@@ -60,6 +60,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Json\bike.json" />
+    <None Include="Json\get_scene.json" />
+    <None Include="Json\load_scene.json" />
+    <None Include="Json\save_scene.json" />
     <None Include="Json\reset.json" />
     <None Include="Json\terrain.json" />
     <None Include="Json\skybox.json" />

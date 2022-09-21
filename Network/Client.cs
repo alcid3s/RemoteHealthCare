@@ -50,6 +50,13 @@ namespace RemoteHealthCare.Network
             CreateTunnel();
         }
 
+        public void SetSkyBox(double time)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["time"] = time;
+            Send(ob.ToString());
+        }
         public void CreateTerrain()
         {
             JObject terrain = JObject.Parse(File.ReadAllText(Path + "/terrain.json"));
@@ -192,13 +199,6 @@ namespace RemoteHealthCare.Network
             byte[] data = Encoding.ASCII.GetBytes(message);
             _stream.Write(prefix, 0, prefix.Length);
             _stream.Write(data, 0, data.Length);
-        }
-        public void SetSkyBox(double time)
-        {
-            JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
-            ob["data"]["dest"] = Id;
-            ob["data"]["data"]["data"]["time"] = time;
-            Send(ob.ToString());
         }
     }
 }

@@ -34,8 +34,6 @@ namespace RemoteHealthCare
 
             client.CreateBike();
 
-
-
             //// Kind of bikes available
             //SimulationBike simBike = new SimulationBike();
             //RealBike realBike = new RealBike();

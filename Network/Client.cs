@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RemoteHealthCare.Scene;
 
 namespace RemoteHealthCare.Network
 {
@@ -64,11 +65,11 @@ namespace RemoteHealthCare.Network
 
             var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
 
-            Random random = new Random();
 
+            Terrain t = new Terrain();
             for (var i = 0; i < 256; i++)
                 for (var j = 0; j < 256; j++)
-                    heights.Add(random.NextDouble() * 1);
+                    heights.Add(t.TerrainHeights[j, i]);
 
             Console.WriteLine("terrain json sent");
             Send(terrain.ToString());

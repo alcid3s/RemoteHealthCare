@@ -5,7 +5,7 @@
     "data": {
       "id": "scene/node/add",
       "data": {
-        "name": "Bike",
+        "name": "",
         "components": {
           "transform": {
             "position": [ 0, 0, 0 ],

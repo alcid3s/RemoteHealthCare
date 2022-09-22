@@ -30,19 +30,28 @@ namespace RemoteHealthCare
 
             client.ResetScene();
 
+            client.GetScene();
+
             client.SetSkyBox(16);
 
             client.CreateTerrain();
 
-            client.CreateBike();
+            client.CreateBike("bike");
+            client.CreateBike("bike");
+            client.CreateBike("bike2");
+
+            //client.FindNode("Bike");
 
             client.AddRoute();
 
+            //client.GetScene();
+
 
             //wait for the node and route id
-            while (client.nodeId == null || client.routeId == null) ;
+            Console.WriteLine("waiting for ids");
+            while (!client.IdReceived("bike") || !client.RouteExists(0)) ;
 
-            client.FollowRoute(client.routeId, client.nodeId);
+            client.FollowRoute(0, "bike");
 
             //laat zien dat we een scene kan inladen en resetten 
 

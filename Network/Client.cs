@@ -20,6 +20,10 @@ namespace RemoteHealthCare.Network
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
 
+        //A dictionary that saves the nodes' uuid's with the name as key
+        private Dictionary<string, string> nodes = new Dictionary<string, string>();
+        private List<string> routes = new List<string>();
+
         public string Path { get; }
         public string Id { get; private set; }
         public Client()
@@ -173,16 +177,17 @@ namespace RemoteHealthCare.Network
                             }
 
                             if (tunnelId == "scene/node/add")
-                            { 
-                                this.nodeId = jData["data"]["data"]["data"]["uuid"].ToObject<string>();
-                                Console.WriteLine("node id: " + this.nodeId);
+                            {
+                                this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
+                                this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                Console.WriteLine("node id: " + jData);
                                 break;
                             }
 
                             if (tunnelId == "route/add")
                             {
-                                this.routeId = jData["data"]["data"]["data"]["uuid"].ToObject<string>();
-                                Console.WriteLine("route id: " + this.routeId);
+                                this.routes.Add(jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                Console.WriteLine("route id: " + jData["data"]["data"]["data"]["uuid"]);
                                 break;
                             }
 
@@ -269,13 +274,45 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
-        public void CreateBike()
+        public void FindNode(string nodeName) 
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/find_node.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["name"] = nodeName;
+
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+        }
+
+        public void CreateBike(string bikeName)
         {
             JObject bike = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
             bike["data"]["dest"] = Id;
+            bike["data"]["data"]["data"]["name"] = bikeName;
 
-            Console.WriteLine($"message: {bike}");
-            Send(bike.ToString());
+            if (!nodes.ContainsKey(bikeName))
+            {
+                nodes.Add(bikeName, "");
+                Console.WriteLine($"message: {bike}");
+                Send(bike.ToString());
+            }
+            else
+            {
+                Console.WriteLine("Node name " + bikeName + " already used");
+            }
+        }
+
+        //check if the node id has alreade been received in OnRead
+        public bool IdReceived(string nodeName)
+        {
+            if (this.nodes.ContainsKey(nodeName))
+            {
+                return this.nodes[nodeName] != null;
+            }
+            else 
+            {
+                return false;
+            }
         }
 
         public void AddRoute()
@@ -287,16 +324,21 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
-        public string routeId;
-        public string nodeId;
+        //check id the route id has already been added in OnRead
+        public bool RouteExists(int route) 
+        {
+            return this.routes.Count-1 >= route;
+        }
 
-        public void FollowRoute(string routeId, string nodeId)
+        
+
+        public void FollowRoute(int route, string nodeName)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/follow_route.json"));
             ob["data"]["dest"] = Id;
 
-            ob["data"]["data"]["data"]["route"] = routeId;
-            ob["data"]["data"]["data"]["node"] = nodeId;
+            ob["data"]["data"]["data"]["route"] = this.routes[route];
+            ob["data"]["data"]["data"]["node"] = this.nodes[nodeName];
 
             Console.WriteLine($"message: {ob}");
             Send(ob.ToString());

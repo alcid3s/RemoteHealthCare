@@ -67,28 +67,40 @@ namespace RemoteHealthCare.Network
             Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
-        public void CreateTerrain()
+        public void CreateTerrain(string name)
         {
-            JObject terrain = JObject.Parse(File.ReadAllText(Path + "/terrain.json"));
-            terrain["data"]["dest"] = Id;
+            if (!nodes.ContainsKey(name))
+            {
+                JObject terrain = JObject.Parse(File.ReadAllText(Path + "/terrain.json"));
+                terrain["data"]["dest"] = Id;
 
-            var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
+                var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
 
 
-            Terrain t = new Terrain();
-            for (var i = 0; i < 256; i++)
-                for (var j = 0; j < 256; j++)
-                    heights.Add(t.TerrainHeights[j, i]);
+                Terrain t = new Terrain();
+                for (var i = 0; i < 256; i++)
+                   for (var j = 0; j < 256; j++)
+                       heights.Add(t.TerrainHeights[j, i]);
 
-            Console.WriteLine("terrain json sent");
-            Send(terrain.ToString());
+            
 
-            //add a node to show the terrain
-            JObject node = JObject.Parse(File.ReadAllText(Path + "/terrainnode.json"));
-            node["data"]["dest"] = Id;
+                Console.WriteLine("terrain json sent");
+                Send(terrain.ToString());
 
-            Console.WriteLine($"message: {node}");
-            Send(node.ToString());
+                //add a node to show the terrain
+                JObject node = JObject.Parse(File.ReadAllText(Path + "/terrainnode.json"));
+                node["data"]["dest"] = Id;
+                node["data"]["data"]["data"]["name"] = name;
+
+                this.nodes.Add(name, "fakeId");
+
+                Console.WriteLine($"message: {node}");
+                Send(node.ToString());
+            }
+            else 
+            { 
+                Console.WriteLine("Terrain name: " + name + " is already used.");
+            }
         }
 
         public void OnRead(IAsyncResult ar)
@@ -180,8 +192,14 @@ namespace RemoteHealthCare.Network
                             //reacht to a add node response to get the id
                             if (tunnelId == "scene/node/add")
                             {
-                                this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
-                                this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                lock (this.nodes) { 
+                                    Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
+                                    this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
+                                    Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
+                                    this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                    
+
+                                }
                                 Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
                                 break;
                             }
@@ -335,7 +353,7 @@ namespace RemoteHealthCare.Network
             //make sure the name isnt already used
             if (!nodes.ContainsKey(bikeName))
             {
-                nodes.Add(bikeName, "");
+                nodes.Add(bikeName, "fakeId");
                 Console.WriteLine($"message: {bike}");
                 Send(bike.ToString());
             }
@@ -350,8 +368,8 @@ namespace RemoteHealthCare.Network
         {
             //OnRead removes and then adds the key and id so this fucking sucks
             if (this.nodes.ContainsKey(nodeName))
-            {
-                return this.nodes[nodeName] != null;
+            { 
+                return this.nodes[nodeName] != "fakeId";
             }
             else 
             {

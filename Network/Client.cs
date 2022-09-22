@@ -83,18 +83,24 @@ namespace RemoteHealthCare.Network
             Console.WriteLine("terrain json sent");
             Send(terrain.ToString());
 
+            Thread.Sleep(1000);
+
             //add a node to show the terrain
             JObject node = JObject.Parse(File.ReadAllText(Path + "/terrain_node.json"));
             node["data"]["dest"] = Id;
 
             Console.WriteLine($"message: {node}");
+            Send(node.ToString());
+
+            Thread.Sleep(10000);
 
             //add a texture to the terrain
             JObject texture = JObject.Parse(File.ReadAllText(Path + "/add_texture.json"));
-            node["data"]["dest"] = Id;
+            texture["data"]["dest"] = Id;
+            texture["data"]["data"]["data"]["id"] = nodes["terrain_node"];
 
-            Console.WriteLine($"message: {node}");
-            Send(node.ToString());
+            Console.WriteLine($"message: {texture}");
+            Send(texture.ToString());
         }
 
         public void OnRead(IAsyncResult ar)
@@ -186,8 +192,15 @@ namespace RemoteHealthCare.Network
                             //reacht to a add node response to get the id
                             if (tunnelId == "scene/node/add")
                             {
-                                this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
-                                this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                //this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
+                                try
+                                {
+                                    this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                }
+                                catch (Exception)
+                                {
+
+                                }
                                 Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
                                 break;
                             }
@@ -240,7 +253,14 @@ namespace RemoteHealthCare.Network
             {
                 Console.WriteLine(jChildren[i]["name"].ToObject<string>());
 
-                this.nodes.Add(jChildren[i]["name"].ToObject<string>(), jChildren[i]["uuid"].ToObject<string>());   
+                try
+                {
+                    this.nodes.Add(jChildren[i]["name"].ToObject<string>(), jChildren[i]["uuid"].ToObject<string>());
+                }
+                catch
+                {
+
+                }
             }
         }
 

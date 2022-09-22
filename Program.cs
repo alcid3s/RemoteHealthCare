@@ -35,7 +35,7 @@ namespace RemoteHealthCare
             client.SetSkyBox(16);
 
             client.CreateTerrain();
-            client.CreateTerrain();
+            //client.CreateTerrain();
 
             client.CreateBike("bike");
             client.CreateBike("bike");

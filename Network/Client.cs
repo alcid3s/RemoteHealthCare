@@ -176,18 +176,27 @@ namespace RemoteHealthCare.Network
                                 break;
                             }
 
+                            //reacht to a add node response to get the id
                             if (tunnelId == "scene/node/add")
                             {
                                 this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
                                 this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
-                                Console.WriteLine("node id: " + jData);
+                                Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
                                 break;
                             }
 
+                            //react to a add route response to get the id
                             if (tunnelId == "route/add")
                             {
                                 this.routes.Add(jData["data"]["data"]["data"]["uuid"].ToObject<string>());
                                 Console.WriteLine("route id: " + jData["data"]["data"]["data"]["uuid"]);
+                                break;
+                            }
+
+                            //react to the get scene response so that all the nodes get updated
+                            if (tunnelId == "scene/get") 
+                            {
+                                this.UpdateNodes(jData["data"]["data"]["data"]["children"]);
                                 break;
                             }
 
@@ -211,6 +220,23 @@ namespace RemoteHealthCare.Network
             }
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
         }
+
+        //update the nodes library when getting all nodes from the server
+        private void UpdateNodes(JToken jChildren)
+        {
+            //reset the dictionary
+            this.nodes = new Dictionary<string, string>();
+            Console.WriteLine("nodes:");
+
+            //add each child in the response
+            for (int i = 0; i < jChildren.ToArray<JToken>().Length; i++) 
+            {
+                Console.WriteLine(jChildren[i]["name"].ToObject<string>());
+
+                this.nodes.Add(jChildren[i]["name"].ToObject<string>(), jChildren[i]["uuid"].ToObject<string>());   
+            }
+        }
+
         private static byte[] Concat(byte[] b1, byte[] b2, int count)
         {
             byte[] r = new byte[b1.Length + count];
@@ -274,6 +300,7 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
+        //find the nodes with the gives name
         public void FindNode(string nodeName) 
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/find_node.json"));
@@ -284,12 +311,27 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
+        //delete teh node with the given name
+        public void DeleteNode(string nodeName)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/delete_node.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["id"] = this.nodes[nodeName];
+
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+
+            //also remove the node in the dictionary
+            this.nodes.Remove(nodeName);
+        }
+
         public void CreateBike(string bikeName)
         {
             JObject bike = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
             bike["data"]["dest"] = Id;
             bike["data"]["data"]["data"]["name"] = bikeName;
 
+            //make sure the name isnt already used
             if (!nodes.ContainsKey(bikeName))
             {
                 nodes.Add(bikeName, "");
@@ -305,6 +347,7 @@ namespace RemoteHealthCare.Network
         //check if the node id has alreade been received in OnRead
         public bool IdReceived(string nodeName)
         {
+            //OnRead removes and then adds the key and id so this fucking sucks
             if (this.nodes.ContainsKey(nodeName))
             {
                 return this.nodes[nodeName] != null;

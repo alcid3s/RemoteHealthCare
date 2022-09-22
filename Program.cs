@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -67,8 +67,6 @@ namespace RemoteHealthCare
             //        $"Distance: {bike.DistanceTravelled}\n" +
             //        $"Heart: {bike.HeartRate}\n");
             //};
-
-            while (true) ;
 
             //activates the simulation bike
             // simBike.IsRunning = true;

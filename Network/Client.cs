@@ -75,7 +75,13 @@ namespace RemoteHealthCare.Network
             Send(terrain.ToString());
 
             //add a node to show the terrain
-            JObject node = JObject.Parse(File.ReadAllText(Path + "/terrainnode.json"));
+            JObject node = JObject.Parse(File.ReadAllText(Path + "/terrain_node.json"));
+            node["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {node}");
+
+            //add a texture to the terrain
+            JObject texture = JObject.Parse(File.ReadAllText(Path + "/add_texture.json"));
             node["data"]["dest"] = Id;
 
             Console.WriteLine($"message: {node}");

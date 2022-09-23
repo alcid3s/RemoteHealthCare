@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RemoteHealthCare.Bikes
 {
@@ -11,18 +8,18 @@ namespace RemoteHealthCare.Bikes
     {
         public OnUpdate OnUpdate { get; set; }
 
-        public decimal ElapsedTime { get { return (decimal)_elapsedTime; } }
+        public decimal ElapsedTime => (decimal)_elapsedTime;
 
-        public int DistanceTravelled { get { return (int)_distanceTravelled; } }
+        public int DistanceTravelled => (int)_distanceTravelled;
 
-        public decimal Speed { get { return (decimal)_speed; } }
+        public decimal Speed => (decimal)_speed;
 
-        public int HeartRate { get { return (int)_heartRate; } }
+        public int HeartRate => (int)_heartRate;
 
         //toggles the thread running the bike 
-        public bool IsRunning { get { return _isRunning; } set { if (!_isRunning && value) Run(); _isRunning = value; } }
+        private bool IsRunning { get { return _isRunning; } set { if (!_isRunning && value) Run(); _isRunning = value; } }
 
-        public int Gear { get; set; }
+        private int Gear { get; set; }
 
         private double _elapsedTime;
         
@@ -40,7 +37,7 @@ namespace RemoteHealthCare.Bikes
             _isRunning = true;
             if (Gear < 1 || Gear > 7)
                 Gear = 4;
-            new Thread(() => Simulate()).Start();
+            new Thread(Simulate).Start();
         }
 
         //the simulation code

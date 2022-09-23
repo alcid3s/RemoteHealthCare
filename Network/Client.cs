@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RemoteHealthCare.Scene;
 
@@ -24,6 +22,7 @@ namespace RemoteHealthCare.Network
         //A dictionary that saves the nodes' uuid's with the name as key
         private Dictionary<string, string> nodes = new Dictionary<string, string>();
         private List<string> routes = new List<string>();
+        
 
         public string Path { get; }
         public string Id { get; private set; }
@@ -114,9 +113,10 @@ namespace RemoteHealthCare.Network
             }
         }
 
-        public void OnRead(IAsyncResult ar)
+
+        private void OnRead(IAsyncResult ar)
         {
-            //make the message darkgray so it isnt as obnoxious
+            //make the message darkgray so it isn't as obnoxious
             Console.ForegroundColor = ConsoleColor.DarkGray;
 
             Console.WriteLine("Message sent");
@@ -125,7 +125,7 @@ namespace RemoteHealthCare.Network
 
             try
             {
-                int rc = _stream.EndRead(ar);
+                var rc = _stream.EndRead(ar);
                 _totalBuffer = Concat(_totalBuffer, _buffer, rc);
             }
             catch (Exception)
@@ -145,7 +145,7 @@ namespace RemoteHealthCare.Network
                     {
                         case "session/list":
 
-                            //The last location of the username in the list, as the username might be in the server multible times and only the most recent one works.
+                            //The last location of the username in the list, as the username might be in the server multiple times and only the most recent one works.
                             int lastLocation = 0;
 
                             //Go through the list to find your username with the id for tunneling
@@ -172,10 +172,10 @@ namespace RemoteHealthCare.Network
 
                         case "tunnel/create":
 
-                            //check if you recieve an error message and print that message
+                            //check if you receive an error message and print that message
                             if (jData["data"]["status"].ToObject<string>() == "error")
                             {
-                                Console.WriteLine("Error while making a tunnel with server, are you running NetwerkEngine?");
+                                Console.WriteLine("Error while making a tunnel with server, are you running NetworkEngine?");
                                 Console.WriteLine("Server error message:\n" + jData["data"]);
                                 break;
                             }
@@ -185,7 +185,7 @@ namespace RemoteHealthCare.Network
                             Id = jData["data"]["id"].ToObject<string>();
 
                             //throw an error if the id is empty somehow
-                            if (Id.Equals(string.Empty))
+                            if (Id != null && Id.Equals(string.Empty))
                                 throw new Exception("Error, couldn't fetch id from tunnel/create");
                             break;
 
@@ -279,12 +279,13 @@ namespace RemoteHealthCare.Network
 
         private static byte[] Concat(byte[] b1, byte[] b2, int count)
         {
-            byte[] r = new byte[b1.Length + count];
-            System.Buffer.BlockCopy(b1, 0, r, 0, b1.Length);
-            System.Buffer.BlockCopy(b2, 0, r, b1.Length, count);
+            var r = new byte[b1.Length + count];
+            Buffer.BlockCopy(b1, 0, r, 0, b1.Length);
+            Buffer.BlockCopy(b2, 0, r, b1.Length, count);
             return r;
         }
-        public void Send(string message)
+
+        private void Send(string message)
         {
             byte[] prefix = BitConverter.GetBytes(message.Length);
             byte[] data = Encoding.ASCII.GetBytes(message);
@@ -300,7 +301,7 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
-        //TODO put overwrite funcion in
+        //TODO put overwrite function in
         public void SaveScene(String sceneName, bool overwriteFile)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/save_scene.json"));

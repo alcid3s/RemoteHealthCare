@@ -484,4 +484,12 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,rider
 
 
+.idea/.idea.RemoteHealthCare/.idea/indexLayout.xml
+
+.idea/.idea.RemoteHealthCare/.idea/misc.xml
+
+.idea/.idea.RemoteHealthCare/.idea/projectSettingsUpdater.xml
+
+.idea/.idea.RemoteHealthCare/.idea/vcs.xml
+
 BLELibrary.sln

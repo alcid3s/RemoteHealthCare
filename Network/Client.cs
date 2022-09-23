@@ -387,6 +387,67 @@ namespace RemoteHealthCare.Network
             }
         }
 
+        public void AddPanel(string name) 
+        {
+            JObject panel = JObject.Parse(File.ReadAllText(Path + "/add_panel.json"));
+            panel["data"]["dest"] = Id;
+            panel["data"]["data"]["data"]["name"] = name;
+
+            //make sure the name isnt already used
+            if (!nodes.ContainsKey(name))
+            {
+                nodes.Add(name, "fakeId");
+                Console.WriteLine($"message: {panel}");
+                Send(panel.ToString());
+            }
+            else
+            {
+                Console.WriteLine("Node name " + name + " already used");
+            }
+        }
+
+        public void AddTextToPanel(string panelName) 
+        {
+            JObject text = JObject.Parse(File.ReadAllText(Path + "/drawtext.json"));
+            text["data"]["dest"] = Id;
+            
+
+            //make sure the name is present already used
+            if (nodes.ContainsKey(panelName))
+            {
+                if (nodes[panelName] != "fakeID") { 
+                    text["data"]["data"]["data"]["id"] = this.nodes[panelName];
+                    Console.WriteLine($"message: {text}");
+                    Send(text.ToString());
+                }
+            }
+            else
+            {
+                Console.WriteLine("Node name " + panelName + " already used");
+            }
+        }
+
+        public void AddLineToPanel(string panelName) 
+        {
+            JObject line = JObject.Parse(File.ReadAllText(Path + "/drawline.json"));
+            line["data"]["dest"] = Id;
+            
+
+            //make sure the name is present already used
+            if (nodes.ContainsKey(panelName))
+            {
+                if (nodes[panelName] != "fakeID") { 
+                    line["data"]["data"]["data"]["id"] = this.nodes[panelName];
+                    Console.WriteLine($"message: {line}");
+                    Send(line.ToString());
+                }
+            }
+            else
+            {
+                Console.WriteLine("Node name " + panelName + " already used");
+            }
+        }
+
         //check if the node id has alreade been received in OnRead
         public bool IdReceived(string nodeName)
         {

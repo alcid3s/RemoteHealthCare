@@ -1,11 +1,17 @@
 ﻿{
-  "id": "scene/panel/drawtext",
+  "id": "tunnel/send",
   "data": {
-    "id" : {},
-    "text": "Hello World",
-    "position": [ 100.0, 100.0 ],
-    "size": 32.0,
-    "color": [ 0, 0, 0, 1 ],
-    "font": "segoeui"
+    "dest": "",
+    "data": {
+      "id": "scene/panel/drawtext",
+      "data": {
+        "id": {},
+        "text": "Hello World",
+        "position": [ 1.0, 1.0 ],
+        "size": 1.0,
+        "color": [ 0, 0, 0, 1 ],
+        "font": "segoeui"
+      }
+    }
   }
 }

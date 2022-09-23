@@ -31,22 +31,30 @@ namespace RemoteHealthCare
             client.ResetScene();
 
             
-            client.SetSkyBox(16);
+            //client.SetSkyBox(16);
 
-            client.CreateTerrain("terrain");
+            //client.CreateTerrain("terrain");
             //client.CreateTerrain("terrain");
 
-            client.CreateBike("bike");
+            //client.CreateBike("bike");
             //client.CreateBike("bike2");
 
-            client.AddRoute();
+            //client.AddRoute();
 
-            client.GetScene();
+            client.AddPanel("panel1");
+
+            while(!client.IdReceived("panel1"))
+                Thread.Sleep(1);
+
+            //client.AddLineToPanel("panel1");
+
+            client.AddTextToPanel("panel1");
+            //client.GetScene();
 
             //wait for the node and route id
-            Console.WriteLine("waiting for ids");
-            while (!client.IdReceived("bike") || !client.RouteExists(0)) 
-                Thread.Sleep(1);
+            //Console.WriteLine("waiting for ids");
+            //while (!client.IdReceived("bike") || !client.RouteExists(0)) 
+            //    Thread.Sleep(1);
 
             
 
@@ -55,7 +63,7 @@ namespace RemoteHealthCare
             //client.DeleteNode("bike2");
             //client.DeleteNode("node");
             
-            client.FollowRoute(0, "bike");
+            //client.FollowRoute(0, "bike");
 
 
 

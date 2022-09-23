@@ -34,10 +34,10 @@ namespace RemoteHealthCare
             client.SetSkyBox(16);
 
             client.CreateTerrain("terrain");
-            client.CreateTerrain("terrain");
+            //client.CreateTerrain("terrain");
 
             client.CreateBike("bike");
-            client.CreateBike("bike2");
+            //client.CreateBike("bike2");
 
             client.AddRoute();
 

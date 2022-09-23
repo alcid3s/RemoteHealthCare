@@ -76,5 +76,8 @@
     <None Include="packages.config" />
     <None Include="Json\drawtext.json" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Res\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

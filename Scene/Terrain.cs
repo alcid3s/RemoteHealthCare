@@ -15,6 +15,10 @@ namespace RemoteHealthCare.Scene
             private double _yLength;
             private double _height;
 
+            //offset: an offset in the wave's starting point in the sine
+            //length: the distance between the average points of the wave
+            //angle: the direction of the wave (from right going anticlockwise in radians)
+            //height: the wave's amplitude (maximum height difference with average)
             public TerrainSine(double offset, double length, double angle, double height)
             {
                 _offset = offset;
@@ -23,6 +27,7 @@ namespace RemoteHealthCare.Scene
                 _height = height;
             }
 
+            //returns the result of the assigned sine wave at the given coordinate
             public double Calculate(int x, int y)
             {
                 return _height * (1 + Math.Sin(_offset + (x / _xLength + y / _yLength)));
@@ -41,7 +46,7 @@ namespace RemoteHealthCare.Scene
             Random random = new Random();
             List<TerrainSine> terrainSines = new List<TerrainSine>();
             for (int i = 0; i < random.Next(3, 6); i++)
-                terrainSines.Add(new TerrainSine(random.NextDouble() * Math.PI, random.NextDouble() * 64, random.NextDouble() * Math.PI, random.NextDouble() * random.NextDouble()));
+                terrainSines.Add(new TerrainSine(random.NextDouble() * Math.PI, 16 + random.NextDouble() * 48, random.NextDouble() * Math.PI, random.NextDouble() * random.NextDouble()));
 
             TerrainHeights = new double[256, 256];
             for (int i = 0; i < 256; i++)

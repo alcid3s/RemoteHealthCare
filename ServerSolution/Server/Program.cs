@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Server server = new(1337);
+            server.Run();
         }
     }
 }

@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Network\Client.cs" />
+    <Compile Include="Network\BikeClient.cs" />
     <Compile Include="Network\Command.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Bikes\IBike.cs" />

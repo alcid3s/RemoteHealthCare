@@ -23,7 +23,7 @@ namespace RemoteHealthCare
         static void Main(string[] args)
         {
             // Making connection with the VR server
-            Client client = new Client();
+            BikeClient client = new BikeClient();
             _ = client.Connect("145.48.6.10", 6666);
 
             Thread.Sleep(1000);

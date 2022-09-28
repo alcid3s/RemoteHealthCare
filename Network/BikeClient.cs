@@ -19,26 +19,33 @@ namespace RemoteHealthCare.Network
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
 
-        //A dictionary that saves the nodes' uuid's with the name as key
+        // saves the nodes' uuid's with the name as key
         private Dictionary<string, string> nodes = new Dictionary<string, string>();
         private List<string> routes = new List<string>();
         
-
         public string Path { get; }
         public string Id { get; private set; }
+        
         public BikeClient()
         {
             Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() + "/Json";
             Id = string.Empty;
         }
 
+        /// <summary>
+        /// Connects to the main server
+        /// </summary>
+        /// <param name="ip">address of the server</param>
+        /// <param name="port">port-number the server is running on</param>
         public async Task Connect(string ip, int port)
         {
-            //checking if it is a valid IP
+            // checks if the given ip is valid
             if (ip == null || port < 1000)
+            {
                 throw new MissingFieldException("IP is null or port is already in use");
+            }
 
-            //trying to make a connection with server
+            //Makes a connection with the server with the given ip and port
             try
             {
                 _client = new TcpClient();
@@ -47,16 +54,21 @@ namespace RemoteHealthCare.Network
                 _stream = _client.GetStream();
                 Send(@"{""id"": ""session/list""}");
             }
+            //Writes an exception when connection fails
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
 
-            //creating tunnel to send data 
+            //Creates tunnel to send data 
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
             CreateTunnel();
         }
 
+        /// <summary>
+        /// Sets the skybox to represent the given time as the time of day
+        /// </summary>
+        /// <param name="time">representation of the time as day, represented as: HHMM</param>
         public void SetSkyBox(double time)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
@@ -66,26 +78,36 @@ namespace RemoteHealthCare.Network
             Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
+        
+        /// <summary>
+        /// Generates terrain using the given string as an id
+        /// </summary>
+        /// <param name="name">identifier of the terrain taht will be created</param>
         public void CreateTerrain(string name)
         {
+            // checks if the terrain doesn't already exist
             if (!nodes.ContainsKey(name))
             {
                 JObject terrain = JObject.Parse(File.ReadAllText(Path + "/terrain.json"));
                 terrain["data"]["dest"] = Id;
-
+                
                 var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
 
 
                 Terrain t = new Terrain();
                 for (var i = 0; i < 256; i++)
-                   for (var j = 0; j < 256; j++)
-                       heights.Add(t.TerrainHeights[j, i]);
+                {
+                    for (var j = 0; j < 256; j++)
+                    {
+                        heights.Add(t.TerrainHeights[j, i]);
+                    }
+                }
 
                 Send(terrain.ToString());;
 
                 Thread.Sleep(5000);
 
-                //add a node to show the terrain
+                // adds a node to show the terrain
                 JObject node = JObject.Parse(File.ReadAllText(Path + "/terrain_node.json"));
                 node["data"]["dest"] = Id;
                 node["data"]["data"]["data"]["name"] = name;
@@ -96,33 +118,33 @@ namespace RemoteHealthCare.Network
 
                 Thread.Sleep(10000);
 
-                //add a texture to the terrain
+                // adds a texture to the terrain
                 JObject texture = JObject.Parse(File.ReadAllText(Path + "/add_texture.json"));
                 texture["data"]["dest"] = Id;
                 texture["data"]["data"]["data"]["id"] = nodes[name];
 
                 Console.WriteLine($"message: {texture}");
                 Send(texture.ToString());
-                
-                
             }
             else
-            { 
-             
+            {
                 Console.WriteLine("Terrain name: " + name + " is already used.");
             }
         }
-
-
+        
+        /// <summary>
+        /// Handles incoming messages
+        /// </summary>
         private void OnRead(IAsyncResult ar)
         {
-            //make the message darkgray so it isn't as obnoxious
+            //Makes the message darkgray to improve readability
             Console.ForegroundColor = ConsoleColor.DarkGray;
 
             Console.WriteLine("Message sent");
 
             Console.ForegroundColor = ConsoleColor.White;
 
+            //Checks if the object does not already exist
             try
             {
                 var rc = _stream.EndRead(ar);
@@ -133,6 +155,8 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Error");
                 return;
             }
+            
+            
             while (_totalBuffer.Length >= 4)
             {
                 int packetSize = BitConverter.ToInt32(_totalBuffer, 0);
@@ -141,6 +165,7 @@ namespace RemoteHealthCare.Network
                     string data = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
                     JObject jData = JObject.Parse(data);
 
+                    //TODO comments boven cases zetten met uitleg?
                     switch (jData["id"].ToObject<string>())
                     {
                         case "session/list":
@@ -148,7 +173,7 @@ namespace RemoteHealthCare.Network
                             //The last location of the username in the list, as the username might be in the server multiple times and only the most recent one works.
                             int lastLocation = 0;
 
-                            //Go through the list to find your username with the id for tunneling
+                            //Goes through the list to find the username with the id used for tunneling
                             for (int i = 0; jData["data"].ToArray().Length > i; i++)
                             {
                                 Console.WriteLine($"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
@@ -159,20 +184,19 @@ namespace RemoteHealthCare.Network
                                 }
                             }
 
-                            //Get your id for tunneling
+                            //Gets the id for tunneling
                             var session = jData["data"].ElementAt(lastLocation)["id"];
 
-                            //JSon message to request a tunnel
+                            //Messages the request in the form of JSON to the tunnel
                             string message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session + "\", \"key\" : \"\"}}";
                             Console.WriteLine($"Sending: {message}");
 
-                            //Send that message
+                            //Sends the message
                             Send(message);
                             break;
-
+                        
                         case "tunnel/create":
-
-                            //check if you receive an error message and print that message
+                            // checks if the received message is an error and prints that message
                             if (jData["data"]["status"].ToObject<string>() == "error")
                             {
                                 Console.WriteLine("Error while making a tunnel with server, are you running NetworkEngine?");
@@ -180,11 +204,11 @@ namespace RemoteHealthCare.Network
                                 break;
                             }
 
-                            //Get the tunnel id and save it
+                            // gets the tunnel id and saves it
                             Console.WriteLine($"\nServer response Data: {jData["data"]}");
                             Id = jData["data"]["id"].ToObject<string>();
 
-                            //throw an error if the id is empty somehow
+                            // throws an error if the id is empty
                             if (Id != null && Id.Equals(string.Empty))
                                 throw new Exception("Error, couldn't fetch id from tunnel/create");
                             break;
@@ -194,15 +218,16 @@ namespace RemoteHealthCare.Network
                             string tunnelId = jData["data"]["data"]["id"].ToObject<string>();
 
                             //dont show the callbacks so its easier to debug
+                            //TODO wat?
                             if (tunnelId == "callback")
                             {
                                 Console.WriteLine("callback");
                                 break;
                             }
-
-                            //reacht to a add node response to get the id
+                            
                             if (tunnelId == "scene/node/add")
                             {
+                                // adds the node to the scene. if the node already exist, deletes it first
                                 Console.WriteLine("node add:" + jData);
                                 lock (this.nodes) { 
                                     Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
@@ -216,30 +241,28 @@ namespace RemoteHealthCare.Network
                                 break;
                             }
 
-                            //react to a add route response to get the id
                             if (tunnelId == "route/add")
                             {
+                                // adds the route to the list
                                 this.routes.Add(jData["data"]["data"]["data"]["uuid"].ToObject<string>());
                                 Console.WriteLine("route id: " + jData["data"]["data"]["data"]["uuid"]);
                                 break;
                             }
 
-                            //react to the get scene response so that all the nodes get updated
                             if (tunnelId == "scene/get") 
                             {
+                                // updates all the nodes in reaction to get scene response
                                 Console.WriteLine("updating all nodes");
                                 this.UpdateNodes(jData["data"]["data"]["data"]["children"]);
                                 break;
                             }
-
-
-                            //No handling implemented so write the full response
+                            // writes full response when no handling is implemented
                             Console.WriteLine("No handling implemented for the id: " + jData["data"]["data"]["id"]);
                             Console.WriteLine($"Server response: {jData}");
                             break;
 
                         default:
-                            // Server response for other functions
+                            // writes default response when function is not found
                             Console.WriteLine("No handling implemented for the id: " + jData["id"]);
                             Console.WriteLine($"Server response: {jData}");
                             break;
@@ -249,19 +272,21 @@ namespace RemoteHealthCare.Network
                     _totalBuffer = newBuffer;
                 }
                 else
+                {
                     break;
+                }
             }
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
         }
 
-        //update the nodes library when getting all nodes from the server
+        // Updates the node library when receiving all nodes from the server
         private void UpdateNodes(JToken jChildren)
         {
-            //reset the dictionary
+            // resets the dictionary
             this.nodes = new Dictionary<string, string>();
             Console.WriteLine("nodes:");
 
-            //add each child in the response
+            // adds each child within the response
             for (int i = 0; i < jChildren.ToArray<JToken>().Length; i++) 
             {
                 Console.WriteLine(jChildren[i]["name"].ToObject<string>());
@@ -272,7 +297,7 @@ namespace RemoteHealthCare.Network
                 }
                 catch
                 {
-
+                    // ignored
                 }
             }
         }

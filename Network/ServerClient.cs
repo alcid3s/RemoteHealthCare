@@ -27,9 +27,6 @@ namespace RemoteHealthCare.Network
             {
                 _socket.Connect(endPoint);
                 Console.WriteLine($"Connecting to {_socket.RemoteEndPoint}");
-
-                byte[] message = Encoding.ASCII.GetBytes("TESTING");
-                int sent = _socket.Send(message);
             }
             catch (Exception e)
             {
@@ -37,6 +34,10 @@ namespace RemoteHealthCare.Network
             }
         }
 
-
+        public void Send(decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)
+        {
+            byte[] message = Encoding.ASCII.GetBytes("TESTING");
+            int received = _socket.Send(message);
+        }
     }
 }

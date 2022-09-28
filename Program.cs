@@ -33,7 +33,6 @@ namespace RemoteHealthCare
 
             bikeClient.ResetScene();
 
-
             bikeClient.SetSkyBox(16);
 
             bikeClient.CreateTerrain("terrain");
@@ -68,32 +67,33 @@ namespace RemoteHealthCare
 
             bikeClient.FollowRoute(0, "bike");
 
+            // Kind of bikes available
+            SimulationBike simBike = new SimulationBike();
+            RealBike realBike = new RealBike();
 
+            BikeData data = new BikeData();
 
+            IBike bike = simBike;
 
-
-            //// Kind of bikes available
-            //SimulationBike simBike = new SimulationBike();
-            //RealBike realBike = new RealBike();
-
-            //IBike bike = realBike;
-
+            simBike.IsRunning = true;
             //realBike.Init();
-            ////example on how to use delegates; logs info with every update
-            //bike.OnUpdate += delegate
-            //{
-            //    Console.WriteLine(
-            //        $"Time: {bike.ElapsedTime}\n" +
-            //        $"Speed: {bike.Speed}\n" +
-            //        $"Distance: {bike.DistanceTravelled}\n" +
-            //        $"Heart: {bike.HeartRate}\n");
-            //};
+            //example on how to use delegates; logs info with every update
+            bike.OnUpdate += delegate
+            {
+                serverClient.Send(bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+
+                //Console.WriteLine(
+                //    $"Time: {bike.ElapsedTime}\n" +
+                //    $"Speed: {bike.Speed}\n" +
+                //    $"Distance: {bike.DistanceTravelled}\n" +
+                //    $"Heart: {bike.HeartRate}\n");
+            };
 
             //while (true) ;
             for (; ; );
 
             //activates the simulation bike
-            // simBike.IsRunning = true;
+            
         }
     }
 }

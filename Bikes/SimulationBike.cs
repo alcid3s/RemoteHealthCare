@@ -17,7 +17,7 @@ namespace RemoteHealthCare.Bikes
         public int HeartRate => (int)_heartRate;
 
         //toggles the thread running the bike 
-        private bool IsRunning { get { return _isRunning; } set { if (!_isRunning && value) Run(); _isRunning = value; } }
+        public bool IsRunning { get { return _isRunning; } set { if (!_isRunning && value) Run(); _isRunning = value; } }
 
         private int Gear { get; set; }
 

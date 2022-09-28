@@ -7,6 +7,8 @@ namespace WinFormsApp2
         {
             InitializeComponent();
         }
+
+       
         int i = 0;
 
         private void Form1_Load(object sender, EventArgs e)

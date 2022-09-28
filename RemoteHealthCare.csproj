@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Network\BikeClient.cs" />
     <Compile Include="Network\Command.cs" />
+    <Compile Include="Network\ServerClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Bikes\IBike.cs" />
     <Compile Include="Bikes\RealBike.cs" />

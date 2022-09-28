@@ -23,47 +23,50 @@ namespace RemoteHealthCare
         static void Main(string[] args)
         {
             // Making connection with the VR server
-            BikeClient client = new BikeClient();
-            _ = client.Connect("145.48.6.10", 6666);
+            BikeClient bikeClient = new BikeClient();
+            _ = bikeClient.Connect("145.48.6.10", 6666);
+
+            ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
+            serverClient.Connect();
 
             Thread.Sleep(1000);
 
-            client.ResetScene();
+            bikeClient.ResetScene();
 
-            
-            client.SetSkyBox(16);
 
-            client.CreateTerrain("terrain");
-            client.CreateTerrain("terrain");
+            bikeClient.SetSkyBox(16);
 
-            client.CreateBike("bike");
-            client.CreateBike("bike2");
+            bikeClient.CreateTerrain("terrain");
+            bikeClient.CreateTerrain("terrain");
 
-            client.AddRoute();
+            bikeClient.CreateBike("bike");
+            bikeClient.CreateBike("bike2");
 
-            client.AddPanel("panel1");
+            bikeClient.AddRoute();
 
-            while(!client.IdReceived("panel1"))
+            bikeClient.AddPanel("panel1");
+
+            while (!bikeClient.IdReceived("panel1"))
                 Thread.Sleep(1);
 
-            client.AddLineToPanel("panel1");
+            bikeClient.AddLineToPanel("panel1");
 
-            client.AddTextToPanel("panel1");
-            client.GetScene();
+            bikeClient.AddTextToPanel("panel1");
+            bikeClient.GetScene();
 
             //wait for the node and route id
             Console.WriteLine("waiting for ids");
-            while (!client.IdReceived("bike") || !client.RouteExists(0)) 
+            while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0))
                 Thread.Sleep(1);
 
-            
+
 
             Thread.Sleep(5000);
 
-            client.DeleteNode("bike2");
+            bikeClient.DeleteNode("bike2");
             //client.DeleteNode("node");
-            
-            client.FollowRoute(0, "bike");
+
+            bikeClient.FollowRoute(0, "bike");
 
 
 

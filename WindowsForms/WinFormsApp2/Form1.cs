@@ -31,7 +31,6 @@ namespace WinFormsApp2
                 textBox4.Text = "Niet Niels";
                 i++;
             }
-
         }
     }
 }

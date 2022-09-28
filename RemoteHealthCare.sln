@@ -5,7 +5,9 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteHealthCare", "RemoteHealthCare.csproj", "{DEC0782D-D22F-4F80-A2EF-77C887BF1D19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "ServerSolution\Server\Server.csproj", "{AE1BE555-E79A-4055-97DF-B47C729DC5BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "ServerSolution\Server\Server.csproj", "{AE1BE555-E79A-4055-97DF-B47C729DC5BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp1", "..\WinFormsApp1\WinFormsApp1.csproj", "{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{AE1BE555-E79A-4055-97DF-B47C729DC5BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE1BE555-E79A-4055-97DF-B47C729DC5BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE1BE555-E79A-4055-97DF-B47C729DC5BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

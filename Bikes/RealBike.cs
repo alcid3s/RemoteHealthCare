@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RemoteHealthCare.Bikes
 {
@@ -18,21 +16,21 @@ namespace RemoteHealthCare.Bikes
     internal class RealBike : IBike
     {
         public OnUpdate OnUpdate { get; set; }
-        public decimal ElapsedTime { get { return (decimal)_elapsedTime + (this._elapsedTimeOverflow * 64); } }
+        public decimal ElapsedTime => _elapsedTime + (this._elapsedTimeOverflow * 64);
 
-        public int DistanceTravelled { get { return (int)_distanceTravelled + (this._distanceTravelledOverflow * 256); } }
+        public int DistanceTravelled => _distanceTravelled + (this._distanceTravelledOverflow * 256);
 
-        public decimal Speed { get { return (decimal)_speed; } }
+        public decimal Speed => _speed;
 
-        public int HeartRate { get { return (int)_heartRate; } }
+        public int HeartRate => _heartRate;
 
         private decimal _elapsedTime;
         private int _distanceTravelled;
         private decimal _speed;
         private int _heartRate;
 
-        private int _elapsedTimeOverflow = 0;
-        private int _distanceTravelledOverflow = 0;
+        private int _elapsedTimeOverflow;
+        private int _distanceTravelledOverflow;
 
         public async void Init()
         {
@@ -54,7 +52,7 @@ namespace RemoteHealthCare.Bikes
             Console.Write($"Please enter bike code, leave empty if you want to select bike {bikeCode}\n>: ");
             string tempBikeCode = Console.ReadLine();
 
-            if (tempBikeCode.Length != 0)
+            if (!string.IsNullOrEmpty(tempBikeCode))
                 bikeCode = tempBikeCode;
 
             // Connecting
@@ -154,7 +152,7 @@ namespace RemoteHealthCare.Bikes
             {
                 if (i == 1)
                 {
-                    this._heartRate = e.Data.ElementAt((i));
+                    _heartRate = e.Data.ElementAt((i));
                 }
             }
             OnUpdate();

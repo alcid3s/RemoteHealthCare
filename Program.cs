@@ -6,7 +6,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
+using Newtonsoft.Json;
+
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+
 using RemoteHealthCare.Bikes;
 using RemoteHealthCare.Network;
 
@@ -19,12 +23,51 @@ namespace RemoteHealthCare
         static void Main(string[] args)
         {
             // Making connection with the VR server
-            Client client = new Client();
+            BikeClient client = new BikeClient();
             _ = client.Connect("145.48.6.10", 6666);
 
             Thread.Sleep(1000);
 
-            client.SetSkyBox(12.6);
+            client.ResetScene();
+
+            
+            client.SetSkyBox(16);
+
+            client.CreateTerrain("terrain");
+            client.CreateTerrain("terrain");
+
+            client.CreateBike("bike");
+            client.CreateBike("bike2");
+
+            client.AddRoute();
+
+            client.AddPanel("panel1");
+
+            while(!client.IdReceived("panel1"))
+                Thread.Sleep(1);
+
+            client.AddLineToPanel("panel1");
+
+            client.AddTextToPanel("panel1");
+            client.GetScene();
+
+            //wait for the node and route id
+            Console.WriteLine("waiting for ids");
+            while (!client.IdReceived("bike") || !client.RouteExists(0)) 
+                Thread.Sleep(1);
+
+            
+
+            Thread.Sleep(5000);
+
+            client.DeleteNode("bike2");
+            //client.DeleteNode("node");
+            
+            client.FollowRoute(0, "bike");
+
+
+
+
 
             //// Kind of bikes available
             //SimulationBike simBike = new SimulationBike();
@@ -43,7 +86,8 @@ namespace RemoteHealthCare
             //        $"Heart: {bike.HeartRate}\n");
             //};
 
-            while (true) ;
+            //while (true) ;
+            for (; ; );
 
             //activates the simulation bike
             // simBike.IsRunning = true;

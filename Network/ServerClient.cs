@@ -10,6 +10,8 @@ namespace RemoteHealthCare.Network
         private int _port;
         private IPAddress _address;
 
+        private int c = 0;
+
         private Socket _socket;
 
         public ServerClient(string ip, int port)
@@ -36,7 +38,8 @@ namespace RemoteHealthCare.Network
 
         public void Send(decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)
         {
-            byte[] message = Encoding.ASCII.GetBytes("TESTING");
+            c++;
+            byte[] message = Encoding.ASCII.GetBytes($"TESTING {c}");
             int received = _socket.Send(message);
         }
     }

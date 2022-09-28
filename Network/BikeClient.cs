@@ -478,8 +478,6 @@ namespace RemoteHealthCare.Network
             return this.routes.Count-1 >= route;
         }
 
-        
-
         public void FollowRoute(int route, string nodeName)
         {
             if (this.nodes.ContainsKey(nodeName) && RouteExists(route)) 

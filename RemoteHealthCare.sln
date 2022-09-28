@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteHealthCare", "RemoteH
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "ServerSolution\Server\Server.csproj", "{AE1BE555-E79A-4055-97DF-B47C729DC5BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp1", "..\WinFormsApp1\WinFormsApp1.csproj", "{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp2", "WindowsForms\WinFormsApp2\WinFormsApp2.csproj", "{042D3E6F-44A3-4596-9F0E-66C6417D6665}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{AE1BE555-E79A-4055-97DF-B47C729DC5BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE1BE555-E79A-4055-97DF-B47C729DC5BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE1BE555-E79A-4055-97DF-B47C729DC5BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4EFC57E5-AD48-4B20-AF2B-2D5F08BFA87B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{042D3E6F-44A3-4596-9F0E-66C6417D6665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{042D3E6F-44A3-4596-9F0E-66C6417D6665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{042D3E6F-44A3-4596-9F0E-66C6417D6665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{042D3E6F-44A3-4596-9F0E-66C6417D6665}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

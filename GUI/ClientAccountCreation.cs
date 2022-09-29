@@ -40,7 +40,10 @@ namespace RemoteHealthCare.GUI
 
         private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
         {
+            if (txtPasswordConfirmAccountCreationClient == txtPasswordAccountCreationClient)
+            {
 
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)

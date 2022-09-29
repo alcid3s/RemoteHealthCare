@@ -131,6 +131,9 @@
     <EmbeddedResource Include="GUI\ClientAccountCreation.resx">
       <DependentUpon>ClientAccountCreation.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\DoctorAccountCreation.resx">
+      <DependentUpon>DoctorAccountCreation.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

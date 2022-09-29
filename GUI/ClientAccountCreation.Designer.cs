@@ -30,7 +30,7 @@ namespace RemoteHealthCare.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            this.textPasswordAccountCreationClient = new System.Windows.Forms.TextBox();
+            this.txtPasswordAccountCreationClient = new System.Windows.Forms.TextBox();
             this.txtAccountNameAccountCreationClient = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
@@ -40,13 +40,13 @@ namespace RemoteHealthCare.GUI
             this.btnBack = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // textPasswordAccountCreationClient
+            // txtPasswordAccountCreationClient
             // 
-            this.textPasswordAccountCreationClient.Location = new System.Drawing.Point(43, 168);
-            this.textPasswordAccountCreationClient.Name = "textPasswordAccountCreationClient";
-            this.textPasswordAccountCreationClient.Size = new System.Drawing.Size(158, 20);
-            this.textPasswordAccountCreationClient.TabIndex = 7;
-            this.textPasswordAccountCreationClient.TextChanged += new System.EventHandler(this.textPasswordAccountCreationClient_TextChanged);
+            this.txtPasswordAccountCreationClient.Location = new System.Drawing.Point(43, 168);
+            this.txtPasswordAccountCreationClient.Name = "txtPasswordAccountCreationClient";
+            this.txtPasswordAccountCreationClient.Size = new System.Drawing.Size(158, 20);
+            this.txtPasswordAccountCreationClient.TabIndex = 7;
+            this.txtPasswordAccountCreationClient.TextChanged += new System.EventHandler(this.textPasswordAccountCreationClient_TextChanged);
             // 
             // txtAccountNameAccountCreationClient
             // 
@@ -124,7 +124,7 @@ namespace RemoteHealthCare.GUI
             this.Controls.Add(this.btnCreateAccountCreationClient);
             this.Controls.Add(this.txtPasswordConfirmAccountCreationClient);
             this.Controls.Add(this.txtConfirmPaswordAccountCreationClient);
-            this.Controls.Add(this.textPasswordAccountCreationClient);
+            this.Controls.Add(this.txtPasswordAccountCreationClient);
             this.Controls.Add(this.txtAccountNameAccountCreationClient);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox3);
@@ -139,7 +139,7 @@ namespace RemoteHealthCare.GUI
 
         #endregion
 
-        private System.Windows.Forms.TextBox textPasswordAccountCreationClient;
+        private System.Windows.Forms.TextBox txtPasswordAccountCreationClient;
         private System.Windows.Forms.TextBox txtAccountNameAccountCreationClient;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;

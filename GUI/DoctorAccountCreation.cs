@@ -16,5 +16,27 @@ namespace RemoteHealthCare.GUI
         {
             InitializeComponent();
         }
+
+        AccountTypeSelector accountType;
+
+        private void btnCreate_Click(object sender, EventArgs e)
+        {
+            if (txtPasswordAccountCreationDoctor == txtPasswordConfirmAccountCreationPassword)
+            {
+
+            }
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            if(accountType == null)
+            {
+                accountType = new AccountTypeSelector();
+                accountType.Show();
+            }
+            this.Hide();
+        }
+
+        
     }
 }

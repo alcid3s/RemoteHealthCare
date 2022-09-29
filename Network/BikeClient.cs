@@ -478,8 +478,6 @@ namespace RemoteHealthCare.Network
             return this.routes.Count-1 >= route;
         }
 
-        
-
         public void FollowRoute(int route, string nodeName)
         {
             if (this.nodes.ContainsKey(nodeName) && RouteExists(route)) 
@@ -496,6 +494,14 @@ namespace RemoteHealthCare.Network
             { 
                 Console.WriteLine("route " + route + " and/or " + nodeName + " does not exist");
             }
+        }
+
+        public void AddRoad() {
+            JObject texture = JObject.Parse(File.ReadAllText(Path + "/add_road.json"));
+            texture["data"]["dest"] = Id;
+
+            Console.WriteLine($"message: {texture}");
+            Send(texture.ToString());
         }
     }
 }

@@ -78,6 +78,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Res\" />
+    <Folder Include="textures" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Json\add_road.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

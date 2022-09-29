@@ -38,6 +38,7 @@ namespace RemoteHealthCare.GUI
             this.txtConfirmPaswordAccountCreationClient = new System.Windows.Forms.TextBox();
             this.btnCreateAccountCreationClient = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtPasswordAccountCreationClient
@@ -115,11 +116,22 @@ namespace RemoteHealthCare.GUI
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Location = new System.Drawing.Point(141, 411);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(135, 13);
+            this.textBox1.TabIndex = 12;
+            this.textBox1.Text = "Client account creator v1.0";
+            // 
             // ClientAccountCreation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(275, 432);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.btnCreateAccountCreationClient);
             this.Controls.Add(this.txtPasswordConfirmAccountCreationClient);
@@ -147,5 +159,6 @@ namespace RemoteHealthCare.GUI
         private System.Windows.Forms.TextBox txtConfirmPaswordAccountCreationClient;
         private System.Windows.Forms.Button btnCreateAccountCreationClient;
         private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

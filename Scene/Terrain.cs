@@ -46,7 +46,7 @@ namespace RemoteHealthCare.Scene
             Random random = new Random();
             List<TerrainSine> terrainSines = new List<TerrainSine>();
             for (int i = 0; i < random.Next(3, 6); i++)
-                terrainSines.Add(new TerrainSine(random.NextDouble() * Math.PI, 16 + random.NextDouble() * 48, random.NextDouble() * Math.PI, random.NextDouble() * random.NextDouble()));
+                terrainSines.Add(new TerrainSine(random.NextDouble() * Math.PI, 32 + random.NextDouble() * 32, random.NextDouble() * Math.PI, random.NextDouble() * random.NextDouble()));
 
             TerrainHeights = new double[256, 256];
             for (int i = 0; i < 256; i++)

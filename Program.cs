@@ -8,8 +8,6 @@ namespace RemoteHealthCare
 {
     class Program
     {
-        // Enum is used for presenting the data in the console
-
         static void Main(string[] args)
         {
             // Making connection with the VR server
@@ -21,20 +19,21 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            NetworkEngine(bikeClient);
+            //NetworkEngine(bikeClient);
 
             // Kind of bikes available
             SimulationBike simBike = new SimulationBike();
             RealBike realBike = new RealBike();
 
-            IBike bike = simBike;
+            IBike bike = realBike;
 
-            simBike.IsRunning = true;
-            //realBike.Init();
+            // simBike.IsRunning = true;
+            realBike.Init();
             //example on how to use delegates; logs info with every update
             bike.OnUpdate += delegate
             {
-                serverClient.Send(bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+                serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+                //bikeClient.ChangeSpeed(bike.Speed);
 
                 //Console.WriteLine(
                 //    $"Time: {bike.ElapsedTime}\n" +

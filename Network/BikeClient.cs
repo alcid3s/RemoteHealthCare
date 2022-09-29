@@ -22,7 +22,6 @@ namespace RemoteHealthCare.Network
         //A dictionary that saves the nodes' uuid's with the name as key
         private Dictionary<string, string> nodes = new Dictionary<string, string>();
         private List<string> routes = new List<string>();
-        
 
         public string Path { get; }
         public string Id { get; private set; }
@@ -78,10 +77,10 @@ namespace RemoteHealthCare.Network
 
                 Terrain t = new Terrain();
                 for (var i = 0; i < 256; i++)
-                   for (var j = 0; j < 256; j++)
-                       heights.Add(t.TerrainHeights[j, i]);
+                    for (var j = 0; j < 256; j++)
+                        heights.Add(t.TerrainHeights[j, i]);
 
-                Send(terrain.ToString());;
+                Send(terrain.ToString()); ;
 
                 Thread.Sleep(5000);
 
@@ -103,12 +102,12 @@ namespace RemoteHealthCare.Network
 
                 Console.WriteLine($"message: {texture}");
                 Send(texture.ToString());
-                
-                
+
+
             }
             else
-            { 
-             
+            {
+
                 Console.WriteLine("Terrain name: " + name + " is already used.");
             }
         }
@@ -204,12 +203,13 @@ namespace RemoteHealthCare.Network
                             if (tunnelId == "scene/node/add")
                             {
                                 Console.WriteLine("node add:" + jData);
-                                lock (this.nodes) { 
+                                lock (this.nodes)
+                                {
                                     Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
                                     this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
                                     Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
                                     this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
-                                    
+
 
                                 }
                                 Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
@@ -225,7 +225,7 @@ namespace RemoteHealthCare.Network
                             }
 
                             //react to the get scene response so that all the nodes get updated
-                            if (tunnelId == "scene/get") 
+                            if (tunnelId == "scene/get")
                             {
                                 Console.WriteLine("updating all nodes");
                                 this.UpdateNodes(jData["data"]["data"]["data"]["children"]);
@@ -262,7 +262,7 @@ namespace RemoteHealthCare.Network
             Console.WriteLine("nodes:");
 
             //add each child in the response
-            for (int i = 0; i < jChildren.ToArray<JToken>().Length; i++) 
+            for (int i = 0; i < jChildren.ToArray<JToken>().Length; i++)
             {
                 Console.WriteLine(jChildren[i]["name"].ToObject<string>());
 
@@ -342,7 +342,7 @@ namespace RemoteHealthCare.Network
         }
 
         //find the nodes with the gives name
-        public void FindNode(string nodeName) 
+        public void FindNode(string nodeName)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/find_node.json"));
             ob["data"]["dest"] = Id;
@@ -355,8 +355,8 @@ namespace RemoteHealthCare.Network
         //delete teh node with the given name
         public void DeleteNode(string nodeName)
         {
-            if (this.nodes.ContainsKey(nodeName)) 
-            { 
+            if (this.nodes.ContainsKey(nodeName))
+            {
                 JObject ob = JObject.Parse(File.ReadAllText(Path + "/delete_node.json"));
                 ob["data"]["dest"] = Id;
                 ob["data"]["data"]["data"]["id"] = this.nodes[nodeName];
@@ -388,7 +388,7 @@ namespace RemoteHealthCare.Network
             }
         }
 
-        public void AddPanel(string name) 
+        public void AddPanel(string name)
         {
             JObject panel = JObject.Parse(File.ReadAllText(Path + "/add_panel.json"));
             panel["data"]["dest"] = Id;
@@ -407,16 +407,17 @@ namespace RemoteHealthCare.Network
             }
         }
 
-        public void AddTextToPanel(string panelName) 
+        public void AddTextToPanel(string panelName)
         {
             JObject text = JObject.Parse(File.ReadAllText(Path + "/drawtext.json"));
             text["data"]["dest"] = Id;
-            
+
 
             //make sure the name is present already used
             if (nodes.ContainsKey(panelName))
             {
-                if (nodes[panelName] != "fakeID") { 
+                if (nodes[panelName] != "fakeID")
+                {
                     text["data"]["data"]["data"]["id"] = this.nodes[panelName];
                     Console.WriteLine($"message: {text}");
                     Send(text.ToString());
@@ -428,16 +429,17 @@ namespace RemoteHealthCare.Network
             }
         }
 
-        public void AddLineToPanel(string panelName) 
+        public void AddLineToPanel(string panelName)
         {
             JObject line = JObject.Parse(File.ReadAllText(Path + "/drawline.json"));
             line["data"]["dest"] = Id;
-            
+
 
             //make sure the name is present already used
             if (nodes.ContainsKey(panelName))
             {
-                if (nodes[panelName] != "fakeID") { 
+                if (nodes[panelName] != "fakeID")
+                {
                     line["data"]["data"]["data"]["id"] = this.nodes[panelName];
                     Console.WriteLine($"message: {line}");
                     Send(line.ToString());
@@ -454,10 +456,10 @@ namespace RemoteHealthCare.Network
         {
             //OnRead removes and then adds the key and id so this fucking sucks
             if (this.nodes.ContainsKey(nodeName))
-            { 
+            {
                 return this.nodes[nodeName] != "fakeId";
             }
-            else 
+            else
             {
                 return false;
             }
@@ -473,14 +475,14 @@ namespace RemoteHealthCare.Network
         }
 
         //check id the route id has already been added in OnRead
-        public bool RouteExists(int route) 
+        public bool RouteExists(int route)
         {
-            return this.routes.Count-1 >= route;
+            return this.routes.Count - 1 >= route;
         }
 
         public void FollowRoute(int route, string nodeName)
         {
-            if (this.nodes.ContainsKey(nodeName) && RouteExists(route)) 
+            if (this.nodes.ContainsKey(nodeName) && RouteExists(route))
             {
                 JObject ob = JObject.Parse(File.ReadAllText(Path + "/follow_route.json"));
                 ob["data"]["dest"] = Id;
@@ -490,10 +492,18 @@ namespace RemoteHealthCare.Network
 
                 Console.WriteLine($"message: {ob}");
                 Send(ob.ToString());
-            } else 
-            { 
+            }
+            else
+            {
                 Console.WriteLine("route " + route + " and/or " + nodeName + " does not exist");
             }
+        }
+        public void ChangeSpeed(decimal speed)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText($"{Path}/follow_route.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["speed"] = speed;
+
         }
     }
 }

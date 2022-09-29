@@ -21,6 +21,7 @@ namespace Server
             }
         }
 
+
         public Server(int port)
         {
             _port = port;
@@ -62,7 +63,7 @@ namespace Server
         private void HandleClient(Client client)
         {
             Console.WriteLine($"Client connection from: {client.Socket.RemoteEndPoint}");
-            byte[] message = new byte[1024];
+            byte[] message = new byte[8];
 
             // While the client is connected.
             while (client.Socket.Connected)
@@ -70,8 +71,19 @@ namespace Server
                 try
                 {
                     int receive = client.Socket.Receive(message);
-                    string data = Encoding.ASCII.GetString(message, 0, receive);
-                    Console.WriteLine($"Message from: {client.Id}: {data}");
+                    //TODO: Make it more functional
+
+                    int id = message[0];
+                    decimal elapsedTime = ((message[2] << 8)+ message[1]) / 4m;
+                    int distanceTravelled = (message[4] << 8) + message[3];
+                    decimal speed = ((message[6] << 8) + message[5]) / 1000m;
+                    int heartRate = message[7];
+
+                    Console.WriteLine($"Message from: {client.Id}: id: {id}, ep:{elapsedTime}, " +
+                        $"dt: {distanceTravelled}, " +
+                        $"sp: {speed}, " +
+                        $"hr: {heartRate} | receive: {receive}");
+
                     Thread.Sleep(100);
                 }
                 catch (Exception e)

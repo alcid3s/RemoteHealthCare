@@ -23,12 +23,37 @@ namespace RemoteHealthCare
         // Enum is used for presenting the data in the console
         static void Main(string[] args)
         {
-            
-            
+
+
             new Thread(
-                 ()=> {
-                     AccountLogin account = new AccountLogin();
-                     Application.Run(account);
+                 () =>
+                 {
+                     //AccountLogin account = new AccountLogin();
+                     ClientScreen clientScreen = new ClientScreen();
+                     //Application.Run(clientScreen);
+
+                     SimulationBike simBike = new SimulationBike();
+
+                     simBike.OnUpdate += delegate
+                     {
+                         if (clientScreen != null)
+                         {
+                             //ClientScreen clientScreen = new ClientScreen();
+                             clientScreen.setTxtSpeed(simBike.Speed);
+                             clientScreen.setTxtDistanceTravelled(simBike.DistanceTravelled);
+                             clientScreen.setTxtElapsedTime(simBike.ElapsedTime);
+                             clientScreen.setTxtHeartRate(simBike.HeartRate);
+                         }
+                         Console.WriteLine(
+                             $"Time: {simBike.ElapsedTime}\n" +
+                             $"Speed: {simBike.Speed}\n" +
+                             $"Distance: {simBike.DistanceTravelled}\n" +
+                             $"Heart: {simBike.HeartRate}\n");
+                     };
+                     simBike.IsRunning = true;
+                     //ClientScreen clientScreen = new ClientScreen();
+                     Application.Run(clientScreen);
+
                  }).Start();
 
             // Making connection with the VR server
@@ -87,22 +112,29 @@ namespace RemoteHealthCare
 
             //IBike bike = realBike;
 
-            //realBike.Init();
+            //RealBike.Init();
             ////example on how to use delegates; logs info with every update
-            //bike.OnUpdate += delegate
+            ///
+           
+            //simBike.OnUpdate += delegate
             //{
+            //    //ClientScreen clientScreen = new ClientScreen();
+              
+
             //    Console.WriteLine(
-            //        $"Time: {bike.ElapsedTime}\n" +
-            //        $"Speed: {bike.Speed}\n" +
-            //        $"Distance: {bike.DistanceTravelled}\n" +
-            //        $"Heart: {bike.HeartRate}\n");
+            //        $"Time: {simBike.ElapsedTime}\n" +
+            //        $"Speed: {simBike.Speed}\n" +
+            //        $"Distance: {simBike.DistanceTravelled}\n" +
+            //        $"Heart: {simBike.HeartRate}\n");
             //};
+            
 
             //while (true) ;
-            for (; ; );
 
             //activates the simulation bike
-            // simBike.IsRunning = true;
+            //simBike.IsRunning = true;
+            for (; ; );
+
         }
     }
 }

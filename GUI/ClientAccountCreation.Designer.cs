@@ -37,6 +37,7 @@ namespace RemoteHealthCare.GUI
             this.txtPasswordConfirmAccountCreationClient = new System.Windows.Forms.TextBox();
             this.txtConfirmPaswordAccountCreationClient = new System.Windows.Forms.TextBox();
             this.btnCreateAccountCreationClient = new System.Windows.Forms.Button();
+            this.btnBack = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textPasswordAccountCreationClient
@@ -104,11 +105,22 @@ namespace RemoteHealthCare.GUI
             this.btnCreateAccountCreationClient.UseVisualStyleBackColor = true;
             this.btnCreateAccountCreationClient.Click += new System.EventHandler(this.btnCreateAccountCreationClient_Click);
             // 
+            // btnBack
+            // 
+            this.btnBack.Location = new System.Drawing.Point(12, 12);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(75, 23);
+            this.btnBack.TabIndex = 11;
+            this.btnBack.Text = "Back";
+            this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
+            // 
             // ClientAccountCreation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(275, 432);
+            this.Controls.Add(this.btnBack);
             this.Controls.Add(this.btnCreateAccountCreationClient);
             this.Controls.Add(this.txtPasswordConfirmAccountCreationClient);
             this.Controls.Add(this.txtConfirmPaswordAccountCreationClient);
@@ -134,5 +146,6 @@ namespace RemoteHealthCare.GUI
         private System.Windows.Forms.TextBox txtPasswordConfirmAccountCreationClient;
         private System.Windows.Forms.TextBox txtConfirmPaswordAccountCreationClient;
         private System.Windows.Forms.Button btnCreateAccountCreationClient;
+        private System.Windows.Forms.Button btnBack;
     }
 }

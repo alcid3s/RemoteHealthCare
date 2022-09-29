@@ -107,6 +107,7 @@
             this.Controls.Add(this.textBox1);
             this.Name = "AccountLogin";
             this.Text = "AccountLogin";
+            this.Load += new System.EventHandler(this.AccountLogin_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

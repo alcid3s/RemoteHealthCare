@@ -73,7 +73,7 @@ namespace Server
                     int receive = client.Socket.Receive(message);
                     //TODO: Make it more functional
 
-                    int id = message[0];
+                    byte id = message[0];
                     decimal elapsedTime = ((message[2] << 8)+ message[1]) / 4m;
                     int distanceTravelled = (message[4] << 8) + message[3];
                     decimal speed = ((message[6] << 8) + message[5]) / 1000m;

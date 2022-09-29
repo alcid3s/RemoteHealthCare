@@ -19,16 +19,16 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            //NetworkEngine(bikeClient);
+            NetworkEngine(bikeClient);
 
             // Kind of bikes available
             SimulationBike simBike = new SimulationBike();
             RealBike realBike = new RealBike();
 
-            IBike bike = realBike;
+            IBike bike = simBike;
 
-            // simBike.IsRunning = true;
-            realBike.Init();
+             simBike.IsRunning = true;
+            //realBike.Init();
             //example on how to use delegates; logs info with every update
             bike.OnUpdate += delegate
             {

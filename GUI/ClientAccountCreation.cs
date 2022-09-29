@@ -16,5 +16,30 @@ namespace RemoteHealthCare.GUI
         {
             InitializeComponent();
         }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtAccountNameAccountCreationClient_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textPasswordAccountCreationClient_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtPasswordConfirmAccountCreationClient_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

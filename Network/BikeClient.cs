@@ -103,7 +103,7 @@ namespace RemoteHealthCare.Network
                     }
                 }
 
-                Send(terrain.ToString());;
+                Send(terrain.ToString()); ;
 
                 Thread.Sleep(5000);
 
@@ -228,7 +228,8 @@ namespace RemoteHealthCare.Network
                             {
                                 // adds the node to the scene. if the node already exist, deletes it first
                                 Console.WriteLine("node add:" + jData);
-                                lock (this.nodes) { 
+                                lock (this.nodes)
+                                {
                                     Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
                                     this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
                                     Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
@@ -416,8 +417,8 @@ namespace RemoteHealthCare.Network
         /// <param name="nodeName">Node that needs to be deleted</param>
         public void DeleteNode(string nodeName)
         {
-            if (this.nodes.ContainsKey(nodeName)) 
-            { 
+            if (this.nodes.ContainsKey(nodeName))
+            {
                 JObject ob = JObject.Parse(File.ReadAllText(Path + "/delete_node.json"));
                 ob["data"]["dest"] = Id;
                 ob["data"]["data"]["data"]["id"] = this.nodes[nodeName];
@@ -487,7 +488,8 @@ namespace RemoteHealthCare.Network
             
             if (nodes.ContainsKey(panelName))
             {
-                if (nodes[panelName] != "fakeID") { 
+                if (nodes[panelName] != "fakeID")
+                {
                     text["data"]["data"]["data"]["id"] = this.nodes[panelName];
                     Console.WriteLine($"message: {text}");
                     Send(text.ToString());
@@ -510,7 +512,8 @@ namespace RemoteHealthCare.Network
             
             if (nodes.ContainsKey(panelName))
             {
-                if (nodes[panelName] != "fakeID") { 
+                if (nodes[panelName] != "fakeID")
+                {
                     line["data"]["data"]["data"]["id"] = this.nodes[panelName];
                     Console.WriteLine($"message: {line}");
                     Send(line.ToString());
@@ -552,7 +555,7 @@ namespace RemoteHealthCare.Network
         //TODO change this method
         public bool RouteExists(int route) 
         {
-            return this.routes.Count-1 >= route;
+            return this.routes.Count - 1 >= route;
         }
 
         /// <summary>
@@ -562,7 +565,7 @@ namespace RemoteHealthCare.Network
         /// <param name="nodeName">Name of the node that will follow the route. Most likely a bike</param>
         public void FollowRoute(int route, string nodeName)
         {
-            if (this.nodes.ContainsKey(nodeName) && RouteExists(route)) 
+            if (this.nodes.ContainsKey(nodeName) && RouteExists(route))
             {
                 JObject ob = JObject.Parse(File.ReadAllText(Path + "/follow_route.json"));
                 ob["data"]["dest"] = Id;
@@ -572,10 +575,18 @@ namespace RemoteHealthCare.Network
 
                 Console.WriteLine($"message: {ob}");
                 Send(ob.ToString());
-            } else 
-            { 
+            }
+            else
+            {
                 Console.WriteLine("route " + route + " and/or " + nodeName + " does not exist");
             }
+        }
+        public void ChangeSpeed(decimal speed)
+        {
+            JObject ob = JObject.Parse(File.ReadAllText($"{Path}/follow_route.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["speed"] = speed;
+
         }
     }
 }

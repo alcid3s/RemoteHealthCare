@@ -39,7 +39,6 @@ namespace RemoteHealthCare.Bikes
                 Gear = 4;
             new Thread(Simulate).Start();
         }
-
         //the simulation code
         private void Simulate()
         {
@@ -111,6 +110,11 @@ namespace RemoteHealthCare.Bikes
             _distanceTravelled = 0;
             _speed = 0;
             _heartRate = 255;
+        }
+
+        public void Init()
+        {
+            IsRunning = true;
         }
     }
 }

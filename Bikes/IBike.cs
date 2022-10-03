@@ -8,5 +8,7 @@
         int DistanceTravelled { get; }
         decimal Speed { get; }
         int HeartRate { get; }
+
+        void Init();
     }
 }

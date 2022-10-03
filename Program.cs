@@ -15,57 +15,47 @@ namespace RemoteHealthCare
     {
         private static bool networkEngineRunning = false;
         static void Main(string[] args)
-        { 
-            //AccountLogin account = new AccountLogin();
-            ClientScreen clientScreen = new ClientScreen();
-            //Application.Run(clientScreen);
+        {
+                //AccountLogin account = new AccountLogin();
+                ClientScreen clientScreen = new ClientScreen();
+                //Application.Run(clientScreen);
 
-            // Making connection with the VR server
-            BikeClient bikeClient = new BikeClient();
-            bikeClient.Connect("145.48.6.10", 6666);
+                // Making connection with the VR server
+                BikeClient bikeClient = new BikeClient();
+                bikeClient.Connect("145.48.6.10", 6666);
 
-            ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
-            serverClient.Connect();
+                ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
+                serverClient.Connect();
 
-            Thread.Sleep(1000);
-            Console.WriteLine("After sleep");
+                Thread.Sleep(1000);
+                Console.WriteLine("After sleep");
 
-            NetworkEngine(bikeClient);
+                NetworkEngine(bikeClient);
 
-            // Kind of bikes available
-            RealBike realBike = new RealBike();
-            SimulationBike simBike = new SimulationBike();
+                // Kind of bikes available
 
-            IBike bike = simBike;
+                IBike bike = new SimulationBike();
+                bike.Init();
 
-            simBike.IsRunning = true;
-            //realBike.Init();
-
-            simBike.OnUpdate += delegate
-            {
-                if (clientScreen != null)
+                bike.OnUpdate += delegate
                 {
-                             //ClientScreen clientScreen = new ClientScreen();
-                    clientScreen.setTxtSpeed(simBike.Speed);
-                    clientScreen.setTxtDistanceTravelled(simBike.DistanceTravelled);
-                    clientScreen.setTxtElapsedTime(simBike.ElapsedTime);
-                    clientScreen.setTxtHeartRate(simBike.HeartRate);
-                }
-                serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+                    if (clientScreen != null)
+                    {
+                        //ClientScreen clientScreen = new ClientScreen();
+                        clientScreen.setTxtSpeed(bike.Speed);
+                        clientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
+                        clientScreen.setTxtElapsedTime(bike.ElapsedTime);
+                        clientScreen.setTxtHeartRate(bike.HeartRate);
+                    }
+                    serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
 
-                if (networkEngineRunning)
-                {
-                    bikeClient.UpdateSpeed(bike.Speed);
-                }
-                         //Console.WriteLine(
-                         //    $"Time: {simBike.ElapsedTime}\n" +
-                         //    $"Speed: {simBike.Speed}\n" +
-                         //    $"Distance: {simBike.DistanceTravelled}\n" +
-                         //    $"Heart: {simBike.HeartRate}\n");
-            };
-            simBike.IsRunning = true;
-            //ClientScreen clientScreen = new ClientScreen();
-            Application.Run(clientScreen);
+                    if (networkEngineRunning)
+                    {
+                        bikeClient.UpdateSpeed(bike.Speed);
+                    }
+                };
+
+                Application.Run(clientScreen);
             for (; ; );
         }
 

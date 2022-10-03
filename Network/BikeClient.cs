@@ -583,7 +583,6 @@ namespace RemoteHealthCare.Network
         }
         public void UpdateSpeed(decimal speed)
         {
-
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/update_bike_speed.json"));
             ob["data"]["dest"] = Id;
             ob["data"]["data"]["data"]["speed"] = speed;
@@ -598,7 +597,6 @@ namespace RemoteHealthCare.Network
             }
 
             Send(ob.ToString());
-
         }
     }
 }

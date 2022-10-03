@@ -6,7 +6,7 @@ namespace Server
 {
     internal class Server
     {
-        private static Socket serverSocket;
+        private static Socket? serverSocket;
         private static List<Client> clientList = new List<Client>();
 
         private int _port;

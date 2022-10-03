@@ -28,7 +28,6 @@ namespace RemoteHealthCare
                 serverClient.Connect();
 
                 Thread.Sleep(1000);
-                Console.WriteLine("After sleep");
 
                 NetworkEngine(bikeClient);
 

@@ -37,7 +37,7 @@ namespace RemoteHealthCare.Network
         /// </summary>
         /// <param name="ip">Address of the server</param>
         /// <param name="port">Port-number the server is running on</param>
-        public async Task Connect(string ip, int port)
+        public void Connect(string ip, int port)
         {
             // checks if the given ip is valid
             if (ip == null || port < 1000)
@@ -49,7 +49,7 @@ namespace RemoteHealthCare.Network
             try
             {
                 _client = new TcpClient();
-                await _client.ConnectAsync(ip, port);
+                _client.Connect(ip, port);
                 Console.WriteLine($"Connection made with {ip}:{port}");
                 _stream = _client.GetStream();
                 Send(@"{""id"": ""session/list""}");

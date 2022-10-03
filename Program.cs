@@ -16,70 +16,65 @@ namespace RemoteHealthCare
         // Enum is used for presenting the data in the console
         static void Main(string[] args)
         {
+            //AccountLogin account = new AccountLogin();
+            ClientScreen clientScreen = new ClientScreen();
+            //Application.Run(clientScreen);
 
+            // Making connection with the VR server
+            BikeClient bikeClient = new BikeClient();
+            bikeClient.Connect("145.48.6.10", 6666);
 
-            new Thread(
-                 () =>
-                 {
-                     //AccountLogin account = new AccountLogin();
-                     ClientScreen clientScreen = new ClientScreen();
-                     //Application.Run(clientScreen);
+            ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
+            serverClient.Connect();
 
-                     // Making connection with the VR server
-                     BikeClient bikeClient = new BikeClient();
-                     _ = bikeClient.Connect("145.48.6.10", 6666);
+            Thread.Sleep(1000);
+            Console.WriteLine("After sleep");
 
-                     ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
-                     serverClient.Connect();
+            NetworkEngine(bikeClient);
 
-                     Thread.Sleep(1000);
+            // Kind of bikes available
+            RealBike realBike = new RealBike();
+            SimulationBike simBike = new SimulationBike();
 
-                     //NetworkEngine(bikeClient);
+            IBike bike = simBike;
 
-                     // Kind of bikes available
-                     RealBike realBike = new RealBike();
-                     SimulationBike simBike = new SimulationBike();
+            simBike.IsRunning = true;
+            //realBike.Init();
 
-                     IBike bike = simBike;
-
-                     simBike.IsRunning = true;
-                     //realBike.Init();
-
-                     simBike.OnUpdate += delegate
-                     {
-                         if (clientScreen != null)
-                         {
+            simBike.OnUpdate += delegate
+            {
+                if (clientScreen != null)
+                {
                              //ClientScreen clientScreen = new ClientScreen();
-                             clientScreen.setTxtSpeed(simBike.Speed);
-                             clientScreen.setTxtDistanceTravelled(simBike.DistanceTravelled);
-                             clientScreen.setTxtElapsedTime(simBike.ElapsedTime);
-                             clientScreen.setTxtHeartRate(simBike.HeartRate);
-                         }
-                         serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+                    clientScreen.setTxtSpeed(simBike.Speed);
+                    clientScreen.setTxtDistanceTravelled(simBike.DistanceTravelled);
+                    clientScreen.setTxtElapsedTime(simBike.ElapsedTime);
+                    clientScreen.setTxtHeartRate(simBike.HeartRate);
+                }
+                serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
                          //Console.WriteLine(
                          //    $"Time: {simBike.ElapsedTime}\n" +
                          //    $"Speed: {simBike.Speed}\n" +
                          //    $"Distance: {simBike.DistanceTravelled}\n" +
                          //    $"Heart: {simBike.HeartRate}\n");
-                     };
-                     simBike.IsRunning = true;
-                     //ClientScreen clientScreen = new ClientScreen();
-                     Application.Run(clientScreen);
-
-                 }).Start();
-
+            };
+            simBike.IsRunning = true;
+            //ClientScreen clientScreen = new ClientScreen();
+            Application.Run(clientScreen);
             for (; ; );
         }
 
         private static void NetworkEngine(BikeClient bikeClient)
         {
+            Console.WriteLine("Going to reset scene");
             bikeClient.ResetScene();
-
+            Console.WriteLine("Reset scene");
             bikeClient.SetSkyBox(16);
-
+            Console.WriteLine("SetSkyBox");
             bikeClient.CreateTerrain("terrain");
+            Console.WriteLine("Set terain");
             bikeClient.CreateTerrain("terrain");
-
+            Console.WriteLine("Set terain");
             bikeClient.CreateBike("bike");
             bikeClient.CreateBike("bike2");
 
@@ -99,9 +94,6 @@ namespace RemoteHealthCare
             Console.WriteLine("waiting for ids");
             while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0))
                 Thread.Sleep(1);
-
-
-
             Thread.Sleep(5000);
 
             //bikeClient.DeleteNode("bike2");

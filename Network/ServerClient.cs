@@ -44,6 +44,7 @@ namespace RemoteHealthCare.Network
                 (byte) (speedByte & 0xFF), (byte) (speedByte >> 8), 
                 (byte) heartRate};
             int received = _socket.Send(message);
+
         }
     }
 }

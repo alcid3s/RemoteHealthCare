@@ -13,9 +13,9 @@ namespace RemoteHealthCare
 {
     class Program
     {
-        // Enum is used for presenting the data in the console
+        private static bool networkEngineRunning = false;
         static void Main(string[] args)
-        {
+        { 
             //AccountLogin account = new AccountLogin();
             ClientScreen clientScreen = new ClientScreen();
             //Application.Run(clientScreen);
@@ -52,6 +52,11 @@ namespace RemoteHealthCare
                     clientScreen.setTxtHeartRate(simBike.HeartRate);
                 }
                 serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+
+                if (networkEngineRunning)
+                {
+                    bikeClient.UpdateSpeed(bike.Speed);
+                }
                          //Console.WriteLine(
                          //    $"Time: {simBike.ElapsedTime}\n" +
                          //    $"Speed: {simBike.Speed}\n" +
@@ -66,15 +71,10 @@ namespace RemoteHealthCare
 
         private static void NetworkEngine(BikeClient bikeClient)
         {
-            Console.WriteLine("Going to reset scene");
             bikeClient.ResetScene();
-            Console.WriteLine("Reset scene");
             bikeClient.SetSkyBox(16);
-            Console.WriteLine("SetSkyBox");
             bikeClient.CreateTerrain("terrain");
-            Console.WriteLine("Set terain");
             bikeClient.CreateTerrain("terrain");
-            Console.WriteLine("Set terain");
             bikeClient.CreateBike("bike");
             bikeClient.CreateBike("bike2");
 
@@ -100,6 +100,7 @@ namespace RemoteHealthCare
             ////client.DeleteNode("node");
 
             bikeClient.FollowRoute(0, "bike");
+            networkEngineRunning = true;
         }
     }
 }

@@ -22,10 +22,10 @@ namespace RemoteHealthCare.Network
         // saves the nodes' uuid's with the name as key
         private Dictionary<string, string> nodes = new Dictionary<string, string>();
         private List<string> routes = new List<string>();
-        
+
         public string Path { get; }
         public string Id { get; private set; }
-        
+
         public BikeClient()
         {
             Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() + "/Json";
@@ -78,7 +78,7 @@ namespace RemoteHealthCare.Network
             Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
-        
+
         /// <summary>
         /// Generates terrain using the given string as an id
         /// </summary>
@@ -90,7 +90,7 @@ namespace RemoteHealthCare.Network
             {
                 JObject terrain = JObject.Parse(File.ReadAllText(Path + "/terrain.json"));
                 terrain["data"]["dest"] = Id;
-                
+
                 var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
 
 
@@ -131,7 +131,7 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Terrain name: " + name + " is already used.");
             }
         }
-        
+
         /// <summary>
         /// Handles incoming messages
         /// </summary>
@@ -156,8 +156,8 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Error");
                 return;
             }
-            
-            
+
+
             while (_totalBuffer.Length >= 4)
             {
                 int packetSize = BitConverter.ToInt32(_totalBuffer, 0);
@@ -165,7 +165,7 @@ namespace RemoteHealthCare.Network
                 {
                     string data = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
                     JObject jData = JObject.Parse(data);
-                    
+
                     switch (jData["id"].ToObject<string>())
                     {
                         case "session/list":
@@ -194,7 +194,7 @@ namespace RemoteHealthCare.Network
                             // sends the message
                             Send(message);
                             break;
-                        
+
                         case "tunnel/create":
                             // checks if the received message is an error and prints that message
                             if (jData["data"]["status"].ToObject<string>() == "error")
@@ -223,7 +223,7 @@ namespace RemoteHealthCare.Network
                                 Console.WriteLine("callback");
                                 break;
                             }
-                            
+
                             if (tunnelId == "scene/node/add")
                             {
                                 // adds the node to the scene. if the node already exist, deletes it first
@@ -247,7 +247,7 @@ namespace RemoteHealthCare.Network
                                 break;
                             }
 
-                            if (tunnelId == "scene/get") 
+                            if (tunnelId == "scene/get")
                             {
                                 // updates all the nodes in reaction to get scene response
                                 Console.WriteLine("updating all nodes");
@@ -276,7 +276,7 @@ namespace RemoteHealthCare.Network
             }
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
         }
-        
+
         /// <summary>
         /// Updates the node library when receiving all nodes from the server
         /// </summary>
@@ -288,7 +288,7 @@ namespace RemoteHealthCare.Network
             Console.WriteLine("nodes:");
 
             // adds each child within the response
-            for (int i = 0; i < jChildren.ToArray<JToken>().Length; i++) 
+            for (int i = 0; i < jChildren.ToArray<JToken>().Length; i++)
             {
                 Console.WriteLine(jChildren[i]["name"].ToObject<string>());
 
@@ -329,7 +329,7 @@ namespace RemoteHealthCare.Network
             _stream.Write(prefix, 0, prefix.Length);
             _stream.Write(data, 0, data.Length);
         }
-        
+
         /// <summary>
         /// Gets the scene
         /// </summary>
@@ -396,12 +396,12 @@ namespace RemoteHealthCare.Network
             Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
-        
+
         /// <summary>
         /// Finds the node with the given name
         /// </summary>
         /// <param name="nodeName">Node that needs to be found</param>
-        public void FindNode(string nodeName) 
+        public void FindNode(string nodeName)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/find_node.json"));
             ob["data"]["dest"] = Id;
@@ -410,7 +410,7 @@ namespace RemoteHealthCare.Network
             Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
         }
-        
+
         /// <summary>
         /// Deletes the node from the simulation with the given name
         /// </summary>
@@ -458,7 +458,7 @@ namespace RemoteHealthCare.Network
         /// Adds a panel to the simulation using the given name
         /// </summary>
         /// <param name="name">Name of the panel that will be created</param>
-        public void AddPanel(string name) 
+        public void AddPanel(string name)
         {
             JObject panel = JObject.Parse(File.ReadAllText(Path + "/add_panel.json"));
             panel["data"]["dest"] = Id;
@@ -481,11 +481,11 @@ namespace RemoteHealthCare.Network
         /// Applies drawtext.json to the given panel
         /// </summary>
         /// <param name="panelName">Name of the panel the text will be applied to</param>
-        public void AddTextToPanel(string panelName) 
+        public void AddTextToPanel(string panelName)
         {
             JObject text = JObject.Parse(File.ReadAllText(Path + "/drawtext.json"));
             text["data"]["dest"] = Id;
-            
+
             if (nodes.ContainsKey(panelName))
             {
                 if (nodes[panelName] != "fakeID")
@@ -505,11 +505,11 @@ namespace RemoteHealthCare.Network
         /// Applies drawline.json to the given panel
         /// </summary>
         /// <param name="panelName">Name of the panel the lines will be applied to</param>
-        public void AddLineToPanel(string panelName) 
+        public void AddLineToPanel(string panelName)
         {
             JObject line = JObject.Parse(File.ReadAllText(Path + "/drawline.json"));
             line["data"]["dest"] = Id;
-            
+
             if (nodes.ContainsKey(panelName))
             {
                 if (nodes[panelName] != "fakeID")
@@ -524,7 +524,7 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Node name " + panelName + " already used");
             }
         }
-        
+
         /// <summary>
         /// Checks if the node ID has already been received in <see cref="OnRead"/>
         /// </summary>
@@ -553,7 +553,7 @@ namespace RemoteHealthCare.Network
         /// <param name="route">TODO change this</param>
         /// <returns>Whether there is a route present</returns>
         //TODO change this method
-        public bool RouteExists(int route) 
+        public bool RouteExists(int route)
         {
             return this.routes.Count - 1 >= route;
         }
@@ -581,11 +581,23 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("route " + route + " and/or " + nodeName + " does not exist");
             }
         }
-        public void ChangeSpeed(decimal speed)
+        public void UpdateSpeed(decimal speed)
         {
-            JObject ob = JObject.Parse(File.ReadAllText($"{Path}/follow_route.json"));
+
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/update_bike_speed.json"));
             ob["data"]["dest"] = Id;
             ob["data"]["data"]["data"]["speed"] = speed;
+
+            try
+            {
+                ob["data"]["data"]["data"]["node"] = nodes["bike"];
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Nodes doesnt contain bike: \n{e}");
+            }
+
+            Send(ob.ToString());
 
         }
     }

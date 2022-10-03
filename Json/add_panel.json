@@ -6,17 +6,18 @@
       "id": "scene/node/add",
       "data": {
         "name": "",
+        "parent":  "",
         "components": {
           "transform": {
-            "position": [ 0, 20, 0 ],
+            "position": [ 0, 5, 0 ],
             "scale": 1,
             "rotation": [ 0, 0, 0 ]
           },
           "panel": {
-            "size": [ 10, 10 ],
+            "size": [ 1, 1 ],
             "resolution": [ 512, 512 ],
             "background": [ 1, 1, 1, 1 ],
-            "castShadow": true
+            "castShadow": false
           }
         }
       }

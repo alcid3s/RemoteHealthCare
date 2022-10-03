@@ -61,29 +61,49 @@ namespace RemoteHealthCare
         private static void NetworkEngine(BikeClient bikeClient)
         {
             bikeClient.ResetScene();
+            bikeClient.GetScene();
+
+            //wait for the getscene response
+            while (!bikeClient.IdReceived("GroundPlane") || !bikeClient.IdReceived("LeftHand") || !bikeClient.IdReceived("RightHand") || !bikeClient.IdReceived("Camera"))
+                Thread.Sleep(1);
+
+            //head cant be removed for some reason
+            //bikeClient.DeleteNode("Head");
+            
+            //Remove the standard nodes
+            bikeClient.DeleteNode("GroundPlane");
+            bikeClient.DeleteNode("LeftHand");
+            bikeClient.DeleteNode("RightHand");
+
             bikeClient.SetSkyBox(16);
             bikeClient.CreateTerrain("terrain");
-            bikeClient.CreateTerrain("terrain");
             bikeClient.CreateBike("bike");
-            bikeClient.CreateBike("bike2");
+            //bikeClient.CreateBike("bike2");
 
             bikeClient.AddRoute();
 
-            bikeClient.AddPanel("panel1");
-
-            while (!bikeClient.IdReceived("panel1"))
-                Thread.Sleep(1);
-
-            bikeClient.AddLineToPanel("panel1");
-
-            bikeClient.AddTextToPanel("panel1");
-            bikeClient.GetScene();
+            
+            
 
             //wait for the node and route id
             Console.WriteLine("waiting for ids");
             while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0))
                 Thread.Sleep(1);
             Thread.Sleep(5000);
+
+            bikeClient.AddPanel("panel1");
+
+            while (!bikeClient.IdReceived("panel1"))
+                Thread.Sleep(1);
+
+            // bikeClient.AddLineToPanel("panel1");
+            bikeClient.ClearPanel("panel1");
+            bikeClient.AddTextToPanel("panel1", "This is some text");
+            //bikeClient.AddPanelImage("panel1");
+            //Thread.Sleep(500);
+
+            //swap the panel to adapt the latest changes
+            bikeClient.SwapPanelBuffer("panel1");
 
             //bikeClient.DeleteNode("bike2");
             ////client.DeleteNode("node");

@@ -11,7 +11,7 @@
         {
           "transform" : 
           {
-            "position" : [ 0, 0, 0 ],
+            "position" : [ -128, 0, -128 ],
             "scale" : 1,
             "rotation" : [ 0, 0, 0 ]
           },

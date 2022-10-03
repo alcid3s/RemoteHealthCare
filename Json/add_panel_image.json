@@ -1,0 +1,15 @@
+{
+  "id": "tunnel/send",
+  "data": {
+    "dest": "",
+    "data": {
+      "id": "scene/panel/image",
+      "data": {
+        "id": { },
+        "image": "data/NetworkEngine/textures/SkyBoxes/interstellar/interstellar_up.png",
+        "position": [ 0.0, 0.0 ],
+        "size": [ 512.0, 512.0 ]
+      }
+    }
+  }
+}

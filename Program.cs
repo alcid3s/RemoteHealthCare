@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Avans.TI.BLE;
 using Newtonsoft.Json;
 
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-
 using RemoteHealthCare.Bikes;
+using RemoteHealthCare.GUI;
 using RemoteHealthCare.Network;
 
 namespace RemoteHealthCare
@@ -19,78 +14,100 @@ namespace RemoteHealthCare
     class Program
     {
         // Enum is used for presenting the data in the console
-
         static void Main(string[] args)
         {
-            // Making connection with the VR server
-            BikeClient client = new BikeClient();
-            _ = client.Connect("145.48.6.10", 6666);
 
-            Thread.Sleep(1000);
 
-            client.ResetScene();
+            new Thread(
+                 () =>
+                 {
+                     //AccountLogin account = new AccountLogin();
+                     ClientScreen clientScreen = new ClientScreen();
+                     //Application.Run(clientScreen);
 
-            
-            client.SetSkyBox(16);
+                     // Making connection with the VR server
+                     BikeClient bikeClient = new BikeClient();
+                     _ = bikeClient.Connect("145.48.6.10", 6666);
 
-            client.CreateTerrain("terrain");
-            client.CreateTerrain("terrain");
+                     ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
+                     serverClient.Connect();
 
-            client.CreateBike("bike");
-            client.CreateBike("bike2");
+                     Thread.Sleep(1000);
 
-            client.AddRoute();
+                     //NetworkEngine(bikeClient);
 
-            client.AddPanel("panel1");
+                     // Kind of bikes available
+                     RealBike realBike = new RealBike();
+                     SimulationBike simBike = new SimulationBike();
 
-            while(!client.IdReceived("panel1"))
+                     IBike bike = simBike;
+
+                     simBike.IsRunning = true;
+                     //realBike.Init();
+
+                     simBike.OnUpdate += delegate
+                     {
+                         if (clientScreen != null)
+                         {
+                             //ClientScreen clientScreen = new ClientScreen();
+                             clientScreen.setTxtSpeed(simBike.Speed);
+                             clientScreen.setTxtDistanceTravelled(simBike.DistanceTravelled);
+                             clientScreen.setTxtElapsedTime(simBike.ElapsedTime);
+                             clientScreen.setTxtHeartRate(simBike.HeartRate);
+                         }
+                         serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+                         //Console.WriteLine(
+                         //    $"Time: {simBike.ElapsedTime}\n" +
+                         //    $"Speed: {simBike.Speed}\n" +
+                         //    $"Distance: {simBike.DistanceTravelled}\n" +
+                         //    $"Heart: {simBike.HeartRate}\n");
+                     };
+                     simBike.IsRunning = true;
+                     //ClientScreen clientScreen = new ClientScreen();
+                     Application.Run(clientScreen);
+
+                 }).Start();
+
+            for (; ; );
+        }
+
+        private static void NetworkEngine(BikeClient bikeClient)
+        {
+            bikeClient.ResetScene();
+
+            bikeClient.SetSkyBox(16);
+
+            bikeClient.CreateTerrain("terrain");
+            bikeClient.CreateTerrain("terrain");
+
+            bikeClient.CreateBike("bike");
+            bikeClient.CreateBike("bike2");
+
+            bikeClient.AddRoute();
+
+            bikeClient.AddPanel("panel1");
+
+            while (!bikeClient.IdReceived("panel1"))
                 Thread.Sleep(1);
 
-            client.AddLineToPanel("panel1");
+            bikeClient.AddLineToPanel("panel1");
 
-            client.AddTextToPanel("panel1");
-            client.GetScene();
+            bikeClient.AddTextToPanel("panel1");
+            bikeClient.GetScene();
 
             //wait for the node and route id
             Console.WriteLine("waiting for ids");
-            while (!client.IdReceived("bike") || !client.RouteExists(0)) 
+            while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0))
                 Thread.Sleep(1);
 
-            
+
 
             Thread.Sleep(5000);
 
-            client.DeleteNode("bike2");
-            //client.DeleteNode("node");
-            
-            client.FollowRoute(0, "bike");
+            //bikeClient.DeleteNode("bike2");
+            ////client.DeleteNode("node");
 
-
-
-
-
-            //// Kind of bikes available
-            //SimulationBike simBike = new SimulationBike();
-            //RealBike realBike = new RealBike();
-
-            //IBike bike = realBike;
-
-            //realBike.Init();
-            ////example on how to use delegates; logs info with every update
-            //bike.OnUpdate += delegate
-            //{
-            //    Console.WriteLine(
-            //        $"Time: {bike.ElapsedTime}\n" +
-            //        $"Speed: {bike.Speed}\n" +
-            //        $"Distance: {bike.DistanceTravelled}\n" +
-            //        $"Heart: {bike.HeartRate}\n");
-            //};
-
-            //while (true) ;
-            for (; ; );
-
-            //activates the simulation bike
-            // simBike.IsRunning = true;
+            bikeClient.FollowRoute(0, "bike");
         }
     }
 }

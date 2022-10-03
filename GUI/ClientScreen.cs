@@ -24,7 +24,7 @@ namespace RemoteHealthCare.GUI
 
         public void setTxtSpeed(decimal s)
         {
-            Invoke(new Action(() => txtSpeed.Text = s.ToString("f0")));
+            Invoke(new Action(() => txtSpeed.Text = s.ToString("f2")));
         }
 
         private void txtElapsedTime_TextChanged(object sender, EventArgs e)

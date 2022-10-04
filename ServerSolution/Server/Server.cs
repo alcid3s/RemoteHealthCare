@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Server.Accounts;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -70,26 +71,57 @@ namespace Server
                 try
                 {
                     int receive = client.Socket.Receive(message);
-                    //TODO: Make it more functional
 
                     byte id = message[0];
-                    decimal elapsedTime = ((message[2] << 8)+ message[1]) / 4m;
-                    int distanceTravelled = (message[4] << 8) + message[3];
-                    decimal speed = ((message[6] << 8) + message[5]) / 1000m;
-                    int heartRate = message[7];
 
-                    Console.WriteLine($"Message from: {client.Id}: id: {id}, ep:{elapsedTime}, " +
-                        $"dt: {distanceTravelled}, " +
-                        $"sp: {speed}, " +
-                        $"hr: {heartRate} | receive: {receive}");
+                    switch (id)
+                    {
+                        // Client wants to create new account
+                        case 0x10:
+                            message[0] = 0;
+                            Console.WriteLine($"Trying to make new Account, data received: {Encoding.UTF8.GetString(message)}");
+                            AccountManager account = new AccountManager();
 
+                            break;
+
+                        // Client wants to login
+                        case 0x11:
+                            break;
+
+                        // Client wants to edit account information
+                        case 0x12:
+                            break;
+
+                        // Client wants to remove account
+                        case 0x13:
+                            break;
+
+                        // SimBike information
+                        case 0x21:
+                            PrintBikeInformation(message, client, id);
+                            break;
+
+
+                    }
                     Thread.Sleep(100);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"ERROR WITH CLIENT: {e}"); 
+                    Console.WriteLine($"ERROR WITH CLIENT: {e}");
                 }
             }
+        }
+
+        private void PrintBikeInformation(byte[] message, Client client, byte id)
+        {
+            decimal elapsedTime = ((message[2] << 8) + message[1]) / 4m;
+            int distanceTravelled = (message[4] << 8) + message[3];
+            decimal speed = ((message[6] << 8) + message[5]) / 1000m;
+            int heartRate = message[7];
+            Console.WriteLine($"Message from: {client.Id}: id: {id}, ep:{elapsedTime}, " +
+                $"dt: {distanceTravelled}, " +
+                $"sp: {speed}, " +
+                $"hr: {heartRate}");
         }
     }
 }

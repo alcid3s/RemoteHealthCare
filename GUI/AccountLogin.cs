@@ -1,4 +1,5 @@
 ﻿using RemoteHealthCare.Accounts;
+using RemoteHealthCare.Network;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,16 +23,12 @@ namespace RemoteHealthCare.GUI
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            if (File.Exists(Account.Path + "/" + txtAccountNameLogin.Text + Account.Suffix))
-            {
-                Account account = new Account(txtAccountNameLogin.Text);
-                Hide();
-            }
+
         }
 
         private void btnCreateAccount_Click(object sender, EventArgs e)
@@ -63,7 +60,7 @@ namespace RemoteHealthCare.GUI
 
         private void AccountLogin_Load(object sender, EventArgs e)
         {
-            
+
         }
     }
 }

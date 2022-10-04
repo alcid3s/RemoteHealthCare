@@ -16,18 +16,18 @@ namespace RemoteHealthCare
         private static bool networkEngineRunning = false;
         static void Main(string[] args)
         {
-            //AccountLogin account = new AccountLogin();
-            ClientScreen clientScreen = new ClientScreen();
             AccountLogin loginScreen = new AccountLogin();
+
+            ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
+            serverClient.Connect();
+
             Application.Run(loginScreen);
-            //Application.Run(clientScreen);
+
+            ClientScreen clientScreen = new ClientScreen();
 
             // Making connection with the VR server
             BikeClient bikeClient = new BikeClient();
             bikeClient.Connect("145.48.6.10", 6666);
-
-            ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
-            serverClient.Connect();
 
             Thread.Sleep(1000);
 

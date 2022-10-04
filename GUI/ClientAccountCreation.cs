@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using RemoteHealthCare.Accounts;
+using RemoteHealthCare.Network;
 
 namespace RemoteHealthCare.GUI
 {
@@ -43,10 +44,11 @@ namespace RemoteHealthCare.GUI
         {
             if (txtPasswordConfirmAccountCreationClient.Text.Equals(txtPasswordAccountCreationClient.Text))
             {
-                Account account = new Account(txtAccountNameAccountCreationClient.Text);
-                AccountLogin login = new AccountLogin();
-                login.Show();
-                Hide();
+                //TODO: Send message to server if account exists and uses correct password.
+                if (ServerClient.IsRunning)
+                {
+                    ServerClient.Send(new byte[] { 0x10 }, txtAccountNameAccountCreationClient.Text + Account.Suffix);
+                }
             }
         }
 

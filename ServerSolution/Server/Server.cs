@@ -63,7 +63,7 @@ namespace Server
         private void HandleClient(Client client)
         {
             Console.WriteLine($"Client connection from: {client.Socket.RemoteEndPoint}");
-            byte[] message = new byte[8];
+            byte[] message = new byte[1024];
 
             // While the client is connected.
             while (client.Socket.Connected)
@@ -72,14 +72,16 @@ namespace Server
                 {
                     int receive = client.Socket.Receive(message);
 
-                    byte id = message[0];
+                    MessageReader reader = new MessageReader(message);
+                    byte id = reader.ReadByte();
 
                     switch (id)
                     {
                         // Client wants to create new account
                         case 0x10:
-                            message[0] = 0;
-                            Console.WriteLine($"Trying to make new Account, data received: {Encoding.UTF8.GetString(message)}");
+                            string username = Encoding.ASCII.GetString(reader.ReadPacket());
+                            string password = Encoding.ASCII.GetString(reader.ReadPacket());
+                            Console.WriteLine($"Trying to make new Account, data received: {username}, {password}");
                             //AccountManager account = new AccountManager(Encoding.UTF8.GetString(message));
                             break;
 

@@ -6,11 +6,11 @@
       "id": "scene/node/add",
       "data": {
         "name": "",
-        "parent": "",
         "components": {
           "transform": {
             "position": [ 10, 0, 10 ],
-            "scale": 0.01
+            "scale": 0.01,
+            "rotation": [ 0, 0, 0 ]
           },
           "model": {
             "file": "data/NetworkEngine/models/bike/bike_anim.fbx",

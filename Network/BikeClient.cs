@@ -425,6 +425,68 @@ namespace RemoteHealthCare.Network
         }
 
         /// <summary>
+        /// Creates a model with a parent
+        /// </summary>
+        /// <param name="modelName">Name of the model you want to create</param>
+        /// <param name="modelParent">Name of the parent of the model</param>
+        /// <param name="position">3 byte array of the position in X, Y, Z order</param>
+        /// <param name="scale">scale of the model</param>
+        /// <param name="rotation">3 bybte array of the rotation over X Y Z</param>
+        /// <param name="fileName">Name and location of the 3d model file</param>
+        /// <param name="animation">Name and location of the animation file, can be empty</param>
+        /// <param name="animation">true to not draw the backsides of models, false to draw the backsides of models</param>
+        public void CreateModel(string modelName, string modelParent, byte[] position, decimal scale, byte[] rotation, string fileName, string animation, bool cullbackfaces)
+        {
+            // makes sure the name isn't already in use
+            if (!_nodes.ContainsKey(modelName))
+            {
+                JObject model = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
+                model["data"]["dest"] = Id;
+                model["data"]["data"]["data"]["name"] = modelName;
+
+                if (modelParent != "") 
+                {
+                    if (IdReceived(modelParent)) 
+                    { 
+                        model["data"]["data"]["data"]["parent"] = this._nodes[modelParent];
+                    }
+                    else 
+                    { 
+                        return;
+                    }
+                    
+                }
+                
+                var modelPosition = model["data"]["data"]["data"]["components"]["transform"]["position"] as JArray;
+                modelPosition[0] = position[0];
+                modelPosition[1] = position[1];
+                modelPosition[2] = position[2];
+
+                model["data"]["data"]["data"]["components"]["transform"]["scale"] = scale;
+
+                var modelRotation = model["data"]["data"]["data"]["components"]["transform"]["rotation"] as JArray;
+                modelRotation[0] = rotation[0];
+                modelRotation[1] = rotation[1];
+                modelRotation[2] = rotation[2];
+
+                model["data"]["data"]["data"]["components"]["model"]["file"] = fileName; 
+
+                model["data"]["data"]["data"]["components"]["model"]["animation"] = animation; 
+
+                model["data"]["data"]["data"]["components"]["model"]["cullbackfaces"] = cullbackfaces; 
+
+
+                _nodes.Add(modelName, "fakeId");
+                Console.WriteLine($"message: {model}");
+                Send(model.ToString());
+            }
+            else
+            {
+                Console.WriteLine("Node name " + modelName + " already used or parent id not received");
+            }
+        }
+
+        /// <summary>
         /// Creates bike to the simulation using the given name
         /// </summary>
         /// <param name="bikeName">Name of the bike that will be created</param>

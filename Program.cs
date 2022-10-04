@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -93,6 +93,19 @@ namespace RemoteHealthCare
             bikeClient.AddRoute();
 
             bikeClient.AddPanel("panel1");
+
+            for (int i = 1; i < 11; i++)
+            {
+                byte[] postion = new byte[3];
+                postion[0] = (byte)(i*5);
+                postion[2] = (byte)(i*5);
+
+                //byte[] rotation = new byte[3];
+                //rotation[1] = new Random(1).Next;
+
+                bikeClient.CreateModel("testModel" + i, "", postion, 2, new byte[3], "data/NetworkEngine/models/trees/fantasy/tree" + i + ".obj", "", false);
+            }
+            
             
 
             //wait for the node and route ids

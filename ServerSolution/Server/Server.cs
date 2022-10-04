@@ -72,7 +72,7 @@ namespace Server
                 {
                     int receive = client.Socket.Receive(message);
 
-                    byte id = message[1024];
+                    byte id = message[8];
 
                     switch (id)
                     {

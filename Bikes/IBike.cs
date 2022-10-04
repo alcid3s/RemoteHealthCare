@@ -1,8 +1,6 @@
 ﻿namespace RemoteHealthCare.Bikes
 {
-
     public delegate void OnUpdate();
-
     internal interface IBike
     {
         OnUpdate OnUpdate { get; set; }
@@ -10,5 +8,7 @@
         int DistanceTravelled { get; }
         decimal Speed { get; }
         int HeartRate { get; }
+
+        void Init();
     }
 }

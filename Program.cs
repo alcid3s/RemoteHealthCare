@@ -1,97 +1,103 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Avans.TI.BLE;
 using Newtonsoft.Json;
 
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-
 using RemoteHealthCare.Bikes;
+using RemoteHealthCare.GUI;
 using RemoteHealthCare.Network;
 
 namespace RemoteHealthCare
 {
     class Program
     {
-        // Enum is used for presenting the data in the console
-
+        private static bool networkEngineRunning = false;
         static void Main(string[] args)
         {
-            // Making connection with the VR server
-            BikeClient client = new BikeClient();
-            _ = client.Connect("145.48.6.10", 6666);
+                //AccountLogin account = new AccountLogin();
+                ClientScreen clientScreen = new ClientScreen();
+                //Application.Run(clientScreen);
 
-            Thread.Sleep(1000);
+                // creates a connection with the VR server
+                BikeClient bikeClient = new BikeClient();
+                bikeClient.Connect("145.48.6.10", 6666);
 
-            client.ResetScene();
+                ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
+                serverClient.Connect();
 
-            
-            client.SetSkyBox(16);
+                Thread.Sleep(1000);
 
-            client.CreateTerrain("terrain");
-            client.CreateTerrain("terrain");
+                NetworkEngine(bikeClient);
 
-            client.CreateBike("bike");
-            client.CreateBike("bike2");
+                IBike bike = new SimulationBike();
+                bike.Init();
 
-            client.AddRoute();
-            client.AddRoad();
+                // delegates a method that sends all the relevant information to the server
+                bike.OnUpdate += delegate
+                {
+                    if (clientScreen != null)
+                    {
+                        //ClientScreen clientScreen = new ClientScreen();
+                        clientScreen.setTxtSpeed(bike.Speed);
+                        clientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
+                        clientScreen.setTxtElapsedTime(bike.ElapsedTime);
+                        clientScreen.setTxtHeartRate(bike.HeartRate);
+                    }
+                    serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
 
-            client.AddPanel("panel1");
+                    if (networkEngineRunning)
+                    {
+                        bikeClient.UpdateSpeed(bike.Speed);
+                    }
+                };
 
-            while(!client.IdReceived("panel1"))
+                Application.Run(clientScreen);
+            for (; ; );
+        }
+
+        /// <summary>
+        /// Creates a network engine with all required nodes
+        /// </summary>
+        /// <param name="bikeClient">The client that will receive all the commands</param>
+        private static void NetworkEngine(BikeClient bikeClient)
+        {
+            bikeClient.ResetScene();
+            bikeClient.SetSkyBox(16);
+            bikeClient.CreateTerrain("terrain");
+            bikeClient.CreateTerrain("terrain");
+            bikeClient.CreateBike("bike");
+            bikeClient.CreateBike("bike2");
+
+            bikeClient.AddRoute();
+
+            while (!bikeClient.RouteExists(0)) {
+                Thread.Sleep(1);
+            }
+            bikeClient.AddRoad();
+
+            bikeClient.AddPanel("panel1");
+
+            while (!bikeClient.IdReceived("panel1"))
                 Thread.Sleep(1);
 
-            client.AddLineToPanel("panel1");
+            bikeClient.AddLineToPanel("panel1");
 
-            client.AddTextToPanel("panel1");
-            client.GetScene();
+            bikeClient.AddTextToPanel("panel1");
+            bikeClient.GetScene();
 
-            //wait for the node and route id
+            // waits for the node and route id
             Console.WriteLine("waiting for ids");
-            while (!client.IdReceived("bike") || !client.RouteExists(0)) 
+            while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0))
                 Thread.Sleep(1);
-
-            
-
             Thread.Sleep(5000);
 
-            client.DeleteNode("bike2");
-            //client.DeleteNode("node");
-            
-            client.FollowRoute(0, "bike");
+            //bikeClient.DeleteNode("bike2");
+            ////client.DeleteNode("node");
 
-
-
-
-
-            //// Kind of bikes available
-            //SimulationBike simBike = new SimulationBike();
-            //RealBike realBike = new RealBike();
-
-            //IBike bike = realBike;
-
-            //realBike.Init();
-            ////example on how to use delegates; logs info with every update
-            //bike.OnUpdate += delegate
-            //{
-            //    Console.WriteLine(
-            //        $"Time: {bike.ElapsedTime}\n" +
-            //        $"Speed: {bike.Speed}\n" +
-            //        $"Distance: {bike.DistanceTravelled}\n" +
-            //        $"Heart: {bike.HeartRate}\n");
-            //};
-
-            //while (true) ;
-            for (; ; );
-
-            //activates the simulation bike
-            // simBike.IsRunning = true;
+            bikeClient.FollowRoute(0, "bike");
+            networkEngineRunning = true;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace RemoteHealthCare.Bikes
         public int HeartRate => (int)_heartRate;
 
         //toggles the thread running the bike 
-        private bool IsRunning { get { return _isRunning; } set { if (!_isRunning && value) Run(); _isRunning = value; } }
+        public bool IsRunning { get { return _isRunning; } set { if (!_isRunning && value) Run(); _isRunning = value; } }
 
         private int Gear { get; set; }
 
@@ -39,7 +39,6 @@ namespace RemoteHealthCare.Bikes
                 Gear = 4;
             new Thread(Simulate).Start();
         }
-
         //the simulation code
         private void Simulate()
         {
@@ -111,6 +110,11 @@ namespace RemoteHealthCare.Bikes
             _distanceTravelled = 0;
             _speed = 0;
             _heartRate = 255;
+        }
+
+        public void Init()
+        {
+            IsRunning = true;
         }
     }
 }

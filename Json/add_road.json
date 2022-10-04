@@ -6,7 +6,9 @@
       "id": "scene/road/add",
       "data": {
         "route": "",
-        "normal": "data/NetworkEngine/textures/lava_mars_d.jpg",
+        "diffuse": "data/NetworkEngine/textures/terrain/red_tarmac.jpg",
+        "normal": "data/NetworkEngine/textures/terrain/red_tarmac.jpg",
+        "specular": "data/NetworkEngine/textures/terrain/red_tarmac.jpg",
         "heightoffset": 0.01
       }
     }

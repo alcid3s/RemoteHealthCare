@@ -72,6 +72,11 @@ namespace RemoteHealthCare
 
             bikeClient.AddRoute();
 
+            while (!bikeClient.RouteExists(0)) {
+                Thread.Sleep(1);
+            }
+            bikeClient.AddRoad();
+
             bikeClient.AddPanel("panel1");
 
             while (!bikeClient.IdReceived("panel1"))

@@ -21,7 +21,6 @@ namespace Server
             }
         }
 
-
         public Server(int port)
         {
             _port = port;

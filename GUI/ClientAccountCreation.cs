@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RemoteHealthCare.Accounts;
 
 namespace RemoteHealthCare.GUI
 {
@@ -40,9 +41,12 @@ namespace RemoteHealthCare.GUI
 
         private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
         {
-            if (txtPasswordConfirmAccountCreationClient == txtPasswordAccountCreationClient)
+            if (txtPasswordConfirmAccountCreationClient.Text.Equals(txtPasswordAccountCreationClient.Text))
             {
-
+                Account account = new Account(txtAccountNameAccountCreationClient.Text);
+                AccountLogin login = new AccountLogin();
+                login.Show();
+                Hide();
             }
         }
 

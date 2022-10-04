@@ -40,6 +40,9 @@ namespace RemoteHealthCare
             client.CreateBike("bike2");
 
             client.AddRoute();
+            while (!client.RouteExists(0)) {
+                Thread.Sleep(1);
+            }
             client.AddRoad();
 
             client.AddPanel("panel1");

@@ -497,11 +497,12 @@ namespace RemoteHealthCare.Network
         }
 
         public void AddRoad() {
-            JObject texture = JObject.Parse(File.ReadAllText(Path + "/add_road.json"));
-            texture["data"]["dest"] = Id;
+            JObject add_road = JObject.Parse(File.ReadAllText(Path + "/add_road.json"));
+            add_road["data"]["dest"] = Id;
+            add_road["data"]["data"]["data"]["route"] = routes[0];
 
-            Console.WriteLine($"message: {texture}");
-            Send(texture.ToString());
+            Console.WriteLine($"message: {add_road}");
+            Send(add_road.ToString());
         }
     }
 }

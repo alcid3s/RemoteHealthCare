@@ -62,7 +62,7 @@ namespace RemoteHealthCare.Network
 
             // creates tunnel to send data 
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
-            CreateTunnel();
+            ResetScene();
         }
 
         /// <summary>
@@ -291,6 +291,7 @@ namespace RemoteHealthCare.Network
             for (int i = 0; i < jChildren.ToArray<JToken>().Length; i++)
             {
                 Console.WriteLine(jChildren[i]["name"].ToObject<string>());
+                Console.WriteLine(jChildren[i]);
 
                 try
                 {
@@ -302,7 +303,7 @@ namespace RemoteHealthCare.Network
                 }
             }
         }
-
+    
         /// <summary>
         /// 
         /// </summary>
@@ -374,18 +375,6 @@ namespace RemoteHealthCare.Network
         }
 
         /// <summary>
-        /// Creates a tunnel to transport data
-        /// </summary>
-        private void CreateTunnel()
-        {
-            JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
-            ob["data"]["dest"] = Id;
-
-            Console.WriteLine($"message: {ob}");
-            Send(ob.ToString());
-        }
-
-        /// <summary>
         /// Resets the simulation scene
         /// </summary>
         public void ResetScene()
@@ -441,13 +430,14 @@ namespace RemoteHealthCare.Network
         /// <param name="bikeName">Name of the bike that will be created</param>
         public void CreateBike(string bikeName)
         {
-            JObject bike = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
-            bike["data"]["dest"] = Id;
-            bike["data"]["data"]["data"]["name"] = bikeName;
-
             // makes sure the name isn't already in use
-            if (!_nodes.ContainsKey(bikeName))
+            if (!_nodes.ContainsKey(bikeName) && IdReceived("Camera"))
             {
+                JObject bike = JObject.Parse(File.ReadAllText(Path + "/bike.json"));
+                bike["data"]["dest"] = Id;
+                bike["data"]["data"]["data"]["name"] = bikeName;
+                bike["data"]["data"]["data"]["parent"] = this._nodes["Camera"];
+
                 _nodes.Add(bikeName, "fakeId");
                 Console.WriteLine($"message: {bike}");
                 Send(bike.ToString());
@@ -554,6 +544,7 @@ namespace RemoteHealthCare.Network
         /// </summary>
         /// <param name="panelName">Name of the panel the text will be applied to</param>
         /// <param name="text">string that will be written on the panel</param>
+        /// <param name="line">The line on which the text will be placed</param>
         public void AddTextToPanel(string panelName, string text, int line)
         {
             JObject textJson = JObject.Parse(File.ReadAllText(Path + "/drawtext.json"));

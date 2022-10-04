@@ -31,6 +31,9 @@ namespace RemoteHealthCare
 
                 NetworkEngine(bikeClient);
 
+           // while(true)
+             //   Thread.Sleep(1);
+
                 // Kind of bikes available
 
                 IBike bike = new SimulationBike();
@@ -89,32 +92,19 @@ namespace RemoteHealthCare
 
             bikeClient.AddRoute();
 
-            
-            
-
-            //wait for the node and route id
-            Console.WriteLine("waiting for ids");
-            while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0))
-                Thread.Sleep(1);
-            Thread.Sleep(5000);
-
             bikeClient.AddPanel("panel1");
+            
 
-            while (!bikeClient.IdReceived("panel1"))
+            //wait for the node and route ids
+            Console.WriteLine("waiting for ids");
+            while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0) || !bikeClient.IdReceived("panel1"))
                 Thread.Sleep(1);
+            //Thread.Sleep(5000);
 
-            // bikeClient.AddLineToPanel("panel1");
-            //bikeClient.ClearPanel("panel1");
-            //bikeClient.AddTextToPanel("panel1", "This is some text", 1);
-            //bikeClient.AddTextToPanel("panel1", "This is some text again", 2);
-            //bikeClient.AddPanelImage("panel1");
-            //Thread.Sleep(500);
 
-            //swap the panel to adapt the latest changes
-            //bikeClient.SwapPanelBuffer("panel1");
 
-            //bikeClient.DeleteNode("bike2");
-            ////client.DeleteNode("node");
+            //while (!bikeClient.IdReceived("panel1"))
+              //  Thread.Sleep(1);
 
             bikeClient.FollowRoute(0, "bike");
             networkEngineRunning = true;

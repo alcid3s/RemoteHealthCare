@@ -6,6 +6,7 @@
       "id": "scene/node/add",
       "data": {
         "name": "",
+        "parent": "",
         "components": {
           "transform": {
             "position": [ 10, 0, 10 ],

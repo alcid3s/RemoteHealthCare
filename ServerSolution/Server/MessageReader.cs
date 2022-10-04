@@ -10,6 +10,7 @@ namespace Server
     {
         private int _index;
         private byte[] _data;
+
         public MessageReader(byte[] data)
         {
             _data = data;
@@ -53,6 +54,20 @@ namespace Server
                 bytes.Add(ReadByte());
             }
             return bytes.ToArray();
+        }
+
+        /// <summary>
+        /// Validates a message using the checksum
+        /// </summary>
+        /// <returns>Whether the message is functional or not</returns>
+        public bool Checksum()
+        {
+            byte checksum = 0;
+            foreach (byte value in _data)
+            {
+                checksum ^= value;
+            }
+            return checksum == 0;
         }
     }
 }

@@ -44,10 +44,10 @@ namespace RemoteHealthCare.GUI
         {
             if (txtPasswordConfirmAccountCreationClient.Text.Equals(txtPasswordAccountCreationClient.Text))
             {
-                //TODO: Send message to server if account exists and uses correct password.
-                if (ServerClient.IsRunning)
+                // If the server is running and password and confirm password are the same the request to create an account will be made.
+                if (ServerClient.IsRunning && txtPasswordAccountCreationClient.Text.Equals(txtPasswordConfirmAccountCreationClient.Text))
                 {
-                    ServerClient.Send(new byte[] { 0x10 }, txtAccountNameAccountCreationClient.Text + Account.Suffix);
+                    ServerClient.Send(new byte[] { 0x10 }, txtAccountNameAccountCreationClient.Text + "/" + txtPasswordConfirmAccountCreationClient.Text);
                 }
             }
         }

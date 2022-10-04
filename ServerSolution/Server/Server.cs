@@ -80,8 +80,7 @@ namespace Server
                         case 0x10:
                             message[0] = 0;
                             Console.WriteLine($"Trying to make new Account, data received: {Encoding.UTF8.GetString(message)}");
-                            AccountManager account = new AccountManager();
-
+                            //AccountManager account = new AccountManager(Encoding.UTF8.GetString(message));
                             break;
 
                         // Client wants to login

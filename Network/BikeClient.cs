@@ -554,7 +554,7 @@ namespace RemoteHealthCare.Network
         /// </summary>
         /// <param name="panelName">Name of the panel the text will be applied to</param>
         /// <param name="text">string that will be written on the panel</param>
-        public void AddTextToPanel(string panelName, string text)
+        public void AddTextToPanel(string panelName, string text, int line)
         {
             JObject textJson = JObject.Parse(File.ReadAllText(Path + "/drawtext.json"));
             textJson["data"]["dest"] = Id;
@@ -563,6 +563,9 @@ namespace RemoteHealthCare.Network
             {
                 textJson["data"]["data"]["data"]["id"] = this._nodes[panelName];
                 textJson["data"]["data"]["data"]["text"] = text;
+
+                var lineArray = textJson["data"]["data"]["data"]["position"] as JArray;
+                lineArray[1] = line * 32;
                 Console.WriteLine($"message: {textJson}");
                 Send(textJson.ToString());
             }
@@ -571,6 +574,7 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Node name " + panelName + " already used");
             }
         }
+
 
         /// <summary>
         /// Applies drawline.json to the given panel

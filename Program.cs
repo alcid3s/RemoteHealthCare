@@ -51,6 +51,13 @@ namespace RemoteHealthCare
                     if (networkEngineRunning)
                     {
                         bikeClient.UpdateSpeed(bike.Speed);
+
+                        bikeClient.ClearPanel("panel1");
+                        bikeClient.AddTextToPanel("panel1", "Speed: " + Math.Round(bike.Speed, 2) + " m/s", 1);
+                        bikeClient.AddTextToPanel("panel1", "Distance traveled: " + bike.DistanceTravelled + "m", 2);
+                        bikeClient.AddTextToPanel("panel1", "Elapsed time: " + (int)bike.ElapsedTime + "s", 3);
+                        bikeClient.AddTextToPanel("panel1", "Heartrate: " + bike.HeartRate + " bpm", 4);
+                        bikeClient.SwapPanelBuffer("panel1");
                     }
                 };
 
@@ -97,13 +104,14 @@ namespace RemoteHealthCare
                 Thread.Sleep(1);
 
             // bikeClient.AddLineToPanel("panel1");
-            bikeClient.ClearPanel("panel1");
-            bikeClient.AddTextToPanel("panel1", "This is some text");
+            //bikeClient.ClearPanel("panel1");
+            //bikeClient.AddTextToPanel("panel1", "This is some text", 1);
+            //bikeClient.AddTextToPanel("panel1", "This is some text again", 2);
             //bikeClient.AddPanelImage("panel1");
             //Thread.Sleep(500);
 
             //swap the panel to adapt the latest changes
-            bikeClient.SwapPanelBuffer("panel1");
+            //bikeClient.SwapPanelBuffer("panel1");
 
             //bikeClient.DeleteNode("bike2");
             ////client.DeleteNode("node");

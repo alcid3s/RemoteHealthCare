@@ -39,6 +39,8 @@
             this.txtDT = new System.Windows.Forms.TextBox();
             this.txtHR = new System.Windows.Forms.TextBox();
             this.txtSpeed = new System.Windows.Forms.TextBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.txtInfo = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // textBox5
@@ -159,11 +161,30 @@
             this.txtSpeed.TabIndex = 14;
             this.txtSpeed.TextChanged += new System.EventHandler(this.txtSpeed_TextChanged);
             // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(1, 17);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
+            this.textBox6.Size = new System.Drawing.Size(100, 23);
+            this.textBox6.TabIndex = 25;
+            this.textBox6.Text = "important info:";
+            // 
+            // txtInfo
+            // 
+            this.txtInfo.Location = new System.Drawing.Point(111, 17);
+            this.txtInfo.Name = "txtInfo";
+            this.txtInfo.ReadOnly = true;
+            this.txtInfo.Size = new System.Drawing.Size(451, 23);
+            this.txtInfo.TabIndex = 26;
+            // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.txtInfo);
+            this.Controls.Add(this.textBox6);
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.textBox3);
@@ -195,5 +216,7 @@
         private TextBox txtDT;
         private TextBox txtHR;
         private TextBox txtSpeed;
+        private TextBox textBox6;
+        private TextBox txtInfo;
     }
 }

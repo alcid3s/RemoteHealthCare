@@ -20,12 +20,14 @@ namespace DoctorApllication
             doctor.addListItems("Guus");
             doctor.addListItems("Max");
             doctor.addListItems("Tygo");
+            doctor.addListItems("Simulation Bike");
 
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             //ApplicationConfiguration.Initialize();
             Application.Run(doctor);
-           
+
+            for (; ; );
         }
     }
 }

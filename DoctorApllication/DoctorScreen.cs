@@ -38,6 +38,21 @@ namespace DoctorApllication
         {
             lstClients.Items.Add(s);
         }
+        private void btnConnectClient_Click(object sender, EventArgs e)
+        {
+            if (lstClients.SelectedItems != null)
+            {
+                txtInfo.Text = "connecting...";
+                txtInfo.Text = lstClients.SelectedItems.ToString();
+                if (lstClients.SelectedItems.ToString() == "Simulation Bike")
+                {
+                  
+                }
+            } else if (lstClients.SelectedItems == null)
+            {
+                txtInfo.Text = "no client selected";
+            }
+        }
 
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -76,11 +91,6 @@ namespace DoctorApllication
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnConnectClient_Click(object sender, EventArgs e)
         {
 
         }

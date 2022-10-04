@@ -8,10 +8,24 @@ namespace DoctorApllication
         [STAThread]
         static void Main()
         {
+
+            DoctorScreen doctor = new DoctorScreen();
+            doctor.setTXTSpeed("15");
+            doctor.setTXTDT("200");
+            doctor.setTXTET("20.23");
+            doctor.setTXTHR("125");
+            doctor.addListItems("Niels");
+            doctor.addListItems("Koen");
+            doctor.addListItems("Coen");
+            doctor.addListItems("Guus");
+            doctor.addListItems("Max");
+            doctor.addListItems("Tygo");
+
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            //ApplicationConfiguration.Initialize();
+            Application.Run(doctor);
+           
         }
     }
 }

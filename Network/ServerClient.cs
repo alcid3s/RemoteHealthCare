@@ -18,6 +18,9 @@ namespace RemoteHealthCare.Network
             _port = port;
         }
 
+        /// <summary>
+        /// Connects the server client to the address and port given in the constructor
+        /// </summary>
         public void Connect()
         {
             IPEndPoint endPoint = new IPEndPoint(_address, _port);
@@ -34,6 +37,14 @@ namespace RemoteHealthCare.Network
             }
         }
 
+        /// <summary>
+        /// Sends a message with the given params as content
+        /// </summary>
+        /// <param name="id">Id of the bike</param>
+        /// <param name="elapsedTime">The elapsed time since the beginning of the exercise</param>
+        /// <param name="distanceTravelled">The total travelled distance since the beginning of the exercise</param>
+        /// <param name="speed">The current speed of the bike</param>
+        /// <param name="heartRate">The current heart rate of the patient</param>
         public void Send(byte id, decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)
         {
             short elapsedTimeByte = (((short)Math.Round(elapsedTime * 4)));

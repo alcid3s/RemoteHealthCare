@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RemoteHealthCare.Scene;
 
@@ -28,7 +27,8 @@ namespace RemoteHealthCare.Network
 
         public BikeClient()
         {
-            Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() + "/Json";
+            Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() +
+                   "/Json";
             Id = string.Empty;
         }
 
@@ -103,7 +103,7 @@ namespace RemoteHealthCare.Network
                     }
                 }
 
-                Send(terrain.ToString()); ;
+                Send(terrain.ToString());
 
                 Thread.Sleep(5000);
 
@@ -176,7 +176,8 @@ namespace RemoteHealthCare.Network
                             // iterates through the list of usernames to find the correct id used for tunneling
                             for (int i = 0; jData["data"].ToArray().Length > i; i++)
                             {
-                                Console.WriteLine($"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
+                                Console.WriteLine(
+                                    $"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
                                 if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
                                 {
                                     lastLocation = i;
@@ -188,7 +189,8 @@ namespace RemoteHealthCare.Network
                             var session = jData["data"].ElementAt(lastLocation)["id"];
 
                             // messages the request in the form of JSON to the tunnel
-                            string message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session + "\", \"key\" : \"\"}}";
+                            string message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session +
+                                             "\", \"key\" : \"\"}}";
                             Console.WriteLine($"Sending: {message}");
 
                             // sends the message
@@ -199,7 +201,8 @@ namespace RemoteHealthCare.Network
                             // checks if the received message is an error and prints that message
                             if (jData["data"]["status"].ToObject<string>() == "error")
                             {
-                                Console.WriteLine("Error while making a tunnel with server, are you running NetworkEngine?");
+                                Console.WriteLine(
+                                    "Error while making a tunnel with server, are you running NetworkEngine?");
                                 Console.WriteLine("Server error message:\n" + jData["data"]);
                                 break;
                             }
@@ -210,7 +213,10 @@ namespace RemoteHealthCare.Network
 
                             // throws an error if the id is empty
                             if (Id != null && Id.Equals(string.Empty))
+                            {
                                 throw new Exception("Error, couldn't fetch id from tunnel/create");
+                            }
+
                             break;
 
                         case "tunnel/send":
@@ -233,8 +239,10 @@ namespace RemoteHealthCare.Network
                                     Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
                                     this.nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
                                     Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
-                                    this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(), jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                    this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(),
+                                        jData["data"]["data"]["data"]["uuid"].ToObject<string>());
                                 }
+
                                 Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
                                 break;
                             }
@@ -254,6 +262,7 @@ namespace RemoteHealthCare.Network
                                 this.UpdateNodes(jData["data"]["data"]["data"]["children"]);
                                 break;
                             }
+
                             // writes full response when no handling is implemented
                             Console.WriteLine("No handling implemented for the id: " + jData["data"]["data"]["id"]);
                             Console.WriteLine($"Server response: {jData}");
@@ -265,6 +274,7 @@ namespace RemoteHealthCare.Network
                             Console.WriteLine($"Server response: {jData}");
                             break;
                     }
+
                     var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
                     Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
                     _totalBuffer = newBuffer;
@@ -274,6 +284,7 @@ namespace RemoteHealthCare.Network
                     break;
                 }
             }
+
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
         }
 
@@ -417,18 +428,16 @@ namespace RemoteHealthCare.Network
         /// <param name="nodeName">Node that needs to be deleted</param>
         public void DeleteNode(string nodeName)
         {
-            if (this.nodes.ContainsKey(nodeName))
-            {
-                JObject ob = JObject.Parse(File.ReadAllText(Path + "/delete_node.json"));
-                ob["data"]["dest"] = Id;
-                ob["data"]["data"]["data"]["id"] = this.nodes[nodeName];
+            if (!this.nodes.ContainsKey(nodeName)) return;
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/delete_node.json"));
+            ob["data"]["dest"] = Id;
+            ob["data"]["data"]["data"]["id"] = this.nodes[nodeName];
 
-                Console.WriteLine($"message: {ob}");
-                Send(ob.ToString());
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
 
-                // removes the node in the dictionary
-                this.nodes.Remove(nodeName);
-            }
+            // removes the node in the dictionary
+            this.nodes.Remove(nodeName);
         }
 
         /// <summary>
@@ -581,6 +590,11 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("route " + route + " and/or " + nodeName + " does not exist");
             }
         }
+
+        /// <summary>
+        /// Updates the speed of the bike to the given speed
+        /// </summary>
+        /// <param name="speed">Speed that the bike should be at</param>
         public void UpdateSpeed(decimal speed)
         {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/update_bike_speed.json"));

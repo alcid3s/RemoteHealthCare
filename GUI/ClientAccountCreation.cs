@@ -43,12 +43,10 @@ namespace RemoteHealthCare.GUI
 
         private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
         {
-            if (txtAccountNameAccountCreationClient.Text.Length < 41)
+            if (txtAccountNameAccountCreationClient.Text.Length < 41 && txtAccountNameAccountCreationClient.Text.Length > 3)
             {
                 if (txtPasswordAccountCreationClient.Text.Length > 7 && txtPasswordAccountCreationClient.Text.Length < 32)
                 {
-                    if (txtPasswordConfirmAccountCreationClient.Text.Equals(txtPasswordAccountCreationClient.Text))
-                    {
                         // If the server is running and password and confirm password are the same the request to create an account will be made.
                         if (ServerClient.IsRunning && txtPasswordAccountCreationClient.Text.Equals(txtPasswordConfirmAccountCreationClient.Text))
                         {
@@ -65,16 +63,15 @@ namespace RemoteHealthCare.GUI
                             //IEnumerable<byte> message = id.Concat(sizeu).Concat(username).Concat(sizep).Concat(password);
                             ServerClient.Send(writer.GetBytes());
                         }
-                    }
                 }
                 else
                 {
-                    txtPasswordAccountCreationClient.Text = "TO LONG";
+                    txtPasswordAccountCreationClient.Text = "TO LONG OR TO SHORT";
                 }
             }
             else
             {
-                txtAccountNameAccountCreationClient.Text = "TO LONG";
+                txtAccountNameAccountCreationClient.Text = "TO LONG OR TO SHORT";
             }
         }
 

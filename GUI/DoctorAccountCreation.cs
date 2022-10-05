@@ -23,27 +23,9 @@ namespace RemoteHealthCare.GUI
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
-            if (txtAccountNameAccountCreationDoctor.Text.Length < 41 && txtAccountNameAccountCreationDoctor.Text.Length > 3)
+            if (txtPasswordAccountCreationDoctor == txtPasswordConfirmAccountCreationPassword)
             {
-                if (txtPasswordAccountCreationDoctor.Text.Length > 7 && txtPasswordAccountCreationDoctor.Text.Length < 32)
-                {
-                    if (txtPasswordAccountCreationDoctor.Text == txtPasswordConfirmAccountCreationPassword.Text)
-                    {
-                        MessageWriter writer = new MessageWriter(0x14);
-                        writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationDoctor.Text));
-                        writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationDoctor.Text));
 
-                        ServerClient.Send(writer.GetBytes());
-                    }
-                }
-                else
-                {
-                    txtAccountNameAccountCreationDoctor.Text = "TO LONG OR TO SHORT";
-                }
-            }
-            else
-            {
-                txtPasswordAccountCreationDoctor.Text = "TO LONG OR TO SHORT";
             }
         }
 
@@ -59,7 +41,30 @@ namespace RemoteHealthCare.GUI
 
         private void DoctorAccountCreation_Load(object sender, EventArgs e)
         {
-            
+            if (txtAccountNameAccountCreationDoctor.Text.Length < 41 && txtAccountNameAccountCreationDoctor.Text.Length > 3)
+            {
+                if (txtPasswordAccountCreationDoctor.Text.Length > 7 && txtPasswordAccountCreationDoctor.Text.Length < 32)
+                {
+                    if (txtPasswordAccountCreationDoctor.Text == txtPasswordConfirmAccountCreationPassword.Text)
+                    {
+                        MessageWriter writer = new MessageWriter(0x14); 
+                        writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationDoctor.Text));
+                        writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationDoctor.Text));
+
+                        ServerClient.Send(writer.GetBytes());
+                    }
+
+
+                }
+                else
+                {
+                    txtAccountNameAccountCreationDoctor.Text = "TO LONG OR TO SHORT";
+            }
+}
+            else
+                {
+                txtPasswordAccountCreationDoctor.Text = "TO LONG OR TO SHORT";
+                }
         }
     }
 }

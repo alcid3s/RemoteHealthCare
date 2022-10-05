@@ -11,11 +11,25 @@ namespace Server
         private int _index;
         private byte[] _data;
 
+        private byte _id;
+        public byte Id { get => GetId(); }
+
         public MessageReader(byte[] data)
         {
-            _data = data;
-            _index = 0;
+            if (data.Length == 0)
+                throw new ArgumentException();
+
+            byte length = data[0];
+            if (length + 1 > data.Length)
+                throw new ArgumentException();
+
+            _data = data.Take(length + 1).ToArray();
+            _index = 1;
+
+            _id = ReadByte();
         }
+
+        
 
         /// <summary>
         /// Reads the current byte and moves the indexer
@@ -23,6 +37,9 @@ namespace Server
         /// <returns>the currently read byte</returns>
         public byte ReadByte()
         {
+            if (!Checksum())
+                throw new InvalidOperationException();
+
             return _data[_index++];
         }
 
@@ -33,6 +50,9 @@ namespace Server
         /// <returns>The integer represented by the read bytes</returns>
         public int ReadInt(int byteCount)
         {
+            if (!Checksum())
+                throw new InvalidOperationException();
+
             int value = 0;
             for (int i = 0; i < byteCount; i++)
             {
@@ -47,6 +67,9 @@ namespace Server
         /// <returns>The raw bytes from the packet</returns>
         public byte[] ReadPacket()
         {
+            if (!Checksum())
+                throw new InvalidOperationException();
+
             List<byte> bytes = new List<byte>();
             byte length = ReadByte();
             for (int i = 0; i < length; i++)
@@ -68,6 +91,13 @@ namespace Server
                 checksum ^= value;
             }
             return checksum == 0;
+        }
+
+        private byte GetId()
+        {
+            if (!Checksum())
+                throw new InvalidOperationException();
+            return _id;
         }
     }
 }

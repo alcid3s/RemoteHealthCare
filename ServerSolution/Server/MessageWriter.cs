@@ -11,10 +11,13 @@ namespace Server
         private List<byte> _data;
         private bool _closed;
 
-        public MessageWriter()
+        public MessageWriter(byte id)
         {
             _data = new List<byte>();
             _closed = false;
+
+            WriteByte(255);
+            WriteByte(id);
         }
 
         /// <summary>
@@ -83,12 +86,20 @@ namespace Server
         /// </summary>
         private void Compile()
         {
+            if(_data.Count > 255)
+                throw new InternalBufferOverflowException();
+
+            _data[0] = (byte)_data.Count;
+
             byte checksum = 0;
             foreach (byte value in _data)
             {
                 checksum ^= value;
             }
-            _data.Add(checksum);
+            
+            WriteByte(checksum);
+
+            _closed = true;
         } 
     }
 }

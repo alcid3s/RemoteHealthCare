@@ -52,13 +52,12 @@ namespace RemoteHealthCare.Network
             int received = _socket.Send(message);
         }
 
-        public static void Send(byte[] id, string username)
+        public static void Send(byte[] message)
         {
-            byte[] userNameInBytes = Encoding.ASCII.GetBytes(username);
+            //byte[] userNameInBytes = Encoding.ASCII.GetBytes(username);
+            //IEnumerable<byte> message = id.Concat(userNameInBytes);
 
-            IEnumerable<byte> message = id.Concat(userNameInBytes);
-
-            int received = _socket.Send(message.ToArray());
+            int received = _socket.Send(message);
         }
     }
 }

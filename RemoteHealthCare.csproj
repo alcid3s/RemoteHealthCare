@@ -124,6 +124,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Res\" />
+    <Folder Include="textures" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Json\add_road.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">

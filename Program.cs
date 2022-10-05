@@ -20,7 +20,7 @@ namespace RemoteHealthCare
                 ClientScreen clientScreen = new ClientScreen();
                 //Application.Run(clientScreen);
 
-                // Making connection with the VR server
+                // creates a connection with the VR server
                 BikeClient bikeClient = new BikeClient();
                 bikeClient.Connect("145.48.6.10", 6666);
 
@@ -39,6 +39,7 @@ namespace RemoteHealthCare
                 IBike bike = new SimulationBike();
                 bike.Init();
 
+                // delegates a method that sends all the relevant information to the server
                 bike.OnUpdate += delegate
                 {
                     if (clientScreen != null)
@@ -68,6 +69,10 @@ namespace RemoteHealthCare
             for (; ; );
         }
 
+        /// <summary>
+        /// Creates a network engine with all required nodes
+        /// </summary>
+        /// <param name="bikeClient">The client that will receive all the commands</param>
         private static void NetworkEngine(BikeClient bikeClient)
         {
             bikeClient.ResetScene();
@@ -91,6 +96,11 @@ namespace RemoteHealthCare
             //bikeClient.CreateBike("bike2");
 
             bikeClient.AddRoute();
+
+            while (!bikeClient.RouteExists(0)) {
+                Thread.Sleep(1);
+            }
+            bikeClient.AddRoad();
 
             bikeClient.AddPanel("panel1");
 

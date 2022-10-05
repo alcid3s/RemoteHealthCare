@@ -76,12 +76,6 @@
     <Compile Include="GUI\ClientAccountCreation.Designer.cs">
       <DependentUpon>ClientAccountCreation.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ClientInformationScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\ClientInformationScreen.Designer.cs">
-      <DependentUpon>ClientInformationScreen.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\ClientScreen.cs">
       <SubType>Form</SubType>
     </Compile>

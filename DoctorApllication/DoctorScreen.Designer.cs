@@ -198,6 +198,7 @@
             this.Controls.Add(this.txtSpeed);
             this.Name = "DoctorScreen";
             this.Text = "DoctorScreen";
+            this.Load += new System.EventHandler(this.DoctorScreen_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

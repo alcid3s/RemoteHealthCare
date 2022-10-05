@@ -65,5 +65,10 @@ namespace RemoteHealthCare.GUI
         {
 
         }
+
+        private void ClientScreen_Load(object sender, EventArgs e)
+        {
+            lstBikes.Items.Add("24517");
+        }
     }
 }

@@ -42,8 +42,11 @@ namespace DoctorApllication
         {
             if (lstClients.SelectedItems != null)
             {
-                txtInfo.Text = "connecting...";
-                txtInfo.Text = lstClients.SelectedItems.ToString();
+                txtInfo.Text = "connecting to ";
+                foreach(object s in lstClients.SelectedItems)
+                {
+                    txtInfo.Text += s.ToString(); 
+                }
                 if (lstClients.SelectedItems.ToString() == "Simulation Bike")
                 {
                   
@@ -91,6 +94,11 @@ namespace DoctorApllication
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DoctorScreen_Load(object sender, EventArgs e)
         {
 
         }

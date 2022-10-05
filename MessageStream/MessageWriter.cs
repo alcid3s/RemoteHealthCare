@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server
+namespace MessageStream
 {
-    internal class MessageWriter
+
+    public class MessageWriter
     {
         private List<byte> _data;
         private bool _closed;
@@ -87,7 +88,7 @@ namespace Server
         /// </summary>
         private void Compile()
         {
-            if(_data.Count > 255)
+            if (_data.Count > 255)
                 throw new InternalBufferOverflowException();
 
             _data[0] = (byte)_data.Count;
@@ -97,10 +98,10 @@ namespace Server
             {
                 checksum ^= value;
             }
-            
+
             WriteByte(checksum);
 
             _closed = true;
-        } 
+        }
     }
 }

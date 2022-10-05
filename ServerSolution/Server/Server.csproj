@@ -11,4 +11,8 @@
     <Folder Include="Accounts\Data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\MessageStream\MessageStream.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MessageStream;
 using RemoteHealthCare.Accounts;
 using RemoteHealthCare.Network;
-using Server;
 
 namespace RemoteHealthCare.GUI
 {
@@ -51,14 +51,6 @@ namespace RemoteHealthCare.GUI
                     MessageWriter writer = new MessageWriter(0x10);
                     writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text));
                     writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text));
-
-                    //byte[] id = { 0x10 };
-                    //byte[] sizeu = { (byte)txtAccountNameAccountCreationClient.Text.Length };
-                    //byte[] username = Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text);
-                    //byte[] sizep = { (byte)txtAccountNameAccountCreationClient.Text.Length };
-                    //byte[] password = Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text);
-
-                    //IEnumerable<byte> message = id.Concat(sizeu).Concat(username).Concat(sizep).Concat(password);
                     ServerClient.Send(writer.GetBytes());
                 }
             }

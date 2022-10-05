@@ -239,7 +239,7 @@ namespace RemoteHealthCare.Network
                                     Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
                                     this._nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
                                     Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
-                                    this.nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(),
+                                    this._nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(),
                                         jData["data"]["data"]["data"]["uuid"].ToObject<string>());
                                 }
 
@@ -417,16 +417,16 @@ namespace RemoteHealthCare.Network
         /// <param name="nodeName">Node that needs to be deleted</param>
         public void DeleteNode(string nodeName)
         {
-            if (!this.nodes.ContainsKey(nodeName)) return;
+            if (!this._nodes.ContainsKey(nodeName)) return;
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/delete_node.json"));
             ob["data"]["dest"] = Id;
-            ob["data"]["data"]["data"]["id"] = this.nodes[nodeName];
+            ob["data"]["data"]["data"]["id"] = this._nodes[nodeName];
 
             Console.WriteLine($"message: {ob}");
             Send(ob.ToString());
 
             // removes the node in the dictionary
-            this.nodes.Remove(nodeName);
+            this._nodes.Remove(nodeName);
         }
 
         /// <summary>
@@ -737,10 +737,11 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
-        public void AddRoad() {
+        public void AddRoad(int route) {
+            if(!RouteExists(route)) return;
             JObject add_road = JObject.Parse(File.ReadAllText(Path + "/add_road.json"));
             add_road["data"]["dest"] = Id;
-            add_road["data"]["data"]["data"]["route"] = routes[0];
+            add_road["data"]["data"]["data"]["route"] = _routes[route];
 
             Console.WriteLine($"message: {add_road}");
             Send(add_road.ToString());

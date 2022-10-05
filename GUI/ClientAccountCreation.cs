@@ -43,24 +43,38 @@ namespace RemoteHealthCare.GUI
 
         private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
         {
-            if (txtPasswordConfirmAccountCreationClient.Text.Equals(txtPasswordAccountCreationClient.Text))
+            if (txtAccountNameAccountCreationClient.Text.Length < 41)
             {
-                // If the server is running and password and confirm password are the same the request to create an account will be made.
-                if (ServerClient.IsRunning && txtPasswordAccountCreationClient.Text.Equals(txtPasswordConfirmAccountCreationClient.Text))
+                if (txtPasswordAccountCreationClient.Text.Length > 7 && txtPasswordAccountCreationClient.Text.Length < 32)
                 {
-                    MessageWriter writer = new MessageWriter(0x10);
-                    writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text));
-                    writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text));
+                    if (txtPasswordConfirmAccountCreationClient.Text.Equals(txtPasswordAccountCreationClient.Text))
+                    {
+                        // If the server is running and password and confirm password are the same the request to create an account will be made.
+                        if (ServerClient.IsRunning && txtPasswordAccountCreationClient.Text.Equals(txtPasswordConfirmAccountCreationClient.Text))
+                        {
+                            MessageWriter writer = new MessageWriter(0x10);
+                            writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text));
+                            writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text));
 
-                    //byte[] id = { 0x10 };
-                    //byte[] sizeu = { (byte)txtAccountNameAccountCreationClient.Text.Length };
-                    //byte[] username = Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text);
-                    //byte[] sizep = { (byte)txtAccountNameAccountCreationClient.Text.Length };
-                    //byte[] password = Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text);
+                            //byte[] id = { 0x10 };
+                            //byte[] sizeu = { (byte)txtAccountNameAccountCreationClient.Text.Length };
+                            //byte[] username = Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text);
+                            //byte[] sizep = { (byte)txtAccountNameAccountCreationClient.Text.Length };
+                            //byte[] password = Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text);
 
-                    //IEnumerable<byte> message = id.Concat(sizeu).Concat(username).Concat(sizep).Concat(password);
-                    ServerClient.Send(writer.GetBytes());
+                            //IEnumerable<byte> message = id.Concat(sizeu).Concat(username).Concat(sizep).Concat(password);
+                            ServerClient.Send(writer.GetBytes());
+                        }
+                    }
                 }
+                else
+                {
+                    txtPasswordAccountCreationClient.Text = "TO LONG";
+                }
+            }
+            else
+            {
+                txtAccountNameAccountCreationClient.Text = "TO LONG";
             }
         }
 

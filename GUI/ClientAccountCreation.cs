@@ -73,5 +73,10 @@ namespace RemoteHealthCare.GUI
 
             this.Hide();
         }
+
+        private void ClientAccountCreation_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

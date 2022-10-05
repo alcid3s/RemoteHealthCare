@@ -102,19 +102,26 @@ namespace RemoteHealthCare
 
             bikeClient.AddPanel("panel1");
 
-            for (int i = 1; i < 11; i++)
+            for (int i = 1; i < 5; i++)
             {
-                byte[] postion = new byte[3];
-                postion[0] = (byte)(i*5);
-                postion[2] = (byte)(i*5);
+                decimal[] postion = new decimal[3];
+                postion[0] = (decimal)(i*50);
+                postion[2] = (decimal)(i*50);
 
                 //byte[] rotation = new byte[3];
                 //rotation[1] = new Random(1).Next;
-
+                bikeClient.CreateModel("testModel" + i, "terrain", postion, 2, new decimal[3], "data/NetworkEngine/models/trees/fantasy/tree" + i + ".obj", "", false);
                 
             }
+
+            decimal[] position = new decimal[3];
+            position[0] = 60;
+            position[1] = (decimal)0.2;
+            position[2] = 30;
+
+            bikeClient.CreateModel("testHouse", "terrain", position, 4, new decimal[3], "data/NetworkEngine/models/houses/set1/house1.obj", "", true);
             
-            bikeClient.CreateModel("testModel", "", new byte[3], 2, new byte[3], "data/NetworkEngine/models/trees/fantasy/tree1.obj", "", false);
+            
 
             //wait for the node and route ids
             Console.WriteLine("waiting for ids");

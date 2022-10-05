@@ -8,9 +8,9 @@
         "name": "",
         "components": {
           "transform": {
-            "position": [ 0.2, 1.2, 0 ],
+            "position": [ -0.8, 1.2, 0 ],
             "scale": 0.5,
-            "rotation": [ 0, 90, 0 ]
+            "rotation": [ 310, 90, 0 ]
           },
           "panel": {
             "size": [ 1, 0.5 ],

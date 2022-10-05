@@ -82,7 +82,7 @@ namespace RemoteHealthCare.Network
         /// <summary>
         /// Generates terrain using the given string as an id
         /// </summary>
-        /// <param name="name">Identifier of the terrain taht will be created</param>
+        /// <param name="name">Identifier of the terrain that will be created</param>
         public void CreateTerrain(string name)
         {
             // checks if the terrain doesn't already exist
@@ -447,7 +447,7 @@ namespace RemoteHealthCare.Network
         /// <param name="fileName">Name and location of the 3d model file</param>
         /// <param name="animation">Name and location of the animation file, can be empty</param>
         /// <param name="animation">true to not draw the backsides of models, false to draw the backsides of models</param>
-        public void CreateModel(string modelName, string modelParent, byte[] position, decimal scale, byte[] rotation, string fileName, string animation, bool cullbackfaces)
+        public void CreateModel(string modelName, string modelParent, decimal[] position, decimal scale, decimal[] rotation, string fileName, string animation, bool cullbackfaces)
         {
             // makes sure the name isn't already in use
             if (!_nodes.ContainsKey(modelName))
@@ -483,7 +483,10 @@ namespace RemoteHealthCare.Network
 
                 model["data"]["data"]["data"]["components"]["model"]["file"] = fileName; 
 
-                model["data"]["data"]["data"]["components"]["model"]["animation"] = animation; 
+                if(animation != "")
+                    model["data"]["data"]["data"]["components"]["model"]["animation"] = animation; 
+                else
+                    model["data"]["data"]["data"]["components"]["model"]["animated"] = false; 
 
                 model["data"]["data"]["data"]["components"]["model"]["cullbackfaces"] = cullbackfaces; 
 
@@ -630,7 +633,7 @@ namespace RemoteHealthCare.Network
                 textJson["data"]["data"]["data"]["text"] = text;
 
                 var lineArray = textJson["data"]["data"]["data"]["position"] as JArray;
-                lineArray[1] = line * 32;
+                lineArray[1] = line * 54;
                 Console.WriteLine($"message: {textJson}");
                 Send(textJson.ToString());
             }
@@ -699,10 +702,10 @@ namespace RemoteHealthCare.Network
         }
 
         /// <summary>
-        /// Makes it so that the node(bike) follows the given route
+        /// Makes it so that the node follows the given route
         /// </summary>
         /// <param name="route">Route that the node will follow</param>
-        /// <param name="nodeName">Name of the node that will follow the route. Most likely a bike</param>
+        /// <param name="nodeName">Name of the node that will follow the route. Most likely a bike in sim and camera in vive</param>
         public void FollowRoute(int route, string nodeName)
         {
             if (this._nodes.ContainsKey(nodeName) && RouteExists(route))
@@ -744,6 +747,10 @@ namespace RemoteHealthCare.Network
             Send(ob.ToString());
         }
 
+        /// <summary>
+        /// Add a visible road to a route
+        /// </summary>
+        /// <param name="route">the number of the route to give a road</param>
         public void AddRoad(int route) {
             if(!RouteExists(route)) return;
             JObject add_road = JObject.Parse(File.ReadAllText(Path + "/add_road.json"));

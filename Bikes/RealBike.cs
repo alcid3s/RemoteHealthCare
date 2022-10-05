@@ -125,7 +125,7 @@ namespace RemoteHealthCare.Bikes
                             Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
                             break;
                     }
-                    Thread.Sleep(250);
+                    //Thread.Sleep(250);
                     OnUpdate();
                     y++;
                 }

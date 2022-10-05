@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using RemoteHealthCare.Accounts;
 using RemoteHealthCare.Network;
+using Server;
 
 namespace RemoteHealthCare.GUI
 {
@@ -47,14 +48,18 @@ namespace RemoteHealthCare.GUI
                 // If the server is running and password and confirm password are the same the request to create an account will be made.
                 if (ServerClient.IsRunning && txtPasswordAccountCreationClient.Text.Equals(txtPasswordConfirmAccountCreationClient.Text))
                 {
-                    byte[] id = { 0x10 };
-                    byte[] sizeu = { (byte)txtAccountNameAccountCreationClient.Text.Length };
-                    byte[] username = Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text);
-                    byte[] sizep = { (byte)txtAccountNameAccountCreationClient.Text.Length };
-                    byte[] password = Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text);
+                    MessageWriter writer = new MessageWriter(0x10);
+                    writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text));
+                    writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text));
 
-                    IEnumerable<byte> message = id.Concat(sizeu).Concat(username).Concat(sizep).Concat(password);
-                    ServerClient.Send(message.ToArray());
+                    //byte[] id = { 0x10 };
+                    //byte[] sizeu = { (byte)txtAccountNameAccountCreationClient.Text.Length };
+                    //byte[] username = Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text);
+                    //byte[] sizep = { (byte)txtAccountNameAccountCreationClient.Text.Length };
+                    //byte[] password = Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text);
+
+                    //IEnumerable<byte> message = id.Concat(sizeu).Concat(username).Concat(sizep).Concat(password);
+                    ServerClient.Send(writer.GetBytes());
                 }
             }
         }

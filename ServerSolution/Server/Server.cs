@@ -73,14 +73,14 @@ namespace Server
                     int receive = client.Socket.Receive(message);
 
                     MessageReader reader = new MessageReader(message);
-                    byte id = reader.ReadByte();
+                    byte id = reader.Id;
 
                     switch (id)
                     {
                         // Client wants to create new account
                         case 0x10:
-                            string username = Encoding.ASCII.GetString(reader.ReadPacket());
-                            string password = Encoding.ASCII.GetString(reader.ReadPacket());
+                            string username = Encoding.UTF8.GetString(reader.ReadPacket());
+                            string password = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Account, data received: {username}, {password}");
                             //AccountManager account = new AccountManager(Encoding.UTF8.GetString(message));
                             break;

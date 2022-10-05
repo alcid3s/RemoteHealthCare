@@ -40,12 +40,20 @@ namespace DoctorApllication
         }
         private void btnConnectClient_Click(object sender, EventArgs e)
         {
+            //create code that cheks if the selected item is actually a bike and use Send() to
+            //send a message to the server, with the code for the switch case
             if (lstClients.SelectedItems != null)
             {
                 txtInfo.Text = "connecting to ";
                 foreach(object s in lstClients.SelectedItems)
                 {
-                    txtInfo.Text += s.ToString(); 
+                    txtInfo.Text += s.ToString();
+                    if (s.ToString().Equals("Simulation Bike"))
+                    {
+                        txtInfo.Text += " 1"; 
+                        DoctorClient.Send(1);
+                    }
+                //continue like this for all existing bikes, its only five(better if done with switch case)
                 }
                 if (lstClients.SelectedItems.ToString() == "Simulation Bike")
                 {
@@ -100,7 +108,8 @@ namespace DoctorApllication
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
-
+            // create code that scans all possible nearby bluetooth devices
+            // and displays them in de nike list view if they are bikes 
         }
     }
 }

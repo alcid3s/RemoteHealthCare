@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server
+namespace MessageStream
 {
-    internal class MessageReader
+    public class MessageReader
     {
         private int _index;
         private byte[] _data;

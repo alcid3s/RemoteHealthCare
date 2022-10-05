@@ -6,9 +6,7 @@
       "id": "scene/road/add",
       "data": {
         "route": "",
-        "diffuse": "data/NetworkEngine/textures/terrain/red_tarmac.jpg",
-        "normal": "data/NetworkEngine/textures/terrain/red_tarmac.jpg",
-        "specular": "data/NetworkEngine/textures/terrain/red_tarmac.jpg",
+        "normal": "data/NetworkEngine/textures/terrain/adesert_rocky_d.jpg",
         "heightoffset": 0.01
       }
     }

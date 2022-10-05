@@ -31,12 +31,9 @@ namespace RemoteHealthCare
 
                 NetworkEngine(bikeClient);
 
-           // while(true)
-             //   Thread.Sleep(1);
-
                 // Kind of bikes available
 
-                IBike bike = new SimulationBike();
+                IBike bike = new RealBike();
                 bike.Init();
 
                 // delegates a method that sends all the relevant information to the server
@@ -87,8 +84,8 @@ namespace RemoteHealthCare
             
             //Remove the standard nodes
             bikeClient.DeleteNode("GroundPlane");
-            bikeClient.DeleteNode("LeftHand");
-            bikeClient.DeleteNode("RightHand");
+            //bikeClient.DeleteNode("LeftHand");
+            //bikeClient.DeleteNode("RightHand");
 
             bikeClient.SetSkyBox(16);
             bikeClient.CreateTerrain("terrain");
@@ -97,6 +94,7 @@ namespace RemoteHealthCare
 
             bikeClient.AddRoute();
 
+            Console.WriteLine("waiting for route");
             while (!bikeClient.RouteExists(0)) {
                 Thread.Sleep(1);
             }
@@ -113,23 +111,23 @@ namespace RemoteHealthCare
                 //byte[] rotation = new byte[3];
                 //rotation[1] = new Random(1).Next;
 
-                bikeClient.CreateModel("testModel" + i, "", postion, 2, new byte[3], "data/NetworkEngine/models/trees/fantasy/tree" + i + ".obj", "", false);
+                
             }
             
-            
+            bikeClient.CreateModel("testModel", "", new byte[3], 2, new byte[3], "data/NetworkEngine/models/trees/fantasy/tree1.obj", "", false);
 
             //wait for the node and route ids
             Console.WriteLine("waiting for ids");
-            while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0) || !bikeClient.IdReceived("panel1"))
+            //while (!bikeClient.IdReceived("bike") || !bikeClient.RouteExists(0) || !bikeClient.IdReceived("panel1"))
+            //    Thread.Sleep(1);
+            Thread.Sleep(5000);
+
+
+
+            while (!bikeClient.IdReceived("panel1"))
                 Thread.Sleep(1);
-            //Thread.Sleep(5000);
 
-
-
-            //while (!bikeClient.IdReceived("panel1"))
-              //  Thread.Sleep(1);
-
-            bikeClient.FollowRoute(0, "bike");
+            bikeClient.FollowRoute(0, "Camera");
             networkEngineRunning = true;
         }
     }

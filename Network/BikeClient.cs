@@ -141,7 +141,7 @@ namespace RemoteHealthCare.Network
             // makes the message darkgray to improve readability
             Console.ForegroundColor = ConsoleColor.DarkGray;
 
-            Console.WriteLine("Message sent");
+            //Console.WriteLine("Message sent");
 
             Console.ForegroundColor = ConsoleColor.White;
 
@@ -178,7 +178,7 @@ namespace RemoteHealthCare.Network
                             {
                                 Console.WriteLine(
                                     $"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
-                                if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
+                                if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == "CavePC_1")
                                 {
                                     lastLocation = i;
                                     Console.WriteLine($"New last location = {lastLocation}");
@@ -226,7 +226,7 @@ namespace RemoteHealthCare.Network
                             // shows only "callback" so it doesn't clutter the log
                             if (tunnelId == "callback")
                             {
-                                Console.WriteLine("callback");
+                                //Console.WriteLine("callback");
                                 break;
                             }
 
@@ -234,13 +234,20 @@ namespace RemoteHealthCare.Network
                             {
                                 // adds the node to the scene. if the node already exist, deletes it first
                                 Console.WriteLine("node add:" + jData);
-                                lock (this._nodes)
-                                {
-                                    Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
-                                    this._nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
-                                    Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
-                                    this._nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(),
+                                try 
+                                { 
+                                    lock (this._nodes)
+                                    {
+                                       Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
+                                        this._nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
+                                        Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
+                                        this._nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(),
                                         jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                    }
+                                } catch 
+                                { 
+                                    Console.WriteLine("error message");
+                                    break;
                                 }
 
                                 Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
@@ -522,7 +529,7 @@ namespace RemoteHealthCare.Network
         public void AddPanel(string name)
         {
             // makes sure the name isn't already in use and that the camera id has been received
-            if (!_nodes.ContainsKey(name) && this._nodes.ContainsKey("Camera"))
+            if (!_nodes.ContainsKey(name) && IdReceived("Camera"))
             {
                 JObject panel = JObject.Parse(File.ReadAllText(Path + "/add_panel.json"));
                 panel["data"]["dest"] = Id;
@@ -727,7 +734,7 @@ namespace RemoteHealthCare.Network
 
             try
             {
-                ob["data"]["data"]["data"]["node"] = _nodes["bike"];
+                ob["data"]["data"]["data"]["node"] = _nodes["Camera"];
             }
             catch (Exception e)
             {

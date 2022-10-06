@@ -275,6 +275,8 @@ namespace RemoteHealthCare.Network
                             
                             }
 
+                            break;
+
                         default:
                             // writes default response when function is not found
                             Console.WriteLine("No handling implemented for the id: " + jData["id"]);

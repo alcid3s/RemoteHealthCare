@@ -197,12 +197,12 @@ namespace RemoteHealthCare.Network
                             Send(message);
                             break;
 
+
                         case "tunnel/create":
                             // checks if the received message is an error and prints that message
                             if (jData["data"]["status"].ToObject<string>() == "error")
                             {
-                                Console.WriteLine(
-                                    "Error while making a tunnel with server, are you running NetworkEngine?");
+                                Console.WriteLine("Error while making a tunnel with server, are you running NetworkEngine?");
                                 Console.WriteLine("Server error message:\n" + jData["data"]);
                                 break;
                             }
@@ -219,61 +219,61 @@ namespace RemoteHealthCare.Network
 
                             break;
 
+
                         case "tunnel/send":
 
                             string tunnelId = jData["data"]["data"]["id"].ToObject<string>();
 
-                            // shows only "callback" so it doesn't clutter the log
-                            if (tunnelId == "callback")
+                            switch (jData["data"]["data"]["id"].ToObject<string>()) 
                             {
-                                //Console.WriteLine("callback");
-                                break;
-                            }
-
-                            if (tunnelId == "scene/node/add")
-                            {
-                                // adds the node to the scene. if the node already exist, deletes it first
-                                Console.WriteLine("node add:" + jData);
-                                try 
-                                { 
-                                    lock (this._nodes)
-                                    {
-                                       Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
-                                        this._nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
-                                        Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
-                                        this._nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(),
-                                        jData["data"]["data"]["data"]["uuid"].ToObject<string>());
-                                    }
-                                } catch 
-                                { 
-                                    Console.WriteLine("error message");
+                                // shows only "callback" so it doesn't clutter the log
+                                case "callback":
+                                    //Console.WriteLine("callback");
                                     break;
-                                }
+                            
 
-                                Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
-                                break;
+                                case "scene/node/add":
+                                    // adds the node to the scene. if the node already exist, deletes it first
+                                    Console.WriteLine("node add:" + jData);
+                                    try 
+                                    { 
+                                        lock (this._nodes)
+                                        {
+                                            Console.WriteLine("removing: " + jData["data"]["data"]["data"]["name"]);
+                                            this._nodes.Remove(jData["data"]["data"]["data"]["name"].ToObject<string>());
+                                            Console.WriteLine("adding: " + jData["data"]["data"]["data"]["name"]);
+                                            this._nodes.Add(jData["data"]["data"]["data"]["name"].ToObject<string>(),
+                                            jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                        }
+                                    } catch 
+                                    { 
+                                        Console.WriteLine("error message");
+                                        break;
+                                    }
+
+                                    Console.WriteLine("node id: " + jData["data"]["data"]["data"]["uuid"]);
+                                    break;
+
+                                case "route/add":
+                                    // adds the route to the list
+                                    this._routes.Add(jData["data"]["data"]["data"]["uuid"].ToObject<string>());
+                                    Console.WriteLine("route id: " + jData["data"]["data"]["data"]["uuid"]);
+                                    break;
+
+                                case "scene/get":
+                                    // updates all the nodes in reaction to get scene response
+                                    Console.WriteLine("updating all nodes");
+                                    this.UpdateNodes(jData["data"]["data"]["data"]["children"]);
+                                    break;
+
+                                default:
+                                    // writes full response when no handling is implemented
+                                    Console.WriteLine("No handling implemented for the id: " + jData["data"]["data"]["id"]);
+                                    Console.WriteLine($"Server response: {jData}");
+                                    break;
+
+                            
                             }
-
-                            if (tunnelId == "route/add")
-                            {
-                                // adds the route to the list
-                                this._routes.Add(jData["data"]["data"]["data"]["uuid"].ToObject<string>());
-                                Console.WriteLine("route id: " + jData["data"]["data"]["data"]["uuid"]);
-                                break;
-                            }
-
-                            if (tunnelId == "scene/get")
-                            {
-                                // updates all the nodes in reaction to get scene response
-                                Console.WriteLine("updating all nodes");
-                                this.UpdateNodes(jData["data"]["data"]["data"]["children"]);
-                                break;
-                            }
-
-                            // writes full response when no handling is implemented
-                            Console.WriteLine("No handling implemented for the id: " + jData["data"]["data"]["id"]);
-                            Console.WriteLine($"Server response: {jData}");
-                            break;
 
                         default:
                             // writes default response when function is not found

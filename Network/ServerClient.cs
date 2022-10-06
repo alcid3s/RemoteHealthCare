@@ -15,7 +15,7 @@ namespace RemoteHealthCare.Network
 
         public static bool IsRunning { get; private set; } = false;
 
-        internal static byte Reply = 0x00;
+        internal static byte Reply { get; set; } = 0x00;
 
         public ServerClient(string ip, int port)
         {
@@ -54,8 +54,7 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Received data");
                 MessageReader reader = new MessageReader(message);
                 Reply = reader.Id;
-
-                Console.WriteLine($"Login: {(reader.Id == 0x81 ? "Successfull" : "No")}");
+                Console.WriteLine($"Login: {(reader.Id == 0x81 ? "Successful" : "Not successful")}");
             }
         }
 

@@ -17,7 +17,7 @@ namespace RemoteHealthCare.GUI
 {
     public partial class AccountLogin : Form
     {
-        ClientScreen clientScreen;
+        internal static ClientScreen ClientScreen;
         public AccountLogin()
         {
             InitializeComponent();
@@ -54,10 +54,12 @@ namespace RemoteHealthCare.GUI
             }
             else if (ServerClient.Reply == 0x81)
             {
-                Console.WriteLine("Successfull login");
-                clientScreen = new ClientScreen();
-                clientScreen.Show();
-                Hide();
+                if(ClientScreen == null)
+                {
+                    ClientScreen = new ClientScreen();
+                    Hide();
+                    ClientScreen.Show();
+                }
             }
         }
 

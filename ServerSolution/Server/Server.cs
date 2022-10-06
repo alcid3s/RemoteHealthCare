@@ -73,7 +73,20 @@ namespace Server
                 {
                     int receive = client.Socket.Receive(message);
 
-                    MessageReader reader = new MessageReader(message);
+
+                    MessageReader reader;
+                    try
+                    {
+                        reader = new MessageReader(message);
+                    }
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
+
+                    if (!reader.Checksum())
+                        continue;
+
                     byte id = reader.Id;
 
                     switch (id)

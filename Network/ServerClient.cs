@@ -56,7 +56,6 @@ namespace RemoteHealthCare.Network
                 Reply = reader.Id;
 
                 Console.WriteLine($"Login: {(reader.Id == 0x81 ? "Successfull" : "No")}");
-              
             }
         }
 

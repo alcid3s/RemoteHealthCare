@@ -21,10 +21,6 @@ namespace RemoteHealthCare
             ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
             serverClient.Connect();
 
-            Application.Run(loginScreen);
-
-            ClientScreen clientScreen = new ClientScreen();
-
             // Making connection with the VR server
             BikeClient bikeClient = new BikeClient();
             bikeClient.Connect("145.48.6.10", 6666);
@@ -40,13 +36,13 @@ namespace RemoteHealthCare
 
             bike.OnUpdate += delegate
             {
-                if (clientScreen != null)
+                if (AccountLogin.ClientScreen != null)
                 {
                     //ClientScreen clientScreen = new ClientScreen();
-                    clientScreen.setTxtSpeed(bike.Speed);
-                    clientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
-                    clientScreen.setTxtElapsedTime(bike.ElapsedTime);
-                    clientScreen.setTxtHeartRate(bike.HeartRate);
+                    AccountLogin.ClientScreen.setTxtSpeed(bike.Speed);
+                    AccountLogin.ClientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
+                    AccountLogin.ClientScreen.setTxtElapsedTime(bike.ElapsedTime);
+                    AccountLogin.ClientScreen.setTxtHeartRate(bike.HeartRate);
                 }
                 serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
 
@@ -63,7 +59,7 @@ namespace RemoteHealthCare
                     }
                 };
 
-                Application.Run(clientScreen);
+            Application.Run(loginScreen);
             for (; ; );
         }
 

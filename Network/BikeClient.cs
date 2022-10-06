@@ -178,7 +178,7 @@ namespace RemoteHealthCare.Network
                             {
                                 Console.WriteLine(
                                     $"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
-                                if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == "CavePC_1")
+                                if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
                                 {
                                     lastLocation = i;
                                     Console.WriteLine($"New last location = {lastLocation}");

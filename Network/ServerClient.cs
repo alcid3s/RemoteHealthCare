@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MessageStream;
+using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Threading;
 
 namespace RemoteHealthCare.Network
 {
@@ -16,6 +14,8 @@ namespace RemoteHealthCare.Network
         private static Socket _socket;
 
         public static bool IsRunning { get; private set; } = false;
+
+        internal static byte Reply = 0x00;
 
         public ServerClient(string ip, int port)
         {
@@ -31,12 +31,29 @@ namespace RemoteHealthCare.Network
             try
             {
                 _socket.Connect(endPoint);
+
+                new Thread(Listen).Start();
                 IsRunning = true;
                 Console.WriteLine($"Connecting to {_socket.RemoteEndPoint}");
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Exception connecting Client to server:\n{e}");
+            }
+        }
+
+        public void Listen()
+        {
+            while (true)
+            {
+                byte[] message = new byte[1024];
+                int receive = _socket.Receive(message);
+                Console.WriteLine("Received data");
+                MessageReader reader = new MessageReader(message);
+                Reply = reader.Id;
+
+                Console.WriteLine($"Login: {(reader.Id == 0x81 ? "Successfull" : "No")}");
+              
             }
         }
 
@@ -54,9 +71,16 @@ namespace RemoteHealthCare.Network
 
         public static void Send(byte[] message)
         {
-            //byte[] userNameInBytes = Encoding.ASCII.GetBytes(username);
-            //IEnumerable<byte> message = id.Concat(userNameInBytes);
-
+            MessageReader reader = new MessageReader(message);
+            switch (reader.Id)
+            {
+                case 0x10:
+                    Console.WriteLine("Creating account");
+                    break;
+                case 0x11:
+                    Console.WriteLine("Logging in");
+                    break;
+            }
             int received = _socket.Send(message);
         }
     }

@@ -55,7 +55,6 @@ namespace RemoteHealthCare
                     bikeClient.UpdateSpeed(bike.Speed);
                 }
             };
-
             
             for (; ; );
         }

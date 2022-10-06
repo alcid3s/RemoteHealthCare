@@ -8,7 +8,7 @@ namespace Server
 {
     internal class Server
     {
-        private static Socket? serverSocket;
+        private Socket? ServerSocket;
         private static List<Client> clientList = new List<Client>();
 
         private int _port;
@@ -28,12 +28,12 @@ namespace Server
             _port = port;
 
             // Creating an endpoint and defining the protocol used for communicating.
-            serverSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ServerSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPEndPoint endPoint = new(IPAddress.Parse("127.0.0.1"), _port);
 
             // running server
-            serverSocket.Bind(endPoint);
-            serverSocket.Listen(100);
+            ServerSocket.Bind(endPoint);
+            ServerSocket.Listen(100);
 
             Console.WriteLine($"Server setup and running on {endPoint.Address}:{endPoint.Port}");
         }
@@ -46,7 +46,7 @@ namespace Server
                 while (true)
                 {
                     // New incoming connection.
-                    Socket socket = serverSocket.Accept();
+                    Socket socket = ServerSocket.Accept();
 
                     // saving client to list.
                     Client client = new(socket, clientList.Count + 1);
@@ -80,14 +80,18 @@ namespace Server
                     {
                         // Client wants to create new account
                         case 0x10:
-                            string username = Encoding.UTF8.GetString(reader.ReadPacket());
-                            string password = Encoding.UTF8.GetString(reader.ReadPacket());
-                            Console.WriteLine($"Trying to make new Account, data received: {username}, {password}");
-                            //AccountManager account = new AccountManager(Encoding.UTF8.GetString(message));
+                            string usernameCreate = Encoding.UTF8.GetString(reader.ReadPacket());
+                            string passwordCreate = Encoding.UTF8.GetString(reader.ReadPacket());
+                            Console.WriteLine($"Trying to make new Account, data received: {usernameCreate}, {passwordCreate}");
+                            AccountManager account = new AccountManager(usernameCreate, passwordCreate, client.Socket, AccountManager.AccountState.Create);
                             break;
 
                         // Client wants to login
                         case 0x11:
+                            string usernameLogin = Encoding.UTF8.GetString(reader.ReadPacket());
+                            string passwordLogin = Encoding.UTF8.GetString(reader.ReadPacket());
+                            Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
+                            AccountManager accountLogin = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.Login);
                             break;
 
                         // Client wants to edit account information
@@ -98,12 +102,17 @@ namespace Server
                         case 0x13:
                             break;
 
+                        // Doctor wants to create account
+                        case 0x14:
+                            string user = Encoding.UTF8.GetString(reader.ReadPacket());
+                            string pass = Encoding.UTF8.GetString(reader.ReadPacket());
+                            Console.WriteLine($"Trying to make new Doctor Account, data received: {user}, {pass}");
+                            break;
+
                         // SimBike information
                         case 0x21:
                             PrintBikeInformation(message, client, id);
                             break;
-
-
                     }
                     Thread.Sleep(100);
                 }

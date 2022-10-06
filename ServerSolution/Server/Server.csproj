@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Accounts\Data\" />
+    <ProjectReference Include="..\..\MessageStream\MessageStream.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MessageStream\MessageStream.csproj" />
+    <Folder Include="Accounts\Data\" />
   </ItemGroup>
 
 </Project>

@@ -64,8 +64,6 @@ namespace RemoteHealthCare.Bikes
                 Console.WriteLine($"service: {service}");
             });
 
-            Console.Read();
-
             // Set service
             code = await bike.SetService("6e40fec1-b5a3-f393-e0a9-e50e24dcca9e");
 
@@ -127,7 +125,6 @@ namespace RemoteHealthCare.Bikes
                             Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
                             break;
                     }
-                    Thread.Sleep(250);
                     OnUpdate();
                     y++;
                 }

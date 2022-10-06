@@ -1,10 +1,15 @@
-﻿using System;
+﻿using MessageStream;
+using RemoteHealthCare.Accounts;
+using RemoteHealthCare.Network;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,11 +17,13 @@ namespace RemoteHealthCare.GUI
 {
     public partial class AccountLogin : Form
     {
+        internal static ClientScreen ClientScreen;
         public AccountLogin()
         {
             InitializeComponent();
         }
         AccountTypeSelector accountTypeSelector;
+
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -25,7 +32,35 @@ namespace RemoteHealthCare.GUI
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            MessageWriter writer = new MessageWriter(0x11);
+            writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameLogin.Text));
+            writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
+            ServerClient.Send(writer.GetBytes());
 
+            int counter = 0;
+            while (ServerClient.Reply == 0x00)
+            {
+                Thread.Sleep(100);
+                counter++;
+                if (counter == 50)
+                {
+                    throw new Exception("Reply from server takes too long");
+                }
+            }
+
+            if (ServerClient.Reply == 0x80)
+            {
+                Console.WriteLine("Error");
+            }
+            else if (ServerClient.Reply == 0x81)
+            {
+                if(ClientScreen == null)
+                {
+                    ClientScreen = new ClientScreen();
+                    Hide();
+                    ClientScreen.Show();
+                }
+            }
         }
 
         private void btnCreateAccount_Click(object sender, EventArgs e)
@@ -57,7 +92,7 @@ namespace RemoteHealthCare.GUI
 
         private void AccountLogin_Load(object sender, EventArgs e)
         {
-            
+
         }
     }
 }

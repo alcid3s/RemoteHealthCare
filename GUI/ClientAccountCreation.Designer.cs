@@ -142,6 +142,7 @@ namespace RemoteHealthCare.GUI
             this.Controls.Add(this.textBox3);
             this.Name = "ClientAccountCreation";
             this.Text = "ClientAccountCreation";
+            this.Load += new System.EventHandler(this.ClientAccountCreation_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

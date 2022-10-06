@@ -135,6 +135,7 @@
             this.Controls.Add(this.btnCreate);
             this.Name = "DoctorAccountCreation";
             this.Text = "DoctorAccountCreation";
+            this.Load += new System.EventHandler(this.DoctorAccountCreation_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

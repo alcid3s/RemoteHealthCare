@@ -8,15 +8,15 @@
         "name": "",
         "components": {
           "transform": {
-            "position": [ 0, 20, 0 ],
-            "scale": 1,
-            "rotation": [ 0, 0, 0 ]
+            "position": [ -0.8, 1.2, 0 ],
+            "scale": 0.5,
+            "rotation": [ 310, 90, 0 ]
           },
           "panel": {
-            "size": [ 10, 10 ],
-            "resolution": [ 512, 512 ],
+            "size": [ 1, 0.5 ],
+            "resolution": [ 512, 256 ],
             "background": [ 1, 1, 1, 1 ],
-            "castShadow": true
+            "castShadow": false
           }
         }
       }

@@ -7,7 +7,7 @@
       "data": {
         "route": {  },
         "node": {  },
-        "speed": 1.0,
+        "speed": 0,
         "offset": 0.0,
         "rotate": "XZ",
         "smoothing": 1.0,

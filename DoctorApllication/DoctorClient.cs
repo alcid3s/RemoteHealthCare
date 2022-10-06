@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessageStream;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -55,6 +56,17 @@ namespace DoctorApllication
             }
 
         }
+
+        public static void Receive(MessageReader reader) 
+        {
+            switch (reader.Id) 
+            {
+                case 0x21:
+
+                    break;
+            }
+        }
+
 
 
 

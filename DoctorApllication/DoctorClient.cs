@@ -62,7 +62,11 @@ namespace DoctorApllication
             switch (reader.Id) 
             {
                 case 0x21:
-
+                    byte identifier = reader.ReadByte();
+                    decimal elapsedTime = reader.ReadInt(2) / 4m;
+                    int distance = reader.ReadInt(2);
+                    decimal speed = reader.ReadInt(2) / 1000m;
+                    int heartRate = reader.ReadByte();
                     break;
             }
         }

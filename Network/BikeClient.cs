@@ -22,6 +22,8 @@ namespace RemoteHealthCare.Network
         private Dictionary<string, string> _nodes = new Dictionary<string, string>();
         private List<string> _routes = new List<string>();
 
+        private Terrain _terrain = new Terrain();
+
         public string Path { get; }
         public string Id { get; private set; }
 
@@ -92,14 +94,12 @@ namespace RemoteHealthCare.Network
                 terrain["data"]["dest"] = Id;
 
                 var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
-
-
-                Terrain t = new Terrain();
+                
                 for (var i = 0; i < 256; i++)
                 {
                     for (var j = 0; j < 256; j++)
                     {
-                        heights.Add(t.TerrainHeights[j, i]);
+                        heights.Add(_terrain.TerrainHeights[j, i]);
                     }
                 }
 
@@ -470,10 +470,32 @@ namespace RemoteHealthCare.Network
                     }
                     
                 }
-                
+              
                 var modelPosition = model["data"]["data"]["data"]["components"]["transform"]["position"] as JArray;
+                double minimum = _terrain.TerrainHeights[(int)position[0], (int)position[2]];
+                for (int i = 0; i < 3; i++)
+                {
+                    int currentX = (int)position[0] - 1 + i;
+                    if (currentX < 0 || currentX >= 1024)
+                    {
+                        continue;
+                    }
+                    for (int j = 0; j < 3; j++)
+                    {
+                        int currentY = (int)position[2] - 1 + j;
+                        if (currentY < 0 || currentY >= 1024)
+                        {
+                            continue;
+                        }
+                        double current = _terrain.TerrainHeights[currentX, currentY];
+                        if (current < minimum)
+                        {
+                            minimum = current;
+                        }
+                    }
+                }
                 modelPosition[0] = position[0];
-                modelPosition[1] = position[1];
+                modelPosition[1] = position[1] + (decimal)minimum;
                 modelPosition[2] = position[2];
 
                 model["data"]["data"]["data"]["components"]["transform"]["scale"] = scale;

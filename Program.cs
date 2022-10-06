@@ -99,24 +99,26 @@ namespace RemoteHealthCare
 
             bikeClient.AddPanel("panel1");
 
-            for (int i = 1; i < 5; i++)
+
+            Random random = new Random();
+            for (int i = 1; i < 500; i++)
             {
                 decimal[] postion = new decimal[3];
-                postion[0] = (decimal)(i*50);
-                postion[2] = (decimal)(i*50);
+                postion[0] = random.Next(200);
+                postion[2] = random.Next(200);
 
                 //byte[] rotation = new byte[3];
                 //rotation[1] = new Random(1).Next;
-                bikeClient.CreateModel("testModel" + i, "terrain", postion, 2, new decimal[3], "data/NetworkEngine/models/trees/fantasy/tree" + i + ".obj", "", false);
+                bikeClient.CreateModel("testModel" + i, "terrain", postion, 2, new decimal[3], "data/NetworkEngine/models/trees/fantasy/tree" + random.Next(7) + ".obj", "", false);
                 
             }
 
-            decimal[] position = new decimal[3];
-            position[0] = 60;
-            position[1] = (decimal)0.2;
-            position[2] = 30;
-
-            bikeClient.CreateModel("testHouse", "terrain", position, 4, new decimal[3], "data/NetworkEngine/models/houses/set1/house1.obj", "", true);
+            // decimal[] position = new decimal[3];
+            // position[0] = 60;
+            // position[1] = (decimal)0.2;
+            // position[2] = 30;
+            //
+            // bikeClient.CreateModel("testHouse", "terrain", position, 4, new decimal[3], "data/NetworkEngine/models/houses/set1/house1.obj", "", true);
             
             
 

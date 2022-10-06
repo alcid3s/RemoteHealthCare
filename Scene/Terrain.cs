@@ -34,8 +34,8 @@ namespace RemoteHealthCare.Scene
             /// Calculates the assigned sine wave at the given coordinates
             /// </summary>
             /// <param name="x">X coordinate</param>
-            /// <param name="y">Y coordindate</param>
-            /// <returns>The result of the wave</returns>
+            /// <param name="y">Y coordinate</param>
+            /// <returns>The height of the point as a result of the sine wave</returns>
             public double Calculate(int x, int y)
             {
                 return _height * (1 + Math.Sin(_offset + (x / _xLength + y / _yLength)));
@@ -58,8 +58,9 @@ namespace RemoteHealthCare.Scene
             List<TerrainSine> terrainSines = new List<TerrainSine>();
             for (int i = 0; i < random.Next(3, 6); i++)
             {
-                terrainSines.Add(new TerrainSine(random.NextDouble() * Math.PI, 16 + random.NextDouble() * 48,
-                    random.NextDouble() * Math.PI, random.NextDouble() * random.NextDouble()));
+                double waveSize = random.NextDouble();
+                terrainSines.Add(new TerrainSine(random.NextDouble() * Math.PI, 32 + waveSize * 224,
+                    random.NextDouble() * Math.PI, waveSize * 6));
             }
 
             TerrainHeights = new double[256, 256];

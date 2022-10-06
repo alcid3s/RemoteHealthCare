@@ -54,7 +54,7 @@ namespace RemoteHealthCare.GUI
             }
             else if (ServerClient.Reply == 0x81)
             {
-                if(ClientScreen == null)
+                if (ClientScreen == null)
                 {
                     ClientScreen = new ClientScreen();
                     Hide();

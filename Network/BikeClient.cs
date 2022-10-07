@@ -162,7 +162,8 @@ namespace RemoteHealthCare.Network {
                             for (int i = 0; jData["data"].ToArray().Length > i; i++) {
                                 Console.WriteLine(
                                     $"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
-                                if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName) {
+                                if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
+                                {
                                     lastLocation = i;
                                     Console.WriteLine($"New last location = {lastLocation}");
                                 }

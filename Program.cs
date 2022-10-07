@@ -16,38 +16,35 @@ namespace RemoteHealthCare
         private static bool networkEngineRunning = false;
         static void Main(string[] args)
         {
-                //AccountLogin account = new AccountLogin();
-                ClientScreen clientScreen = new ClientScreen();
-                //Application.Run(clientScreen);
+            AccountLogin loginScreen = new AccountLogin();
 
-                // creates a connection with the VR server
-                BikeClient bikeClient = new BikeClient();
-                bikeClient.Connect("145.48.6.10", 6666);
+            ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
+            serverClient.Connect();
 
-                ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
-                serverClient.Connect();
+            // Making connection with the VR server
+            BikeClient bikeClient = new BikeClient();
+            bikeClient.Connect("145.48.6.10", 6666);
 
-                Thread.Sleep(1000);
+            Thread.Sleep(1000);
 
-                NetworkEngine(bikeClient);
+            //NetworkEngine(bikeClient);
 
-                // Kind of bikes available
+            // Kind of bikes available
 
-                IBike bike = new SimulationBike();
-                bike.Init();
+            IBike bike = new SimulationBike();
+            bike.Init();
 
-                // delegates a method that sends all the relevant information to the server
-                bike.OnUpdate += delegate
+            bike.OnUpdate += delegate
+            {
+                if (AccountLogin.ClientScreen != null)
                 {
-                    if (clientScreen != null)
-                    {
-                        //ClientScreen clientScreen = new ClientScreen();
-                        clientScreen.setTxtSpeed(bike.Speed);
-                        clientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
-                        clientScreen.setTxtElapsedTime(bike.ElapsedTime);
-                        clientScreen.setTxtHeartRate(bike.HeartRate);
-                    }
-                    serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
+                    //ClientScreen clientScreen = new ClientScreen();
+                    AccountLogin.ClientScreen.setTxtSpeed(bike.Speed);
+                    AccountLogin.ClientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
+                    AccountLogin.ClientScreen.setTxtElapsedTime(bike.ElapsedTime);
+                    AccountLogin.ClientScreen.setTxtHeartRate(bike.HeartRate);
+                }
+                serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
 
                     if (networkEngineRunning)
                     {
@@ -62,7 +59,7 @@ namespace RemoteHealthCare
                     }
                 };
 
-                Application.Run(clientScreen);
+            Application.Run(loginScreen);
             for (; ; );
         }
 

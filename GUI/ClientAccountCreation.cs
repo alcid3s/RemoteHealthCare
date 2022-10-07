@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MessageStream;
+using RemoteHealthCare.Accounts;
+using RemoteHealthCare.Network;
 
 namespace RemoteHealthCare.GUI
 {
@@ -40,9 +43,23 @@ namespace RemoteHealthCare.GUI
 
         private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
         {
-            if (txtPasswordConfirmAccountCreationClient == txtPasswordAccountCreationClient)
+            if (txtAccountNameAccountCreationClient.Text.Length < 41 && txtAccountNameAccountCreationClient.Text.Length > 3)
             {
-
+                if (txtPasswordAccountCreationClient.Text.Length > 7 && txtPasswordAccountCreationClient.Text.Length < 32)
+                {
+                    MessageWriter writer = new MessageWriter(0x10);
+                    writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text));
+                    writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text));
+                    ServerClient.Send(writer.GetBytes());
+                }
+                else
+                {
+                    txtPasswordAccountCreationClient.Text = "TO LONG OR TO SHORT";
+                }
+            }
+            else
+            {
+                txtAccountNameAccountCreationClient.Text = "TO LONG OR TO SHORT";
             }
         }
 
@@ -55,6 +72,11 @@ namespace RemoteHealthCare.GUI
             }
 
             this.Hide();
+        }
+
+        private void ClientAccountCreation_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

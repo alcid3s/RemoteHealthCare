@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RemoteHealthCare.GUI
+namespace RemoteHealthCare.DoctorApplication
 {
-    public partial class ClientInformationScreen : Form
+    public partial class DoctorScreen : Form
     {
-        public ClientInformationScreen()
+        public DoctorScreen()
         {
             InitializeComponent();
         }

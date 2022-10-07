@@ -1,5 +1,6 @@
 ﻿using MessageStream;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DoctorApllication
 {
-    internal class DoctorClient
+    class DoctorClient
     {
         private int _port;
         private IPAddress _address;
@@ -23,6 +24,8 @@ namespace DoctorApllication
             _address = IPAddress.Parse(ip);
             _port = port;
         }
+
+        public static Dictionary<byte, List<ClientData>> clientData { get; set; } = new Dictionary<byte, List<ClientData>>();
 
         public void connect()
         {
@@ -67,6 +70,8 @@ namespace DoctorApllication
                     int distance = reader.ReadInt(2);
                     decimal speed = reader.ReadInt(2) / 1000m;
                     int heartRate = reader.ReadByte();
+                    clientData.Add(identifier, new List<ClientData>() );
+                    clientData[identifier].Add(new ClientData(elapsedTime, distance, speed, heartRate));
                     break;
             }
         }

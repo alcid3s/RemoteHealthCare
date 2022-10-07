@@ -22,10 +22,10 @@ namespace Server.Accounts
 
         public enum AccountState
         {
-            Create,
-            Login,
-            Edit,
-            Remove
+            CreateClient,
+            LoginClient,
+            EditClient,
+            RemoveClient
         }
         public AccountManager(string username, string password, Socket socket, AccountState state)
         {
@@ -40,25 +40,22 @@ namespace Server.Accounts
             string path = _path + "/" + _username + _suffix;
             if (File.Exists(path))
             {
-                if (_state == AccountState.Login)
+                if (_state == AccountState.LoginClient)
                 {
                     var sr = new StreamReader(File.OpenRead(path));
                     string? credentials = sr.ReadLine();
                     CheckCredentials(credentials);
                 }
-                else if (_state == AccountState.Remove)
+                else if (_state == AccountState.RemoveClient)
                 {
                     // TODO 05-10-2022: Remove account
                 }
-                //var sr = new StreamWriter(File.OpenWrite(path));
-                //sr.WriteLine("Hello, World!");
-                //sr.Close();
             }
-            else if (_state == AccountState.Create)
+            else if (_state == AccountState.CreateClient)
             {
                 FileStream fs = File.Create(path);
                 var sr = new StreamWriter(fs);
-                sr.WriteLine('[' + _username + "," + _password + ']');
+                sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
                 sr.Close();
 
             }
@@ -68,35 +65,20 @@ namespace Server.Accounts
         {
             if (credentials != null)
             {
-                string user = string.Empty;
-                string pass = string.Empty;
-                bool userBool = false;
-                bool passBool = false;
-                foreach (char c in credentials)
-                {
-                    if (c == ',')
-                    {
-                        userBool = false;
-                    }
-                    else if (c == ']')
-                        passBool = false;
+                string[] creds = credentials.Split(',');
+                string username = creds[0];
+                string password = creds[1];
+                string type = creds[2];
 
-                    // Check if username or password are checked.
-                    if (userBool)
-                        user += c;
-                    else if (passBool)
-                        pass += c;
+                username = username.Replace('[', ' ');
+                username = username.Trim();
 
-                    // characters that define the end of a string.
-                    if (c == '[')
-                        userBool = true;
-                    else if (c == ',')
-                        passBool = true;
-                }
+                type = type.Replace(']', ' ');
+                type = type.Trim();
 
                 MessageWriter writer;
-                Console.WriteLine($"_username: {_username} user: {user} _password: {_password} pass {pass}");
-                if (_username.Equals(user) && _password.Equals(pass))
+
+                if (_username.Equals(username) && _password.Equals(password) && type.Equals("c"))
                 {
                     writer = new MessageWriter(0x81);
                     Console.WriteLine("Login credentials are correct");
@@ -104,12 +86,15 @@ namespace Server.Accounts
                 else
                 {
                     writer = new MessageWriter(0x80);
-                    Console.WriteLine("Login credentials are fault");
+                    Console.WriteLine("Login credentials are faulty");
                 }
-                    
 
                 writer.WriteByte(0x11);
                 _socket.Send(writer.GetBytes());
+            }
+            else
+            {
+                Console.WriteLine("credentials is null");
             }
         }
     }

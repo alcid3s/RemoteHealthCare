@@ -73,7 +73,6 @@ namespace Server
                 {
                     int receive = client.Socket.Receive(message);
 
-
                     MessageReader reader;
                     try
                     {
@@ -96,7 +95,7 @@ namespace Server
                             string usernameCreate = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordCreate = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Account, data received: {usernameCreate}, {passwordCreate}");
-                            AccountManager account = new AccountManager(usernameCreate, passwordCreate, client.Socket, AccountManager.AccountState.Create);
+                            AccountManager account = new AccountManager(usernameCreate, passwordCreate, client.Socket, AccountManager.AccountState.CreateClient);
                             break;
 
                         // Client wants to login
@@ -104,7 +103,7 @@ namespace Server
                             string usernameLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
-                            AccountManager accountLogin = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.Login);
+                            AccountManager accountLogin = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
                             break;
 
                         // Client wants to edit account information

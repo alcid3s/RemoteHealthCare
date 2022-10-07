@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RemoteHealthCare.GUI
@@ -17,6 +10,7 @@ namespace RemoteHealthCare.GUI
             InitializeComponent();
         }
 
+        AccountLogin accountLogin;
         private void txtSpeed_TextChanged(object sender, EventArgs e)
         {
 
@@ -69,6 +63,17 @@ namespace RemoteHealthCare.GUI
         private void ClientScreen_Load(object sender, EventArgs e)
         {
             lstBikes.Items.Add("24517");
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            if (accountLogin == null)
+            {
+                accountLogin = new AccountLogin();
+                Hide();
+                accountLogin.Show();
+            }
+
         }
     }
 }

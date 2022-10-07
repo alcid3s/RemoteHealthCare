@@ -703,15 +703,26 @@ namespace RemoteHealthCare.Network {
             //     Console.WriteLine("Placed tree!");
             // }
 
-            for (int i = 0; i < 350; i++) {
+            for (int i = 0; i < 10000; i++) {
                 decimal[] position = new decimal[3];
-                position[0] = random.Next(210);
-                position[2] = random.Next(150);
+                position[0] = random.Next(256);
+                position[2] = random.Next(256);
+                bool isValid = true;
+
+                foreach (decimal[] badLocation in badLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) + Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                        isValid = false;
+                    }
+                }
                 
-                if (!badLocations.Contains(position)) {
+                if (isValid) {
                     CreateModel("tree" + i, "terrain", position, 2, new decimal[3],
                         "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
+                    badLocations.Add(position);
                     Console.WriteLine("Placed tree!");
+                }
+                else {
+                    Console.WriteLine("Attempted to place tree at invalid location, skipping tree...");
                 }
                 
             }
@@ -756,27 +767,29 @@ namespace RemoteHealthCare.Network {
             }
         
             Console.WriteLine("Finished creating list of bad locations:\n");
-            Console.WriteLine(badLocations.ToString());
             return badLocations;
         }
         
         private List<decimal[]> CalculateIntervalPoints(decimal[] p1, decimal[] p2) {
             List<decimal[]> points = new List<decimal[]>();
-            int resolution = 5;
+            int resolution = 20;
         
             double x1 = Decimal.ToDouble(p1[0]);
             double y1 = Decimal.ToDouble(p1[2]);
             double x2 = Decimal.ToDouble(p2[0]);
             double y2 = Decimal.ToDouble(p2[2]);
             
-            double xDistance = Math.Abs(x1 - x2 / resolution);
-            double yDistance = Math.Abs(y1 - y2 / resolution);
+            double xDistance = Math.Abs((x1 - x2) / resolution);
+            if (x1 - x2 > 0) { xDistance *= -1; }
+            double yDistance = Math.Abs((y1 - y2) / resolution);
+            if (y1 - y2 > 0) { yDistance *= -1; }
         
-            for (int i = 0; i < resolution; i++) {
+            for (int i = 0; i < resolution + 1; i++) {
                 decimal[] intervalPoint = new decimal[3];
-                intervalPoint[0] = (decimal)(x1 - x2 + xDistance * i);
+                
+                intervalPoint[0] = (decimal)(x1 + xDistance * i);
                 intervalPoint[1] = 0;
-                intervalPoint[2] = (decimal)(y1 - y2 + yDistance * i);
+                intervalPoint[2] = (decimal)(y1 + yDistance * i);
         
                 points.Add(intervalPoint);
             }

@@ -440,14 +440,14 @@ namespace RemoteHealthCare.Network {
                 for (int i = 0; i < 3; i++)
                 {
                     int currentX = (int)position[0] - 1 + i;
-                    if (currentX < 0 || currentX >= 1024)
+                    if (currentX < 0 || currentX >= 256)
                     {
                         continue;
                     }
                     for (int j = 0; j < 3; j++)
                     {
                         int currentY = (int)position[2] - 1 + j;
-                        if (currentY < 0 || currentY >= 1024)
+                        if (currentY < 0 || currentY >= 256)
                         {
                             continue;
                         }

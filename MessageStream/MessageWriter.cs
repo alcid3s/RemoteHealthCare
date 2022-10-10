@@ -71,6 +71,26 @@ namespace MessageStream
             }
         }
 
+        public void WriteBoolPacket(bool[] packet)
+        {
+            if (_closed)
+                throw new InvalidOperationException();
+
+            if (packet.Length > 256)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            byte[] bytes = new byte[(packet.Length + 7) / 8];
+
+            for (int i = 0; i < packet.Length; i++)
+            {
+                bytes[i / 8] |= packet[i] ? (byte)(1 << (7 - i % 8)) : (byte)0;
+            }
+
+            WritePacket(bytes);
+        }
+
         /// <summary>
         /// Returns the message to send in bytes
         /// </summary>

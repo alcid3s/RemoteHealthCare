@@ -79,6 +79,23 @@ namespace MessageStream
             return bytes.ToArray();
         }
 
+        public bool[] ReadBoolPacket()
+        {
+            if (!Checksum())
+                throw new InvalidOperationException();
+
+            byte[] bytes = ReadPacket();
+
+            bool[] packet = new bool[bytes.Length * 8];
+
+            for (int i = 0; i < packet.Length; i++)
+            {
+                packet[i] = (bytes[i / 8] >> (7 - i % 8) & 1) == 1;
+            }
+
+            return packet;
+        }
+
         /// <summary>
         /// Validates a message using the checksum
         /// </summary>

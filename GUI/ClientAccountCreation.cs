@@ -51,6 +51,12 @@ namespace RemoteHealthCare.GUI
                     writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationClient.Text));
                     writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationClient.Text));
                     ServerClient.Send(writer.GetBytes());
+
+                    // await successfull reply
+
+                    AccountLogin login = new AccountLogin();
+                    Close();
+                    login.Show();
                 }
                 else
                 {

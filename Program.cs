@@ -33,31 +33,31 @@ namespace RemoteHealthCare
 
             IBike bike = new SimulationBike();
             bike.Init();
-
             bike.OnUpdate += delegate
             {
-                if (AccountLogin.ClientScreen != null)
+                if (AccountLogin.IsLoggedIn)
                 {
                     //ClientScreen clientScreen = new ClientScreen();
                     AccountLogin.ClientScreen.setTxtSpeed(bike.Speed);
                     AccountLogin.ClientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
                     AccountLogin.ClientScreen.setTxtElapsedTime(bike.ElapsedTime);
                     AccountLogin.ClientScreen.setTxtHeartRate(bike.HeartRate);
+                    serverClient.Send(0x20, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
                 }
-                serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
 
-                    if (networkEngineRunning)
-                    {
-                        bikeClient.UpdateSpeed(bike.Speed);
 
-                        bikeClient.ClearPanel("panel1");
-                        bikeClient.AddTextToPanel("panel1", "Speed: " + Math.Round(bike.Speed, 2) + " m/s", 1);
-                        bikeClient.AddTextToPanel("panel1", "Distance traveled: " + bike.DistanceTravelled + "m", 2);
-                        bikeClient.AddTextToPanel("panel1", "Elapsed time: " + (int)bike.ElapsedTime + "s", 3);
-                        bikeClient.AddTextToPanel("panel1", "Heartrate: " + bike.HeartRate + " bpm", 4);
-                        bikeClient.SwapPanelBuffer("panel1");
-                    }
-                };
+                if (networkEngineRunning)
+                {
+                    bikeClient.UpdateSpeed(bike.Speed);
+
+                    bikeClient.ClearPanel("panel1");
+                    bikeClient.AddTextToPanel("panel1", "Speed: " + Math.Round(bike.Speed, 2) + " m/s", 1);
+                    bikeClient.AddTextToPanel("panel1", "Distance traveled: " + bike.DistanceTravelled + "m", 2);
+                    bikeClient.AddTextToPanel("panel1", "Elapsed time: " + (int)bike.ElapsedTime + "s", 3);
+                    bikeClient.AddTextToPanel("panel1", "Heartrate: " + bike.HeartRate + " bpm", 4);
+                    bikeClient.SwapPanelBuffer("panel1");
+                }
+            };
 
             Application.Run(loginScreen);
             for (; ; );
@@ -78,7 +78,7 @@ namespace RemoteHealthCare
 
             //head cant be removed for some reason
             //bikeClient.DeleteNode("Head");
-            
+
             //Remove the standard nodes
             bikeClient.DeleteNode("GroundPlane");
             //bikeClient.DeleteNode("LeftHand");
@@ -92,14 +92,15 @@ namespace RemoteHealthCare
             bikeClient.AddRoute();
 
             Console.WriteLine("waiting for route");
-            while (!bikeClient.RouteExists(0)) {
+            while (!bikeClient.RouteExists(0))
+            {
                 Thread.Sleep(1);
             }
             bikeClient.AddRoad(0);
             bikeClient.AddTrees();
 
             bikeClient.AddPanel("panel1");
-            
+
 
             //wait for the node and route ids
             Console.WriteLine("waiting for ids");

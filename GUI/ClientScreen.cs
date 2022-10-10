@@ -1,5 +1,9 @@
-﻿using System;
+﻿using RemoteHealthCare.Network;
+using System;
 using System.Windows.Forms;
+using MessageStream;
+using System.Reflection;
+using System.Threading;
 
 namespace RemoteHealthCare.GUI
 {
@@ -70,6 +74,21 @@ namespace RemoteHealthCare.GUI
             if (accountLogin == null)
             { 
                 AccountLogin.IsLoggedIn = false;
+
+                ServerClient.Send(new MessageWriter(0x60).GetBytes());
+
+                int counter = 0;
+                int max = 10;
+                ServerClient.Reply = 0x00;
+                while (ServerClient.Reply == 0x00)
+                {
+                    Thread.Sleep(100);
+                    counter++;
+                    if (counter == 10)
+                    {
+                        throw new Exception("No reply received");
+                    }
+                }
                 accountLogin = new AccountLogin();
                 Hide();
                 accountLogin.Show();

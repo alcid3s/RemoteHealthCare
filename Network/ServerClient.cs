@@ -53,10 +53,15 @@ namespace RemoteHealthCare.Network
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
                 Console.WriteLine("Received data");
-                MessageReader reader = new MessageReader(message);
-                Reply = reader.Id;
-                Console.WriteLine($"Reply now is {Reply}");
-                Console.WriteLine($"Login: {(Reply == 0x81 ? "Successful" : "Not successful")}");
+                try
+                {
+                    MessageReader reader = new MessageReader(message);
+                    Reply = reader.Id;
+                }
+                catch (Exception e)
+                {
+                    continue;
+                }
             }
         }
 
@@ -70,14 +75,12 @@ namespace RemoteHealthCare.Network
         /// <param name="heartRate">The current heart rate of the patient</param>
         public void Send(byte id, decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)
         {
-            short elapsedTimeByte = (((short)Math.Round(elapsedTime * 4)));
-            short speedByte = (short)(Math.Round(speed * 1000));
-            byte[] message = { id, 
-                (byte) (elapsedTimeByte & 0xFF), (byte) (elapsedTimeByte >> 8), 
-                (byte) (distanceTravelled & 0xFF), (byte) ((distanceTravelled >> 8) & 0xFF), 
-                (byte) (speedByte & 0xFF), (byte) (speedByte >> 8), 
-                (byte) heartRate};
-            int received = _socket.Send(message);
+            MessageWriter writer = new MessageWriter(id);
+            writer.WriteInt((int) Math.Round(elapsedTime * 4), 2);
+            writer.WriteInt(distanceTravelled, 2);
+            writer.WriteInt((int)Math.Round(speed * 1000), 2);
+            writer.WriteInt(heartRate, 1);
+            int received = _socket.Send(writer.GetBytes());
         }
 
         public static void Send(byte[] message)

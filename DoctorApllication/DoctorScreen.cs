@@ -16,6 +16,7 @@ namespace DoctorApllication
         {
             InitializeComponent();
         }
+        
 
         public void setTXTSpeed(string s)
         {
@@ -111,5 +112,12 @@ namespace DoctorApllication
             // create code that scans all possible nearby bluetooth devices
             // and displays them in de nike list view if they are bikes 
         }
+
+        private void btnLoadData_Click(object sender, EventArgs e)
+        {
+            LoadDataScreen loadData = new LoadDataScreen();
+            loadData.Show();
+        }
+
     }
 }

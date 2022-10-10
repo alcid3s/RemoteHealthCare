@@ -15,7 +15,7 @@
           "panel": {
             "size": [ 1, 0.5 ],
             "resolution": [ 512, 256 ],
-            "background": [ 1, 1, 1, 1 ],
+            "background": [ 1, 1, 1, 0.4 ],
             "castShadow": false
           }
         }

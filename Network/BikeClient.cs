@@ -24,6 +24,8 @@ namespace RemoteHealthCare.Network {
         private Dictionary<string, string> _nodes = new Dictionary<string, string>();
         private List<string> _routes = new List<string>();
 
+        private Terrain _terrain = new Terrain();
+
         public string Path { get; }
         public string Id { get; private set; }
 
@@ -86,12 +88,12 @@ namespace RemoteHealthCare.Network {
                 terrain["data"]["dest"] = Id;
 
                 var heights = terrain["data"]["data"]["data"]["heights"] as JArray;
-
-
-                Terrain t = new Terrain();
-                for (var i = 0; i < 256; i++) {
-                    for (var j = 0; j < 256; j++) {
-                        heights.Add(t.TerrainHeights[j, i]);
+                
+                for (var i = 0; i < 256; i++)
+                {
+                    for (var j = 0; j < 256; j++)
+                    {
+                        heights.Add(_terrain.TerrainHeights[j, i]);
                     }
                 }
 
@@ -432,11 +434,37 @@ namespace RemoteHealthCare.Network {
                         return;
                     }
                 }
-
+              
                 var modelPosition = model["data"]["data"]["data"]["components"]["transform"]["position"] as JArray;
+                double minimum = _terrain.TerrainHeights[(int)position[0], (int)position[2]];
+                for (int i = 0; i < 3; i++)
+                {
+                    int currentX = (int)position[0] - 1 + i;
+                    if (currentX < 0 || currentX >= 256)
+                    {
+                        continue;
+                    }
+                    for (int j = 0; j < 3; j++)
+                    {
+                        int currentY = (int)position[2] - 1 + j;
+                        if (currentY < 0 || currentY >= 256)
+                        {
+                            continue;
+                        }
+                        double current = _terrain.TerrainHeights[currentX, currentY];
+                        if (current < minimum)
+                        {
+                            minimum = current;
+                        }
+                    }
+                }
                 modelPosition[0] = position[0];
-                modelPosition[1] = position[1];
                 modelPosition[2] = position[2];
+                if (modelName.Contains("shrub")) {
+                    modelPosition[1] = position[1] + (decimal)minimum - (decimal)1.5;
+                } else {
+                    modelPosition[1] = position[1] + (decimal)minimum;
+                }
 
                 model["data"]["data"]["data"]["components"]["transform"]["scale"] = scale;
 
@@ -693,44 +721,84 @@ namespace RemoteHealthCare.Network {
             Send(add_road.ToString());
         }
 
-        public void AddTrees() {
-            Console.WriteLine("Attempting to place trees...");
+        /// <summary>
+        /// Add trees around the road, avoiding said road
+        /// </summary>
+        public void AddVegetation() {
+            Console.WriteLine("Attempting to place vegetation...");
             Random random = new Random();
-            List<decimal[]> badLocations = SimulateRoute();
-
-            // for (int i = 0; i < badLocations.Count; i++) {
-            //     CreateModel("tree" + i, "terrain", badLocations[i], 2, new decimal[3],
-            //         "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
-            //     Console.WriteLine("Placed tree!");
-            // }
+            List<decimal[]> staticBadLocations = SimulateRoute();
+            List<decimal[]> dynamicBadLocations = new List<decimal[]>();
 
             for (int i = 0; i < 10000; i++) {
                 decimal[] position = new decimal[3];
                 position[0] = random.Next(256);
                 position[2] = random.Next(256);
-                bool isValid = true;
+                bool isValidTree = true;
 
-                foreach (decimal[] badLocation in badLocations) {
-                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) + Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
-                        isValid = false;
+                foreach (decimal[] badLocation in staticBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                        isValidTree = false;
+                    }
+                }
+
+                foreach (decimal[] badLocation in dynamicBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                        isValidTree = false;
                     }
                 }
                 
-                if (isValid) {
+                if (isValidTree) {
                     CreateModel("tree" + i, "terrain", position, 2, new decimal[3],
                         "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
-                    badLocations.Add(position);
+                    dynamicBadLocations.Add(position);
                     Console.WriteLine("Placed tree!");
                 }
                 else {
-                    Console.WriteLine("Attempted to place tree at invalid location, skipping tree...");
+                    Console.WriteLine("Attempted to place tree " + i + " at invalid location, skipping tree...");
                 }
-                
             }
 
-            Console.WriteLine("Finished placing trees!");
+            for (int i = 0; i < 10000; i++) {
+                decimal[] position = new decimal[3];
+                position[0] = random.Next(256);
+                position[2] = random.Next(256);
+                bool isValidShrub = true;
+
+                foreach (decimal[] badLocation in staticBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                        isValidShrub = false;
+                    }
+                }
+
+                foreach (decimal[] badLocation in dynamicBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 2.5) {
+                        isValidShrub = false;
+                    }
+                }
+                
+                if (isValidShrub) {
+                    CreateModel("shrub" + i, "terrain", position, 1, new decimal[3],
+                        "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
+                    staticBadLocations.Add(position);
+                    Console.WriteLine("Placed shrub!");
+                }
+                else {
+                    Console.WriteLine("Attempted to place shrub " + i + " at invalid location, skipping shrub...");
+                }
+            }
+
+            Console.WriteLine("Finished placing vegetation!");
         }
         
+        /// <summary>
+        /// Calcuates all points in between turn points on the route
+        /// </summary>
+        /// <returns>Returns a list containing all points along the route including turn points using decimal arrays where index 0 is X coordinate, index 2 is Y coordinates</returns>
         private List<decimal[]> SimulateRoute() {
             Console.WriteLine("Creating list of bad locations...");
             List<decimal[]> badLocations = new List<decimal[]>();
@@ -771,6 +839,12 @@ namespace RemoteHealthCare.Network {
             return badLocations;
         }
         
+        /// <summary>
+        /// Calculates all points in between two specified turn points on the route
+        /// </summary>
+        /// <param name="p1">Turn point 1</param>
+        /// <param name="p2">Turn point 2</param>
+        /// <returns>Returns a list containing all in between points including turn points using decimal arrays where index 0 is X coordinate, index 2 is Y coordinate</returns>
         private List<decimal[]> CalculateIntervalPoints(decimal[] p1, decimal[] p2) {
             List<decimal[]> points = new List<decimal[]>();
             int resolution = 20;

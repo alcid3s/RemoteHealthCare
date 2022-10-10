@@ -27,7 +27,7 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            //NetworkEngine(bikeClient);
+            NetworkEngine(bikeClient);
 
             // Kind of bikes available
 
@@ -51,13 +51,26 @@ namespace RemoteHealthCare
                         bikeClient.UpdateSpeed(bike.Speed);
 
                         bikeClient.ClearPanel("panel1");
-                        bikeClient.AddTextToPanel("panel1", "Speed: " + Math.Round(bike.Speed, 2) + " m/s", 1);
-                        bikeClient.AddTextToPanel("panel1", "Distance traveled: " + bike.DistanceTravelled + "m", 2);
-                        bikeClient.AddTextToPanel("panel1", "Elapsed time: " + (int)bike.ElapsedTime + "s", 3);
-                        bikeClient.AddTextToPanel("panel1", "Heartrate: " + bike.HeartRate + " bpm", 4);
+
+                        bikeClient.AddTextToPanel("panel1", "                SPEED", 1);
+                        bikeClient.AddTextToPanel("panel1", "              " + Math.Round((double)bike.Speed * 3.6, 1) + " km/u", 2);
+
+                        bikeClient.AddTextToPanel("panel1", "               " + ((int)bike.ElapsedTime / 3600).ToString("00") + ":" + ((int)bike.ElapsedTime / 60).ToString("00") + ":" + ((int)bike.ElapsedTime % 60).ToString("00"), 3);
+
+                        bikeClient.AddTextToPanel("panel1", "             DISTANCE", 5);
+                        if (bike.DistanceTravelled < 1000) { 
+                            bikeClient.AddTextToPanel("panel1", "                " + bike.DistanceTravelled + " m", 6);
+                        }
+                        else {
+                            bikeClient.AddTextToPanel("panel1", "                 " + Math.Round((double)bike.DistanceTravelled / 1000, 2) + " km", 6);
+                        }
+                        
+                        bikeClient.AddTextToPanel("panel1", "            HEARTRATE", 8);
+                        bikeClient.AddTextToPanel("panel1", "              " + bike.HeartRate + " bpm", 9);
+                        
                         bikeClient.SwapPanelBuffer("panel1");
                     }
-                };
+            };
 
             Application.Run(loginScreen);
             for (; ; );
@@ -91,12 +104,13 @@ namespace RemoteHealthCare
 
             bikeClient.AddRoute();
 
+            //Add road texture and trees
             Console.WriteLine("waiting for route");
             while (!bikeClient.RouteExists(0)) {
                 Thread.Sleep(1);
             }
             bikeClient.AddRoad(0);
-            bikeClient.AddTrees();
+            bikeClient.AddVegetation();
 
             bikeClient.AddPanel("panel1");
             

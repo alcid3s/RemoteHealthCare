@@ -459,8 +459,12 @@ namespace RemoteHealthCare.Network {
                     }
                 }
                 modelPosition[0] = position[0];
-                modelPosition[1] = position[1] + (decimal)minimum;
                 modelPosition[2] = position[2];
+                if (modelName.Contains("shrub")) {
+                    modelPosition[1] = position[1] + (decimal)minimum - (decimal)1.5;
+                } else {
+                    modelPosition[1] = position[1] + (decimal)minimum;
+                }
 
                 model["data"]["data"]["data"]["components"]["transform"]["scale"] = scale;
 
@@ -720,42 +724,75 @@ namespace RemoteHealthCare.Network {
         /// <summary>
         /// Add trees around the road, avoiding said road
         /// </summary>
-        public void AddTrees() {
-            Console.WriteLine("Attempting to place trees...");
+        public void AddVegetation() {
+            Console.WriteLine("Attempting to place vegetation...");
             Random random = new Random();
-            List<decimal[]> badLocations = SimulateRoute();
-
-            // for (int i = 0; i < badLocations.Count; i++) {
-            //     CreateModel("tree" + i, "terrain", badLocations[i], 2, new decimal[3],
-            //         "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
-            //     Console.WriteLine("Placed tree!");
-            // }
+            List<decimal[]> staticBadLocations = SimulateRoute();
+            List<decimal[]> dynamicBadLocations = new List<decimal[]>();
 
             for (int i = 0; i < 10000; i++) {
                 decimal[] position = new decimal[3];
                 position[0] = random.Next(256);
                 position[2] = random.Next(256);
-                bool isValid = true;
+                bool isValidTree = true;
 
-                foreach (decimal[] badLocation in badLocations) {
-                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) + Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
-                        isValid = false;
+                foreach (decimal[] badLocation in staticBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                        isValidTree = false;
+                    }
+                }
+
+                foreach (decimal[] badLocation in dynamicBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                        isValidTree = false;
                     }
                 }
                 
-                if (isValid) {
+                if (isValidTree) {
                     CreateModel("tree" + i, "terrain", position, 2, new decimal[3],
                         "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
-                    badLocations.Add(position);
+                    dynamicBadLocations.Add(position);
                     Console.WriteLine("Placed tree!");
                 }
                 else {
-                    Console.WriteLine("Attempted to place tree at invalid location, skipping tree...");
+                    Console.WriteLine("Attempted to place tree " + i + " at invalid location, skipping tree...");
                 }
-                
             }
 
-            Console.WriteLine("Finished placing trees!");
+            for (int i = 0; i < 10000; i++) {
+                decimal[] position = new decimal[3];
+                position[0] = random.Next(256);
+                position[2] = random.Next(256);
+                bool isValidShrub = true;
+
+                foreach (decimal[] badLocation in staticBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                        isValidShrub = false;
+                    }
+                }
+
+                foreach (decimal[] badLocation in dynamicBadLocations) {
+                    if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 2.5) {
+                        isValidShrub = false;
+                    }
+                }
+                
+                if (isValidShrub) {
+                    CreateModel("shrub" + i, "terrain", position, 1, new decimal[3],
+                        "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
+                    staticBadLocations.Add(position);
+                    Console.WriteLine("Placed shrub!");
+                }
+                else {
+                    Console.WriteLine("Attempted to place shrub " + i + " at invalid location, skipping shrub...");
+                }
+            }
+
+            Console.WriteLine("Finished placing vegetation!");
         }
         
         /// <summary>

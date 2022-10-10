@@ -1,4 +1,5 @@
 ﻿using MessageStream;
+using RemoteHealthCare.GUI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace DoctorApllication
         private static Socket _socket;
 
         public static bool IsRunning { get; private set; } = false;
+
+        public static List<string> accounts { get; set; }
 
         public DoctorClient(string ip, int port)
         {
@@ -44,20 +47,33 @@ namespace DoctorApllication
             }
         }
 
-        public static void Send(int messageId)
+        public static void Send(byte id)
         {
-            switch (messageId)
+            MessageWriter writer = new MessageWriter(id);
+            switch (id)
             {
-                case 1:
+                case 0x50:  
                     //send message to connect to simulation bike
                     break;
-                case 00438:
+                case 0x20:
                     //message to connect to bike with this id 
                     break;
                     //do the same for alle other possible bikes 
 
             }
 
+        }
+        public static void sendHistorieRequest(byte id, string s)
+        {
+            switch (id)
+            {
+                case 0x52:
+                    //send request for all sessions of specific user 
+                    break;
+                case 0x54:
+                    //opvragen details session
+                    break;
+            }
         }
 
         public static void Receive(MessageReader reader) 
@@ -76,6 +92,15 @@ namespace DoctorApllication
                     break;
 
                 case 0x12: 
+                    break;
+
+                case 0x51:
+                    string account = Encoding.UTF8.GetString(reader.ReadPacket());
+                    accounts.Add(account);
+                        break;
+
+                case 0x53:
+                    //server sends all sessions
                     break;
             }
         }

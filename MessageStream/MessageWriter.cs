@@ -71,6 +71,11 @@ namespace MessageStream
             }
         }
 
+        /// <summary>
+        /// Appends a packet of booleans to the message
+        /// This may add extra false entries to complete incomplete bytes
+        /// </summary>
+        /// <param name="packet">The packet to add</param>
         public void WriteBoolPacket(bool[] packet)
         {
             if (_closed)

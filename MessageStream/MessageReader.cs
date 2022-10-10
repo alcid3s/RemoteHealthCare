@@ -79,6 +79,10 @@ namespace MessageStream
             return bytes.ToArray();
         }
 
+        /// <summary>
+        /// Reads a packet of bytes and turns them to booleans, with an amount of bytes represented by the first byte
+        /// </summary>
+        /// <returns>The booleans from the packet</returns>
         public bool[] ReadBoolPacket()
         {
             if (!Checksum())

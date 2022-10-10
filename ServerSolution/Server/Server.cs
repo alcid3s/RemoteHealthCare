@@ -159,6 +159,7 @@ namespace Server
                             break;
                         case 0x60:
                             Logout(client);
+                            firstRun = true;
                             if (sr != null)
                                 sr.Close();
                             break;

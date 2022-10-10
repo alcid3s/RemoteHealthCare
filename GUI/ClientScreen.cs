@@ -68,12 +68,12 @@ namespace RemoteHealthCare.GUI
         private void btnBack_Click(object sender, EventArgs e)
         {
             if (accountLogin == null)
-            {
+            { 
+                AccountLogin.IsLoggedIn = false;
                 accountLogin = new AccountLogin();
                 Hide();
                 accountLogin.Show();
             }
-
         }
     }
 }

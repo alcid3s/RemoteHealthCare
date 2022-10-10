@@ -37,12 +37,12 @@ namespace Server.Accounts
         }
         private void GetData()
         {
-            string path = _path + "/" + _username + _suffix;
-            if (File.Exists(path))
+            string path = _path + "/" + _username;
+            if (Directory.Exists(path))
             {
                 if (_state == AccountState.LoginClient)
                 {
-                    var sr = new StreamReader(File.OpenRead(path));
+                    var sr = new StreamReader(File.OpenRead(path + "/credentials" + _suffix));
                     string? credentials = sr.ReadLine();
                     CheckCredentials(credentials);
                 }
@@ -53,11 +53,17 @@ namespace Server.Accounts
             }
             else if (_state == AccountState.CreateClient)
             {
+                Directory.CreateDirectory(path);
+                path += "/credentials" + _suffix;
                 FileStream fs = File.Create(path);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
                 sr.Close();
-
+            }
+            else
+            {
+                MessageWriter writer = new MessageWriter(0x80);
+                _socket.Send(writer.GetBytes());
             }
         }
 
@@ -95,6 +101,8 @@ namespace Server.Accounts
             else
             {
                 Console.WriteLine("credentials is null");
+                MessageWriter writer = new MessageWriter(0x80);
+                _socket.Send(writer.GetBytes());
             }
         }
     }

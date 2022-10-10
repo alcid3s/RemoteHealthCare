@@ -47,6 +47,7 @@ namespace RemoteHealthCare.Network
 
         public void Listen()
         {
+            byte tempId = 0x00;
             while (true)
             {
                 byte[] message = new byte[1024];
@@ -54,7 +55,8 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Received data");
                 MessageReader reader = new MessageReader(message);
                 Reply = reader.Id;
-                Console.WriteLine($"Login: {(reader.Id == 0x81 ? "Successful" : "Not successful")}");
+                Console.WriteLine($"Reply now is {Reply}");
+                Console.WriteLine($"Login: {(Reply == 0x81 ? "Successful" : "Not successful")}");
             }
         }
 

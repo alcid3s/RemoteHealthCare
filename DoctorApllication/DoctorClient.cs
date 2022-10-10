@@ -44,9 +44,9 @@ namespace DoctorApllication
             }
         }
 
-        public static void Send(int BikeID)
+        public static void Send(int messageId)
         {
-            switch (BikeID)
+            switch (messageId)
             {
                 case 1:
                     //send message to connect to simulation bike
@@ -64,6 +64,7 @@ namespace DoctorApllication
         {
             switch (reader.Id) 
             {
+                //Receive information about a client
                 case 0x21:
                     byte identifier = reader.ReadByte();
                     decimal elapsedTime = reader.ReadInt(2) / 4m;
@@ -73,6 +74,8 @@ namespace DoctorApllication
                     clientData.Add(identifier, new List<ClientData>() );
                     clientData[identifier].Add(new ClientData(elapsedTime, distance, speed, heartRate));
                     break;
+
+                case 
             }
         }
 

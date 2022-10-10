@@ -717,6 +717,9 @@ namespace RemoteHealthCare.Network {
             Send(add_road.ToString());
         }
 
+        /// <summary>
+        /// Add trees around the road, avoiding said road
+        /// </summary>
         public void AddTrees() {
             Console.WriteLine("Attempting to place trees...");
             Random random = new Random();
@@ -755,6 +758,10 @@ namespace RemoteHealthCare.Network {
             Console.WriteLine("Finished placing trees!");
         }
         
+        /// <summary>
+        /// Calcuates all points in between turn points on the route
+        /// </summary>
+        /// <returns>Returns a list containing all points along the route including turn points using decimal arrays where index 0 is X coordinate, index 2 is Y coordinates</returns>
         private List<decimal[]> SimulateRoute() {
             Console.WriteLine("Creating list of bad locations...");
             List<decimal[]> badLocations = new List<decimal[]>();
@@ -795,6 +802,12 @@ namespace RemoteHealthCare.Network {
             return badLocations;
         }
         
+        /// <summary>
+        /// Calculates all points in between two specified turn points on the route
+        /// </summary>
+        /// <param name="p1">Turn point 1</param>
+        /// <param name="p2">Turn point 2</param>
+        /// <returns>Returns a list containing all in between points including turn points using decimal arrays where index 0 is X coordinate, index 2 is Y coordinate</returns>
         private List<decimal[]> CalculateIntervalPoints(decimal[] p1, decimal[] p2) {
             List<decimal[]> points = new List<decimal[]>();
             int resolution = 20;

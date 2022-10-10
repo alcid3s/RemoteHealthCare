@@ -91,6 +91,7 @@ namespace RemoteHealthCare
 
             bikeClient.AddRoute();
 
+            //Add road texture and trees
             Console.WriteLine("waiting for route");
             while (!bikeClient.RouteExists(0)) {
                 Thread.Sleep(1);

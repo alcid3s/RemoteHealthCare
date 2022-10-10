@@ -18,8 +18,7 @@ namespace RemoteHealthCare.GUI
     public partial class AccountLogin : Form
     {
         internal static ClientScreen ClientScreen;
-
-        internal delegate void Updater();
+        internal static bool IsLoggedIn = false;
         public AccountLogin()
         {
             InitializeComponent();
@@ -40,6 +39,7 @@ namespace RemoteHealthCare.GUI
             ServerClient.Send(writer.GetBytes());
 
             int counter = 0;
+            ServerClient.Reply = 0x00;
             while (ServerClient.Reply == 0x00)
             {
                 Thread.Sleep(100);
@@ -50,20 +50,19 @@ namespace RemoteHealthCare.GUI
                 }
             }
 
+            Console.WriteLine($"Checking serverClient.Reply = {ServerClient.Reply}");
             if (ServerClient.Reply == 0x80)
             {
                 Console.WriteLine("Error");
-                ServerClient.Reply = 0x00;
             }
             else if (ServerClient.Reply == 0x81)
             {
-                if (ClientScreen == null)
+                if (!IsLoggedIn)
                 {
-                    ServerClient.Reply = 0x00;
                     ClientScreen = new ClientScreen();
+                    IsLoggedIn = true;
                     Hide();
                     ClientScreen.Show();
-
                 }
             }
         }

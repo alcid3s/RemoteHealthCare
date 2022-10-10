@@ -8,7 +8,6 @@ namespace DoctorApllication
         [STAThread]
         static void Main()
         {
-
             DoctorScreen doctor = new DoctorScreen();
             doctor.setTXTSpeed("15");
             doctor.setTXTDT("200");
@@ -21,6 +20,7 @@ namespace DoctorApllication
             doctor.addListItems("Max");
             doctor.addListItems("Tygo");
             doctor.addListItems("Simulation Bike");
+            //DoctorClient.clientData.
 
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.

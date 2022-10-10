@@ -27,7 +27,7 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            NetworkEngine(bikeClient);
+            //NetworkEngine(bikeClient);
 
             // Kind of bikes available
 

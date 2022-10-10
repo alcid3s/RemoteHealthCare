@@ -41,6 +41,7 @@
             this.txtSpeed = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.txtInfo = new System.Windows.Forms.TextBox();
+            this.btnLoadData = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox5
@@ -98,7 +99,8 @@
             // 
             // btnConnectClient
             // 
-            this.btnConnectClient.BackColor = System.Drawing.Color.IndianRed;
+            this.btnConnectClient.BackColor = System.Drawing.Color.Red;
+            this.btnConnectClient.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnConnectClient.Location = new System.Drawing.Point(683, 281);
             this.btnConnectClient.Name = "btnConnectClient";
             this.btnConnectClient.Size = new System.Drawing.Size(75, 23);
@@ -178,11 +180,24 @@
             this.txtInfo.Size = new System.Drawing.Size(451, 23);
             this.txtInfo.TabIndex = 26;
             // 
+            // btnLoadData
+            // 
+            this.btnLoadData.BackColor = System.Drawing.Color.Red;
+            this.btnLoadData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnLoadData.Location = new System.Drawing.Point(713, 415);
+            this.btnLoadData.Name = "btnLoadData";
+            this.btnLoadData.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadData.TabIndex = 27;
+            this.btnLoadData.Text = "Load data";
+            this.btnLoadData.UseVisualStyleBackColor = false;
+            this.btnLoadData.Click += new System.EventHandler(this.btnLoadData_Click);
+            // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnLoadData);
             this.Controls.Add(this.txtInfo);
             this.Controls.Add(this.textBox6);
             this.Controls.Add(this.textBox5);
@@ -219,5 +234,6 @@
         private TextBox txtSpeed;
         private TextBox textBox6;
         private TextBox txtInfo;
+        private Button btnLoadData;
     }
 }

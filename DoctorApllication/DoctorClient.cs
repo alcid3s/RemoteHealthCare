@@ -75,7 +75,8 @@ namespace DoctorApllication
                     clientData[identifier].Add(new ClientData(elapsedTime, distance, speed, heartRate));
                     break;
 
-                case 
+                case 0x12: 
+                    break;
             }
         }
 

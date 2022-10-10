@@ -1,0 +1,26 @@
+{
+  "id": "tunnel/send",
+  "data": {
+    "dest": "",
+    "data": {
+      "id" : "scene/node/add",
+      "data" : 
+      {
+        "name" : "terrain_node",
+        "components" :
+        {
+          "transform" : 
+          {
+            "position" : [ 0, 0, 0 ],
+            "scale" : 1,
+            "rotation" : [ 0, 0, 0 ]
+          },
+          "terrain" : 
+          {
+            "smoothnormals" : true
+          }
+        }
+      }
+    }
+  }
+}

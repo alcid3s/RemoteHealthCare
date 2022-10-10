@@ -1,0 +1,25 @@
+{
+  "id": "tunnel/send",
+  "data": {
+    "dest": "",
+    "data": {
+      "id": "scene/node/add",
+      "data": {
+        "name": "",
+        "components": {
+          "transform": {
+            "position": [ -0.5, 0, 0 ],
+            "scale": 0.01,
+            "rotation": [ 0, 0, 0 ]
+          },
+          "model": {
+            "file": "data/NetworkEngine/models/bike/bike_anim.fbx",
+            "cullbackfaces": true,
+            "animated": true,
+            "animation": "Armature|Fietsen"
+          }
+        }
+      }
+    }
+  }
+}

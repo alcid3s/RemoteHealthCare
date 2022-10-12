@@ -73,7 +73,7 @@ namespace RemoteHealthCare.Network
         /// <param name="distanceTravelled">The total travelled distance since the beginning of the exercise</param>
         /// <param name="speed">The current speed of the bike</param>
         /// <param name="heartRate">The current heart rate of the patient</param>
-        public void Send(byte id, decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)
+        public static void Send(byte id, decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)
         {
             MessageWriter writer = new MessageWriter(id);
             writer.WriteInt((int) Math.Round(elapsedTime * 4), 2);

@@ -14,8 +14,8 @@ using RemoteHealthCare.Scene;
 
 namespace RemoteHealthCare.Network {
     internal class BikeClient {
-        private TcpClient _client;
-        private NetworkStream _stream;
+        private static TcpClient _client;
+        private static NetworkStream _stream;
 
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
@@ -33,6 +33,18 @@ namespace RemoteHealthCare.Network {
             Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() +
                    "/Json";
             Id = string.Empty;
+        }
+
+        public static void Disconnect()
+        {
+            if (_stream != null && _client != null)
+            {
+                _stream.Close();
+                _client.Close();
+            }
+            else
+                throw new Exception("Connection with VR server was never even there.");
+
         }
 
         /// <summary>
@@ -871,5 +883,7 @@ namespace RemoteHealthCare.Network {
         
             return points;
         }
+
+
     }
 }

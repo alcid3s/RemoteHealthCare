@@ -14,9 +14,9 @@ namespace Server
         private int _port;
         private struct Client
         {
-            public Socket Socket { get; }
+            public Socket? Socket { get; private set; }
             public int Id { get; }
-            public Client(Socket socket, int id)
+            public Client(Socket? socket, int id)
             {
                 Socket = socket;
                 Id = id;
@@ -64,7 +64,9 @@ namespace Server
                 while (true)
                 {
                     // New incoming connection.
-                    Socket socket = ServerSocket.Accept();
+                    Socket? socket = null;
+                    if (ServerSocket != null)
+                        socket = ServerSocket.Accept();
 
                     // saving client to list.
                     Client client = new(socket, clientList.Count + 1);

@@ -20,7 +20,6 @@ namespace DoctorApllication
             doctor.addListItems("Max");
             doctor.addListItems("Tygo");
             doctor.addListItems("Simulation Bike");
-            doctor.addListItems("Simulation Bike");
 
             //DoctorClient.clientData.
 

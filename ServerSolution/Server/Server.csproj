@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DoctorApllication\DoctorApllication.csproj" />
     <ProjectReference Include="..\..\MessageStream\MessageStream.csproj" />
   </ItemGroup>
 

@@ -1,16 +1,8 @@
 ﻿using MessageStream;
-using RemoteHealthCare.Accounts;
 using RemoteHealthCare.Network;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RemoteHealthCare.GUI
@@ -19,6 +11,7 @@ namespace RemoteHealthCare.GUI
     {
         internal static ClientScreen ClientScreen;
         internal static bool IsLoggedIn = false;
+        internal static bool IsLoggedInDoctor = false;
         public AccountLogin()
         {
             InitializeComponent();
@@ -61,6 +54,17 @@ namespace RemoteHealthCare.GUI
                 {
                     ClientScreen = new ClientScreen();
                     IsLoggedIn = true;
+                    Hide();
+                    ClientScreen.Show();
+                }
+            }
+            else if (ServerClient.Reply == 0x81)
+            {
+                if (!IsLoggedInDoctor)
+                {
+                    ClientScreen = new ClientScreen();
+                    IsLoggedInDoctor = true;
+                    
                     Hide();
                     ClientScreen.Show();
                 }

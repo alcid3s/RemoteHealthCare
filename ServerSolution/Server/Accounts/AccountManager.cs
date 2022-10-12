@@ -12,6 +12,7 @@ namespace Server.Accounts
     public class AccountManager
     {
         public bool LoggedIn { get; set; } = false;
+        public bool LoggedInDoctor { get; set; } = false;
 
         private string _suffix = ".txt";
         private string _path = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
@@ -54,6 +55,12 @@ namespace Server.Accounts
                         MessageWriter writer = new MessageWriter(0x81);
                         writer.WriteByte(0x11);
                         _socket.Send(writer.GetBytes());
+                    } if (CheckCredentialsDoctor(credentials))
+                    {
+                        LoggedInDoctor = true;
+                        MessageWriter writer = new MessageWriter(0x81);
+                        writer.WriteByte(0x11);
+                        _socket.Send(writer.GetBytes());
                     }
                 }
                 else
@@ -87,6 +94,36 @@ namespace Server.Accounts
             }
         }
 
+        private bool CheckCredentialsDoctor(string? credentials)
+        {
+            if (credentials != null)
+            {
+                string[] creds = credentials.Split(',');
+                string username = creds[0];
+                string password = creds[1];
+                string type = creds[2];
+
+                username = username.Replace('[', ' ');
+                username = username.Trim();
+
+                type = type.Replace(']', ' ');
+                type = type.Trim();
+                
+                if (_username.Equals(username) && _password.Equals(password) && type.Equals("d"))
+                {
+                    Console.WriteLine("Login credentials Doctor are correct");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Login credentials are faulty");
+                    return false;
+                }
+            }
+            else
+                return false;
+        }
+
         private bool CheckCredentials(string? credentials)
         {
             if (credentials != null)
@@ -104,7 +141,7 @@ namespace Server.Accounts
 
                 if (_username.Equals(username) && _password.Equals(password) && type.Equals("c"))
                 {
-                    Console.WriteLine("Login credentials are correct");
+                    Console.WriteLine("Login credentials Client are correct");
                     return true;
                 }
                 else

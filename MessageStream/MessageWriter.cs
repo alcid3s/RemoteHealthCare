@@ -128,5 +128,10 @@ namespace MessageStream
 
             _closed = true;
         }
+
+        public override string ToString()
+        {
+            return BitConverter.ToString(GetBytes()).Replace('-', ' ');
+        }
     }
 }

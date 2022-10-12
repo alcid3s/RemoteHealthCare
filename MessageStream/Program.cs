@@ -8,12 +8,21 @@ namespace MessageStream
     {
         static void Main(string[] args)
         {
-            MessageWriter writer = new MessageWriter(0x43);
-            writer.WriteBoolPacket(new bool[] { true, false, false, true, true, true, false, false, true });
+            ExtendedMessageWriter writer = new ExtendedMessageWriter(0x43);
+            writer.WriteString("Hallo Wereld!");
+            writer.WriteBikeData(65.25m, 120, 4.53m, 110);
 
-            MessageReader reader = new MessageReader(writer.GetBytes());
+            Console.WriteLine(writer.ToString());
+
+            ExtendedMessageReader reader = new ExtendedMessageReader(writer.GetBytes());
+
+
             Console.WriteLine("0x" + BitConverter.ToString(new byte[] { reader.Id }));
-            Console.WriteLine(string.Join("", reader.ReadBoolPacket().Select(x => x ? 1 : 0)));
+            Console.WriteLine(reader);
+            Console.WriteLine(reader.ReadString());
+            Console.WriteLine(reader);
+            Console.WriteLine(reader.ReadBikeData());
+            Console.WriteLine(reader);
         }
     }
 }

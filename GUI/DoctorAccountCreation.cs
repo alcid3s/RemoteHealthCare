@@ -33,10 +33,21 @@ namespace RemoteHealthCare.GUI
                         MessageWriter writer = new MessageWriter(0x14);
                         writer.WritePacket(Encoding.ASCII.GetBytes(txtAccountNameAccountCreationDoctor.Text));
                         writer.WritePacket(Encoding.ASCII.GetBytes(txtPasswordAccountCreationDoctor.Text));
-
                         ServerClient.Send(writer.GetBytes());
+
+                        AccountLogin login = new AccountLogin();
+                        Close();
+                        login.Show();
                     }
                 }
+                else
+                {
+                    txtPasswordAccountCreationDoctor.Text = "TO LONG OR TO SHORT";
+                }
+            }
+            else
+            {
+                txtAccountNameAccountCreationDoctor.Text = "TO LONG OR TO SHORT";
             }
         }
 

@@ -139,6 +139,7 @@ namespace Server
                             string user = Encoding.UTF8.GetString(reader.ReadPacket());
                             string pass = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Doctor Account, data received: {user}, {pass}");
+                            account = new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
                             break;
 
                         // Bike information from client to server
@@ -157,6 +158,10 @@ namespace Server
                                     account.SaveData(message, sr);
                             }
                             break;
+                        case 0x52:
+
+                            break;
+
                         case 0x60:
                             Logout(client);
                             firstRun = true;

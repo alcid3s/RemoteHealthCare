@@ -15,7 +15,7 @@ namespace Server.Accounts
 
         private string _suffix = ".txt";
         private string _path = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
-
+        private string _pathDoctor = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Doctors";
         private string _username;
         private string _password;
         private Socket _socket;
@@ -25,6 +25,7 @@ namespace Server.Accounts
         public enum AccountState
         {
             CreateClient,
+            CreateDoctor,
             LoginClient,
             EditClient,
             RemoveClient
@@ -40,6 +41,7 @@ namespace Server.Accounts
         private void GetData()
         {
             string path = _path + "/" + _username;
+            string pathDoctor = _pathDoctor + "/" + _username;
             if (_state == AccountState.LoginClient)
             {
                 if (Directory.Exists(path))
@@ -72,6 +74,15 @@ namespace Server.Accounts
                 FileStream fs = File.Create(path + "/credentials" + _suffix);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
+                sr.Close();
+            }
+            else if (_state == AccountState.CreateDoctor)
+            {
+                Directory.CreateDirectory(path);
+                Thread.Sleep(10);
+                FileStream fs = File.Create(path + "/credentials" + _suffix);
+                var sr = new StreamWriter(fs);
+                sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
                 sr.Close();
             }
         }

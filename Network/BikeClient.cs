@@ -35,7 +35,7 @@ namespace RemoteHealthCare.Network {
             Id = string.Empty;
         }
 
-        public static void Disconnect()
+        public void Disconnect()
         {
             if (_stream != null && _client != null)
             {
@@ -54,9 +54,8 @@ namespace RemoteHealthCare.Network {
         /// <param name="port">Port-number the server is running on</param>
         public void Connect(string ip, int port) {
             // checks if the given ip is valid
-            if (ip == null || port < 1000) {
+            if (ip == null || port < 1000) 
                 throw new MissingFieldException("IP is null or port is already in use");
-            }
 
             // makes a connection with the server with the given ip and port
             try {

@@ -20,6 +20,8 @@ namespace DoctorApllication
             doctor.addListItems("Max");
             doctor.addListItems("Tygo");
             doctor.addListItems("Simulation Bike");
+            doctor.addListItems("Simulation Bike");
+
             //DoctorClient.clientData.
 
             // To customize application configuration such as set high DPI settings or default font,

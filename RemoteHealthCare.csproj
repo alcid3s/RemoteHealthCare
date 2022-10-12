@@ -146,10 +146,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DoctorApllication\DoctorApllication.csproj">
-      <Project>{0ee2001b-2fa9-4229-ab77-026a79baaebe}</Project>
-      <Name>DoctorApllication</Name>
-    </ProjectReference>
     <ProjectReference Include="MessageStream\MessageStream.csproj">
       <Project>{b49aa1c9-592c-4aec-81c9-89a660f2f1b7}</Project>
       <Name>MessageStream</Name>

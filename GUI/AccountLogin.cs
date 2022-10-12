@@ -1,9 +1,11 @@
 ﻿using MessageStream;
 using RemoteHealthCare.Network;
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+
 
 namespace RemoteHealthCare.GUI
 {
@@ -63,6 +65,7 @@ namespace RemoteHealthCare.GUI
                 if (!IsLoggedInDoctor)
                 {
                     ClientScreen = new ClientScreen();
+                    var p = new Process();
                     IsLoggedInDoctor = true;
                     
                     Hide();

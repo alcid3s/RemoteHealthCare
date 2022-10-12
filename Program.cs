@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Avans.TI.BLE;
 using Newtonsoft.Json;
-
 using RemoteHealthCare.Bikes;
 using RemoteHealthCare.GUI;
 using RemoteHealthCare.Network;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 
 namespace MessageStream
@@ -7,14 +8,12 @@ namespace MessageStream
     {
         static void Main(string[] args)
         {
-            MessageWriter writer = new MessageWriter(0x10);
-            writer.WritePacket(Encoding.UTF8.GetBytes("Pieter Post"));
-            writer.WritePacket(Encoding.UTF8.GetBytes("wachtwoord1234"));
+            MessageWriter writer = new MessageWriter(0x43);
+            writer.WriteBoolPacket(new bool[] { true, false, false, true, true, true, false, false, true });
 
             MessageReader reader = new MessageReader(writer.GetBytes());
             Console.WriteLine("0x" + BitConverter.ToString(new byte[] { reader.Id }));
-            Console.WriteLine(Encoding.UTF8.GetString(reader.ReadPacket()));
-            Console.WriteLine(Encoding.UTF8.GetString(reader.ReadPacket()));
+            Console.WriteLine(string.Join("", reader.ReadBoolPacket().Select(x => x ? 1 : 0)));
         }
     }
 }

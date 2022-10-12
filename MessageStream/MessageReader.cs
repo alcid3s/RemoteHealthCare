@@ -80,6 +80,27 @@ namespace MessageStream
         }
 
         /// <summary>
+        /// Reads a packet of bytes and turns them to booleans, with an amount of bytes represented by the first byte
+        /// </summary>
+        /// <returns>The booleans from the packet</returns>
+        public bool[] ReadBoolPacket()
+        {
+            if (!Checksum())
+                throw new InvalidOperationException();
+
+            byte[] bytes = ReadPacket();
+
+            bool[] packet = new bool[bytes.Length * 8];
+
+            for (int i = 0; i < packet.Length; i++)
+            {
+                packet[i] = (bytes[i / 8] >> (7 - i % 8) & 1) == 1;
+            }
+
+            return packet;
+        }
+
+        /// <summary>
         /// Validates a message using the checksum
         /// </summary>
         /// <returns>Whether the message is functional or not</returns>

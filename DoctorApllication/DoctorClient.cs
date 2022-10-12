@@ -65,13 +65,16 @@ namespace DoctorApllication
         }
         public static void sendHistorieRequest(byte id, string s)
         {
+            MessageWriter writer = new MessageWriter(id);
             switch (id)
             {
                 case 0x52:
                     //send request for all sessions of specific user 
+                    writer.WritePacket(Encoding.UTF8.GetBytes(s));
                     break;
                 case 0x54:
                     //opvragen details session
+                    writer.WritePacket(Encoding.UTF8.GetBytes(s));
                     break;
             }
         }

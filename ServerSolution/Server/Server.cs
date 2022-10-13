@@ -184,8 +184,8 @@ namespace Server
                                     dirs[i] = name[name.Length - 1];
                                     nameWriter.WriteString(dirs[i]);
                                 }
-                                Console.Write("Sending:");
 
+                                Console.Write("Sending:");
                                 foreach (string n in dirs)
                                 {
                                     Console.Write($" {n}");

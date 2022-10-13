@@ -41,7 +41,7 @@ namespace DoctorApllication
         }
         private void btnConnectClient_Click(object sender, EventArgs e)
         {
-            //create code that cheks if the selected item is actually a bike and use Send() to
+            //create code that checks if the selected item is actually a bike and use Send() to
             //send a message to the server, with the code for the switch case
             if (lstClients.SelectedItems != null)
             {
@@ -52,7 +52,7 @@ namespace DoctorApllication
                     if (s.ToString().Equals("Simulation Bike"))
                     {
                         txtInfo.Text += " 1"; 
-                        DoctorClient.Send(1);
+                        //DoctorClient.Send(1);
                     }
                 //continue like this for all existing bikes, its only five(better if done with switch case)
                 }

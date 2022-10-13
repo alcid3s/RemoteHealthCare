@@ -17,7 +17,7 @@ namespace DoctorApllication
              doctor = new DoktorLogin();
 
             DoctorClient doctorClient = new DoctorClient("127.0.0.1", 1337);
-            doctorClient.connect();
+            doctorClient.Connect();
             //doctor.setTXTSpeed("15");
             //doctor.setTXTDT("200");
             //doctor.setTXTET("20.23");

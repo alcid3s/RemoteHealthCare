@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessageStream;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,7 +28,7 @@ namespace DoctorApllication
 
         private void LoadDataScreen_Load(object sender, EventArgs e)
         {
-            DoctorClient.Send(0x50);
+            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
             int count = 0;
             while(DoctorClient.accounts.Count == 0)
             {

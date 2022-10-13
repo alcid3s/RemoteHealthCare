@@ -29,8 +29,6 @@ namespace MessageStream
             _id = ReadByte();
         }
 
-        
-
         /// <summary>
         /// Reads the current byte and moves the indexer
         /// </summary>

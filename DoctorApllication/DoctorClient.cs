@@ -15,12 +15,12 @@ namespace DoctorApllication
     {
         private int _port;
         private IPAddress _address;
-
         private static Socket _socket;
 
         public static bool IsRunning { get; private set; } = false;
-
         public static List<string> accounts { get; set; }
+        public static Dictionary<byte, List<ClientData>> clientData { get; set; } = new Dictionary<byte, List<ClientData>>();
+        public static int Reply { get; private set; }
 
         public DoctorClient(string ip, int port)
         {
@@ -28,10 +28,7 @@ namespace DoctorApllication
             _port = port;
         }
 
-        public static Dictionary<byte, List<ClientData>> clientData { get; set; } = new Dictionary<byte, List<ClientData>>();
-        public static int Reply { get; internal set; }
-
-        public void connect()
+        public void Connect()
         {
             IPEndPoint endPoint = new IPEndPoint(_address, _port);
             _socket = new Socket(_address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -48,6 +45,7 @@ namespace DoctorApllication
                 Console.WriteLine($"Exception connecting to Doctor Client to server:\n{ex}");
             }
         }
+
         /// <summary>
         /// constantly listening to reply from the server and rewrites reply to the reply Id from the server
         /// </summary>
@@ -61,8 +59,16 @@ namespace DoctorApllication
                 try
                 {
                     MessageReader reader = new MessageReader(message);
-                    Reply = reader.Id;
-
+                    switch (reader.Id)
+                    {
+                        case 0x15:
+                            Reply = reader.Id;
+                            break;
+                        // server sends packet with all sessions of users.
+                        case 0x53:
+                            byte[] sessions = reader.ReadPacket();
+                            break;
+                    }
                 } 
                 catch (Exception ex)
                 {
@@ -72,22 +78,6 @@ namespace DoctorApllication
             }
         }
 
-        public static void Send(byte id)
-        {
-            MessageWriter writer = new MessageWriter(id);
-            switch (id)
-            {
-                case 0x50:  
-                    //send message to connect to simulation bike
-                    break;
-                case 0x20:
-                    //message to connect to bike with this id 
-                    break;
-                    //do the same for alle other possible bikes 
-
-            }
-
-        }
         public static void sendHistoryRequest(byte id, string s)
         {
             MessageWriter writer = new MessageWriter(id);
@@ -129,6 +119,7 @@ namespace DoctorApllication
 
                 case 0x53:
                     //server sends all sessions
+
                     break;
             }
         }
@@ -164,7 +155,7 @@ namespace DoctorApllication
                     return false;
                 }
             }
-
+            
             //Got a response
             return true;
         }

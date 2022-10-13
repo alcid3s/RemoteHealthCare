@@ -14,9 +14,9 @@ namespace Server
         private int _port;
         private struct Client
         {
-            public Socket? Socket { get; private set; }
-            public int Id { get; }
-            public Client(Socket? socket, int id)
+            public Socket? Socket { get; }
+            public byte Id { get; }
+            public Client(Socket? socket, byte id)
             {
                 Socket = socket;
                 Id = id;
@@ -69,7 +69,7 @@ namespace Server
                         socket = ServerSocket.Accept();
 
                     // saving client to list.
-                    Client client = new(socket, clientList.Count + 1);
+                    Client client = new(socket, (byte) (clientList.Count + 1));
                     clientList.Add(client);
 
                     // Every client gets its own thread.
@@ -144,11 +144,13 @@ namespace Server
                             new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
                             break;
 
+                        // Doctor wants to login
                         case 0x15:
                             string usernameCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
-                            account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor, client.Socket, AccountManager.AccountState.LoginDoctor);
+                            account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor, 
+                                client.Socket, AccountManager.AccountState.LoginDoctor);
                             break;
 
                         // Bike information from client to server
@@ -163,14 +165,26 @@ namespace Server
                                     firstRun = false;
                                 }
 
-                                if(sr != null)
+                                if (sr != null)
                                     account.SaveData(message, sr);
                             }
                             break;
+
+                        // Send all patient ids connected with the server.
                         case 0x52:
+                            Console.WriteLine("Sending data to Doctor");
+                            byte[] packet = new byte[clientList.Count];
 
+                            for (int i = 0; i < packet.Length; i++)
+                            {
+                                packet[i] = clientList.ElementAt(i).Id;
+                            }
+
+                            MessageWriter writer = new MessageWriter(0x53);
+                            writer.WritePacket(packet);
+
+                            client.Socket.Send(writer.GetBytes());
                             break;
-
                         case 0x60:
                             Logout(client);
                             firstRun = true;

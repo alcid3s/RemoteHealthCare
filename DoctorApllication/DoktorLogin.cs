@@ -16,6 +16,8 @@ namespace DoctorApllication
     {
         internal static DoctorScreen doctorScreen;
         internal static bool isloggedIn = false;
+
+        public static byte CanLogin { get; set; } = 0x00;
         DoctorLoginCreation doctorLoginCreation;
 
 
@@ -30,6 +32,28 @@ namespace DoctorApllication
             writer.WriteString(txtAccountName.Text);
             writer.WriteString(txtPassword.Text);
             DoctorClient.Send(writer.GetBytes());
+
+            int counter = 0;
+            while (CanLogin == 0x00)
+            {
+                Thread.Sleep(100);
+                counter++;
+                if(counter == 50)
+                {
+                    throw new Exception("Reply takes too long");
+                }
+            }
+
+            if(CanLogin == 0x81)
+            {
+                if (!isloggedIn)
+                {
+                    doctorScreen = new DoctorScreen();
+                    isloggedIn = true;
+                    Hide();
+                    doctorScreen.Show();
+                }
+            }
 
             //wait for a response and return when there is no response
             bool response = DoctorClient.waitForReply();

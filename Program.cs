@@ -55,9 +55,9 @@ namespace RemoteHealthCare
             //bikeClient.DeleteNode("LeftHand");
             //bikeClient.DeleteNode("RightHand");
 
-            BikeClient.SetSkyBox(16);
-            BikeClient.CreateTerrain("terrain");
-            BikeClient.CreateBike("bike");
+            bikeClient.SetSkyBox();
+            bikeClient.CreateTerrain("terrain");
+            bikeClient.CreateBike("bike");
             //bikeClient.CreateBike("bike2");
 
             BikeClient.AddRoute();

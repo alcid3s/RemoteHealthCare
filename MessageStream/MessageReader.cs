@@ -120,5 +120,13 @@ namespace MessageStream
                 throw new InvalidOperationException();
             return _id;
         }
+
+        public override string ToString()
+        {
+            string[] text = BitConverter.ToString(_data).Split('-');
+            if (_index < _data.Length)
+                text[_index] = '>' + text[_index] + '<';
+            return string.Join(" ", text);
+        }
     }
 }

@@ -61,6 +61,11 @@ namespace RemoteHealthCare.GUI
                 {
                     ClientScreen = new ClientScreen();
                     IsLoggedIn = true;
+
+                    if (Program.NetworkEngineRunning)
+                    {
+                        ClientScreen.LocalNetworkEngineRunning = true;
+                    }
                     Hide();
                     ClientScreen.Show();
                 }

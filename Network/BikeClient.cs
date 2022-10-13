@@ -14,8 +14,8 @@ using RemoteHealthCare.Scene;
 
 namespace RemoteHealthCare.Network {
     internal class BikeClient {
-        private TcpClient _client;
-        private NetworkStream _stream;
+        private static TcpClient _client;
+        private static NetworkStream _stream;
 
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
@@ -26,13 +26,38 @@ namespace RemoteHealthCare.Network {
 
         private Terrain _terrain = new Terrain();
 
+        public static bool Connected { get; set; }
         public string Path { get; }
         public string Id { get; private set; }
 
-        public BikeClient() {
+        private string _ip;
+        private int _port;
+
+        public BikeClient(string ip, int port) {
+
+            // checks if the given ip is valid
+            if (ip == null || port < 1000)
+                throw new MissingFieldException("IP is null or port is already in use");
+
+            _ip = ip;
+            _port = port;
+
             Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() +
                    "/Json";
             Id = string.Empty;
+        }
+
+        public void Disconnect()
+        {
+            if (_stream != null && _client != null)
+            {
+                _stream.Close();
+                _client.Close();
+                Connected = false;
+            }
+            else
+                throw new Exception("Connection with VR server was never even there.");
+
         }
 
         /// <summary>
@@ -40,19 +65,17 @@ namespace RemoteHealthCare.Network {
         /// </summary>
         /// <param name="ip">Address of the server</param>
         /// <param name="port">Port-number the server is running on</param>
-        public void Connect(string ip, int port) {
-            // checks if the given ip is valid
-            if (ip == null || port < 1000) {
-                throw new MissingFieldException("IP is null or port is already in use");
-            }
+        public void Connect() {
+
 
             // makes a connection with the server with the given ip and port
             try {
                 _client = new TcpClient();
-                _client.Connect(ip, port);
-                Console.WriteLine($"Connection made with {ip}:{port}");
+                _client.Connect(_ip, _port);
+                Console.WriteLine($"Connection made with {_ip}:{_port}");
                 _stream = _client.GetStream();
                 Send(@"{""id"": ""session/list""}");
+                Connected = true;
             }
             // writes an exception when connection fails
             catch (Exception e) {
@@ -677,7 +700,7 @@ namespace RemoteHealthCare.Network {
         public void UpdateSpeed(decimal speed) {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/update_bike_speed.json"));
             ob["data"]["dest"] = Id;
-            ob["data"]["data"]["data"]["speed"] = speed;
+            ob["data"]["data"]["data"]["speed"] = speed / 2;
 
             try {
                 ob["data"]["data"]["data"]["node"] = _nodes["Camera"];
@@ -873,5 +896,7 @@ namespace RemoteHealthCare.Network {
         
             return points;
         }
+
+
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Server.Accounts
 
         private string _suffix = ".txt";
         private string _path = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
-
+        private string _pathDoctor = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Doctors";
         private string _username;
         private string _password;
         private Socket _socket;
@@ -25,9 +26,11 @@ namespace Server.Accounts
         public enum AccountState
         {
             CreateClient,
+            CreateDoctor,
             LoginClient,
             EditClient,
-            RemoveClient
+            RemoveClient,
+            LoginDoctor
         }
         public AccountManager(string username, string password, Socket socket, AccountState state)
         {
@@ -40,6 +43,7 @@ namespace Server.Accounts
         private void GetData()
         {
             string path = _path + "/" + _username;
+            string pathDoctor = _pathDoctor + "/" + _username;
             if (_state == AccountState.LoginClient)
             {
                 if (Directory.Exists(path))
@@ -52,7 +56,7 @@ namespace Server.Accounts
                         MessageWriter writer = new MessageWriter(0x81);
                         writer.WriteByte(0x11);
                         _socket.Send(writer.GetBytes());
-                    }
+                    }                   
                 }
                 else
                 {
@@ -60,7 +64,24 @@ namespace Server.Accounts
                     writer.WriteByte(0x11);
                     _socket.Send(writer.GetBytes());
                 }
-            }
+            } else if (_state == AccountState.LoginDoctor)
+            {
+                var sr = new StreamReader(File.OpenRead(pathDoctor + "/credentials" + _suffix));
+                string? credentials = sr.ReadLine();
+                if (CheckCredentialsDoctor(credentials))
+                {
+                    LoggedIn = true;
+                    MessageWriter writer = new MessageWriter(0x81);
+                    writer.WriteByte(0x15);
+                    _socket.Send(writer.GetBytes());
+                }
+                else
+                {
+                    MessageWriter writer = new MessageWriter(0x80);
+                    writer.WriteByte(0x15);
+                    _socket.Send(writer.GetBytes());
+                }
+            } 
             else if (_state == AccountState.RemoveClient)
             {
                 // TODO 05-10-2022: Remove account
@@ -72,6 +93,16 @@ namespace Server.Accounts
                 FileStream fs = File.Create(path + "/credentials" + _suffix);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
+                sr.Close();
+            }
+            else if (_state == AccountState.CreateDoctor)
+            {
+                Console.WriteLine("Dokter");
+                Directory.CreateDirectory(pathDoctor);
+                Thread.Sleep(10);
+                FileStream fs = File.Create(pathDoctor + "/credentials" + _suffix);
+                var sr = new StreamWriter(fs);
+                sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
                 sr.Close();
             }
         }
@@ -92,6 +123,35 @@ namespace Server.Accounts
                 type = type.Trim();
 
                 if (_username.Equals(username) && _password.Equals(password) && type.Equals("c"))
+                {
+                    Console.WriteLine("Login credentials are correct");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Login credentials are faulty");
+                    return false;
+                }
+            }
+            else
+                return false;
+        }
+        private bool CheckCredentialsDoctor(string? credentials)
+        {
+            if (credentials != null)
+            {
+                string[] creds = credentials.Split(',');
+                string username = creds[0];
+                string password = creds[1];
+                string type = creds[2];
+
+                username = username.Replace('[', ' ');
+                username = username.Trim();
+
+                type = type.Replace(']', ' ');
+                type = type.Trim();
+
+                if (_username.Equals(username) && _password.Equals(password) && type.Equals("d"))
                 {
                     Console.WriteLine("Login credentials are correct");
                     return true;

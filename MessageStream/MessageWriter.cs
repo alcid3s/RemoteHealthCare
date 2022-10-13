@@ -72,6 +72,31 @@ namespace MessageStream
         }
 
         /// <summary>
+        /// Appends a packet of booleans to the message
+        /// This may add extra false entries to complete incomplete bytes
+        /// </summary>
+        /// <param name="packet">The packet to add</param>
+        public void WriteBoolPacket(bool[] packet)
+        {
+            if (_closed)
+                throw new InvalidOperationException();
+
+            if (packet.Length > 256)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            byte[] bytes = new byte[(packet.Length + 7) / 8];
+
+            for (int i = 0; i < packet.Length; i++)
+            {
+                bytes[i / 8] |= packet[i] ? (byte)(1 << (7 - i % 8)) : (byte)0;
+            }
+
+            WritePacket(bytes);
+        }
+
+        /// <summary>
         /// Returns the message to send in bytes
         /// </summary>
         /// <returns>The message to send</returns>
@@ -102,6 +127,11 @@ namespace MessageStream
             WriteByte(checksum);
 
             _closed = true;
+        }
+
+        public override string ToString()
+        {
+            return BitConverter.ToString(GetBytes()).Replace('-', ' ');
         }
     }
 }

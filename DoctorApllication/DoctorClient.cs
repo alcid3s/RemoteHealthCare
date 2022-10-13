@@ -22,6 +22,23 @@ namespace DoctorApllication
         public static Dictionary<byte, List<ClientData>> clientData { get; set; } = new Dictionary<byte, List<ClientData>>();
         public static int Reply { get; private set; }
 
+        public struct ClientData
+        {
+            public decimal elapsedTime { get; set; }
+            public int distance { get; set; }
+            public decimal speed { get; set; }
+            public int heartRate { get; set; }
+
+            public ClientData(decimal elapsedTime, int distance, decimal speed, int heartRate)
+            {
+                this.elapsedTime = elapsedTime;
+                this.distance = distance;
+                this.speed = speed;
+                this.heartRate = heartRate;
+            }
+        }
+
+
         public DoctorClient(string ip, int port)
         {
             _address = IPAddress.Parse(ip);
@@ -59,11 +76,15 @@ namespace DoctorApllication
                 try
                 {
                     MessageReader reader = new MessageReader(message);
-                    switch (reader.Id)
+                    byte originalRequest = reader.ReadByte();
+                    // Check what the server sends to the doctor (mainly used for login)
+                    switch (originalRequest)
                     {
+                        // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.
                         case 0x15:
-                            Reply = reader.Id;
+                            DoktorLogin.CanLogin = reader.Id;
                             break;
+
                         // server sends packet with all sessions of users.
                         case 0x53:
                             byte[] sessions = reader.ReadPacket();

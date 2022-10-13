@@ -8,18 +8,21 @@ namespace DoctorApllication
         [STAThread]
         static void Main()
         {
-            DoctorScreen doctor = new DoctorScreen();
-            doctor.setTXTSpeed("15");
-            doctor.setTXTDT("200");
-            doctor.setTXTET("20.23");
-            doctor.setTXTHR("125");
-            doctor.addListItems("Niels");
-            doctor.addListItems("Koen");
-            doctor.addListItems("Coen");
-            doctor.addListItems("Guus");
-            doctor.addListItems("Max");
-            doctor.addListItems("Tygo");
-            doctor.addListItems("Simulation Bike");
+            DoktorLogin doctor = new DoktorLogin();
+
+            DoctorClient doctorClient = new DoctorClient("127.0.0.1", 1337);
+            doctorClient.connect();
+            //doctor.setTXTSpeed("15");
+            //doctor.setTXTDT("200");
+            //doctor.setTXTET("20.23");
+            //doctor.setTXTHR("125");
+            //doctor.addListItems("Niels");
+            //doctor.addListItems("Koen");
+            //doctor.addListItems("Coen");
+            //doctor.addListItems("Guus");
+            //doctor.addListItems("Max");
+            //doctor.addListItems("Tygo");
+            //doctor.addListItems("Simulation Bike");
 
             //DoctorClient.clientData.
 

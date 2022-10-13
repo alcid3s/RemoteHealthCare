@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,7 +29,8 @@ namespace Server.Accounts
             CreateDoctor,
             LoginClient,
             EditClient,
-            RemoveClient
+            RemoveClient,
+            LoginDoctor
         }
         public AccountManager(string username, string password, Socket socket, AccountState state)
         {
@@ -54,7 +56,7 @@ namespace Server.Accounts
                         MessageWriter writer = new MessageWriter(0x81);
                         writer.WriteByte(0x11);
                         _socket.Send(writer.GetBytes());
-                    }
+                    }                   
                 }
                 else
                 {
@@ -62,7 +64,24 @@ namespace Server.Accounts
                     writer.WriteByte(0x11);
                     _socket.Send(writer.GetBytes());
                 }
-            }
+            } else if (_state == AccountState.LoginDoctor)
+            {
+                var sr = new StreamReader(File.OpenRead(path + "/credentials" + _suffix));
+                string? credentials = sr.ReadLine();
+                if (CheckCredentialsDoctor(credentials))
+                {
+                    LoggedIn = true;
+                    MessageWriter writer = new MessageWriter(0x81);
+                    writer.WriteByte(0x15);
+                    _socket.Send(writer.GetBytes());
+                }
+                else
+                {
+                    MessageWriter writer = new MessageWriter(0x80);
+                    writer.WriteByte(0x15);
+                    _socket.Send(writer.GetBytes());
+                }
+            } 
             else if (_state == AccountState.RemoveClient)
             {
                 // TODO 05-10-2022: Remove account
@@ -103,6 +122,35 @@ namespace Server.Accounts
                 type = type.Trim();
 
                 if (_username.Equals(username) && _password.Equals(password) && type.Equals("c"))
+                {
+                    Console.WriteLine("Login credentials are correct");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Login credentials are faulty");
+                    return false;
+                }
+            }
+            else
+                return false;
+        }
+        private bool CheckCredentialsDoctor(string? credentials)
+        {
+            if (credentials != null)
+            {
+                string[] creds = credentials.Split(',');
+                string username = creds[0];
+                string password = creds[1];
+                string type = creds[2];
+
+                username = username.Replace('[', ' ');
+                username = username.Trim();
+
+                type = type.Replace(']', ' ');
+                type = type.Trim();
+
+                if (_username.Equals(username) && _password.Equals(password) && type.Equals("d"))
                 {
                     Console.WriteLine("Login credentials are correct");
                     return true;

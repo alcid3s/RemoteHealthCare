@@ -29,6 +29,7 @@ namespace DoctorApllication
         }
 
         public static Dictionary<byte, List<ClientData>> clientData { get; set; } = new Dictionary<byte, List<ClientData>>();
+        public static int Reply { get; internal set; }
 
         public void connect()
         {
@@ -38,12 +39,36 @@ namespace DoctorApllication
             try
             {
                 _socket.Connect(endPoint);
+                new Thread(Listen).Start();
                 IsRunning = true;
                 Console.WriteLine($"Connecting to{_socket.Connected}");
             }
             catch(Exception ex)
             {
                 Console.WriteLine($"Exception connecting to Doctor Client to server:\n{ex}");
+            }
+        }
+        /// <summary>
+        /// constantly listening to reply from the server and rewrites reply to the reply Id from the server
+        /// </summary>
+        public void Listen()
+        {
+            byte tempId = 0x00;
+            while (true)
+            {
+                byte[] message = new byte[1024];
+                int receive = _socket.Receive(message);
+                try
+                {
+                    MessageReader reader = new MessageReader(message);
+                    Reply = reader.Id;
+
+                } 
+                catch (Exception ex)
+                {
+                    continue;
+                }
+
             }
         }
 
@@ -63,7 +88,7 @@ namespace DoctorApllication
             }
 
         }
-        public static void sendHistorieRequest(byte id, string s)
+        public static void sendHistoryRequest(byte id, string s)
         {
             MessageWriter writer = new MessageWriter(id);
             switch (id)
@@ -108,9 +133,21 @@ namespace DoctorApllication
             }
         }
 
-
-
-
-
+        internal static void Send(byte[] message)
+        {
+            MessageReader reader = new MessageReader(message);
+            switch (reader.Id)
+            {
+                
+                case 0x14:
+                    //creating account
+                    break;
+                
+                case 0x15:
+                    //loging in to account
+                    break;
+            }
+            int received = _socket.Send(message);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MessageStream;
+using RemoteHealthCare.GUI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +14,60 @@ namespace DoctorApllication
 {
     public partial class DoktorLogin : Form
     {
+        internal static DoctorScreen doctorScreen;
+        internal static bool isloggedIn = false;
+        DoctorLoginCreation doctorLoginCreation;
+
+
         public DoktorLogin()
         {
             InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ExtendedMessageWriter writer = new ExtendedMessageWriter(0x15);
+            writer.WriteString(txtAccountName.Text);
+            writer.WriteString(txtPassword.Text);
+            DoctorClient.Send(writer.GetBytes());
+
+            int counter = 0;
+            DoctorClient.Reply = 0x00;
+            while(DoctorClient.Reply == 0x00)
+            {
+                Thread.Sleep(100);
+                counter++;
+                if (counter == 50)
+                {
+                    throw new Exception("reply from server takes to long");
+                }
+            }
+            if (DoctorClient.Reply == 0x80)
+            {
+
+            }
+            else if (DoctorClient.Reply == 0x81)
+            {
+                if (!isloggedIn)
+                {
+                    doctorScreen = new DoctorScreen();
+                    isloggedIn = true;
+                    Hide();
+                    doctorScreen.Show();
+                }
+            }
+        }
+
+        private void DoktorLogin_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            doctorLoginCreation = new DoctorLoginCreation();
+            doctorLoginCreation.Show();
+            this.Hide();
         }
     }
 }

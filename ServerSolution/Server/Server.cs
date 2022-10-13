@@ -139,7 +139,14 @@ namespace Server
                             string user = Encoding.UTF8.GetString(reader.ReadPacket());
                             string pass = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Doctor Account, data received: {user}, {pass}");
-                            account = new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
+                            new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
+                            break;
+
+                        case 0x15:
+                            string usernameCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
+                            string passwordCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
+                            Console.WriteLine($"Trying to make Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
+                            account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor, client.Socket, AccountManager.AccountState.LoginDoctor);
                             break;
 
                         // Bike information from client to server

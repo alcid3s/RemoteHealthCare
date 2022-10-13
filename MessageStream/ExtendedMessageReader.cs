@@ -7,7 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace MessageStream
 {
-    internal class ExtendedMessageReader : MessageReader
+    public class ExtendedMessageReader : MessageReader
     {
         public ExtendedMessageReader(byte[] data) : base(data) { }
 

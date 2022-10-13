@@ -149,8 +149,12 @@ namespace RemoteHealthCare.GUI
             else
                 _bike = new SimulationBike();
 
+            if(!BikeClient.Connected)
+                Program.BikeClient.Connect();
+
+            Thread.Sleep(1000);
+
             _bike.Init();
-            
 
             short errorcounter = 0;
             _bike.OnUpdate += delegate

@@ -23,52 +23,12 @@ namespace RemoteHealthCare
             serverClient.Connect();
 
             // Making connection with the VR server
-            BikeClient = new BikeClient();
-            BikeClient.Connect("145.48.6.10", 6666);
+            BikeClient = new BikeClient("145.48.6.10", 6666);
+            BikeClient.Connect();
 
             Thread.Sleep(1000);
 
             NetworkEngine();
-
-            // Kind of bikes available
-
-            //IBike bike = new SimulationBike();
-            //bike.Init();
-            //bike.OnUpdate += delegate
-            //{
-            //    if (AccountLogin.IsLoggedIn)
-            //    {
-            //        //ClientScreen clientScreen = new ClientScreen();
-            //        AccountLogin.ClientScreen.setTxtSpeed(bike.Speed);
-            //        AccountLogin.ClientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
-            //        AccountLogin.ClientScreen.setTxtElapsedTime(bike.ElapsedTime);
-            //        AccountLogin.ClientScreen.setTxtHeartRate(bike.HeartRate);
-            //        ServerClient.Send(0x20, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
-            //    }
-
-            //    if (NetworkEngineRunning)
-            //    {
-            //        BikeClient.ClearPanel("panel1");
-
-            //        BikeClient.AddTextToPanel("panel1", "                SPEED", 1);
-            //        BikeClient.AddTextToPanel("panel1", "              " + Math.Round((double)bike.Speed * 3.6, 1) + " km/u", 2);
-
-            //        BikeClient.AddTextToPanel("panel1", "               " + ((int)bike.ElapsedTime / 3600).ToString("00") + ":" + ((int)bike.ElapsedTime / 60).ToString("00") + ":" + ((int)bike.ElapsedTime % 60).ToString("00"), 3);
-
-            //        BikeClient.AddTextToPanel("panel1", "             DISTANCE", 5);
-            //        if (bike.DistanceTravelled < 1000)
-            //        {
-            //            BikeClient.AddTextToPanel("panel1", "                " + bike.DistanceTravelled + " m", 6);
-            //        }
-            //        else
-            //        {
-            //            BikeClient.AddTextToPanel("panel1", "                 " + Math.Round((double)bike.DistanceTravelled / 1000, 2) + " km", 6);
-            //        }
-            //        BikeClient.AddTextToPanel("panel1", "            HEARTRATE", 8);
-            //        BikeClient.AddTextToPanel("panel1", "              " + bike.HeartRate + " bpm", 9);
-            //        BikeClient.SwapPanelBuffer("panel1");
-            //    }
-            //};
 
             Application.Run(loginScreen);
             for (; ; );

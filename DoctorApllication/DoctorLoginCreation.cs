@@ -27,6 +27,7 @@ namespace DoctorApllication
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
+            txtErrorMessage.ForeColor = Color.Red;
             if (txtAccountName.Text.Length < 41 && txtAccountName.Text.Length > 3)
             {
                 if (txtPassword.Text.Length > 7 && txtPassword.Text.Length < 32)
@@ -36,19 +37,20 @@ namespace DoctorApllication
                         MessageWriter writer = new MessageWriter(0x14);
                         writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountName.Text));
                         writer.WritePacket(Encoding.UTF8.GetBytes(txtPassword.Text));
+
+                        txtErrorMessage.Text = "Waiting for server";
+
                         DoctorClient.Send(writer.GetBytes());
 
                         bool response = DoctorClient.waitForReply();
+
                         if (!response)
-                            return;
-                        if (DoctorClient.Reply == 0x80)
                         {
                             txtErrorMessage.Text = "Error with server";
                         }
                         else if (DoctorClient.Reply == 0x81)
                         {
-                            //txtErrorMessage.ForeColor = Color.Green;
-                            //txtErrorMessage.ForeColorChanged;
+                            txtErrorMessage.ForeColor = Color.Green;
                             txtErrorMessage.Text = "Account created";
                         }
 

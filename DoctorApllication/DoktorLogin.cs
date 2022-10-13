@@ -31,17 +31,11 @@ namespace DoctorApllication
             writer.WriteString(txtPassword.Text);
             DoctorClient.Send(writer.GetBytes());
 
-            int counter = 0;
-            DoctorClient.Reply = 0x00;
-            while(DoctorClient.Reply == 0x00)
-            {
-                Thread.Sleep(100);
-                counter++;
-                if (counter == 50)
-                {
-                    throw new Exception("reply from server takes to long");
-                }
-            }
+            //wait for a response and return when there is no response
+            bool response = DoctorClient.waitForReply();
+            if (!response)
+                return;
+            
             if (DoctorClient.Reply == 0x80)
             {
 
@@ -69,5 +63,7 @@ namespace DoctorApllication
             doctorLoginCreation.Show();
             this.Hide();
         }
+
+        
     }
 }

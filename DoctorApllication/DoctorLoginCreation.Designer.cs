@@ -36,6 +36,7 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.txtConfirmPassword = new System.Windows.Forms.TextBox();
             this.btnBack = new System.Windows.Forms.Button();
+            this.txtErrorMessage = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // textBox2
@@ -47,6 +48,7 @@
             this.textBox2.Size = new System.Drawing.Size(100, 16);
             this.textBox2.TabIndex = 12;
             this.textBox2.Text = "Account name:";
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox1
             // 
@@ -80,6 +82,7 @@
             this.btnCreate.TabIndex = 7;
             this.btnCreate.Text = "Create account";
             this.btnCreate.UseVisualStyleBackColor = true;
+            this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
             // 
             // textBox3
             // 
@@ -108,11 +111,24 @@
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
+            // txtErrorMessage
+            // 
+            this.txtErrorMessage.BackColor = System.Drawing.SystemColors.Control;
+            this.txtErrorMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtErrorMessage.ForeColor = System.Drawing.Color.Red;
+            this.txtErrorMessage.Location = new System.Drawing.Point(84, 7);
+            this.txtErrorMessage.Name = "txtErrorMessage";
+            this.txtErrorMessage.ReadOnly = true;
+            this.txtErrorMessage.Size = new System.Drawing.Size(159, 16);
+            this.txtErrorMessage.TabIndex = 16;
+            this.txtErrorMessage.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            // 
             // DoctorLoginCreation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(255, 360);
+            this.Controls.Add(this.txtErrorMessage);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.txtConfirmPassword);
@@ -138,5 +154,8 @@
         private TextBox textBox3;
         private TextBox txtConfirmPassword;
         private Button btnBack;
+        private TextBox txtErrorMessage;
+        private TextBox textBox4;
+        private TextBox txtResponse;
     }
 }

@@ -97,6 +97,7 @@ namespace Server.Accounts
             }
             else if (_state == AccountState.CreateDoctor)
             {
+                Console.WriteLine("Dokter");
                 Directory.CreateDirectory(path);
                 Thread.Sleep(10);
                 FileStream fs = File.Create(path + "/credentials" + _suffix);

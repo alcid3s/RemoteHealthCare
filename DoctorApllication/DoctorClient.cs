@@ -149,5 +149,24 @@ namespace DoctorApllication
             }
             int received = _socket.Send(message);
         }
+
+        public static bool waitForReply()
+        {
+            int counter = 0;
+            DoctorClient.Reply = 0x00;
+            while (DoctorClient.Reply == 0x00)
+            {
+                Thread.Sleep(100);
+                counter++;
+                if (counter == 50)
+                {
+                    //response takes too long
+                    return false;
+                }
+            }
+
+            //Got a response
+            return true;
+        }
     }
 }

@@ -170,6 +170,30 @@ namespace Server
                             }
                             break;
 
+                        // Doctor requests all usernames of registered accounts on the server.
+                        case 0x50:
+                            Console.WriteLine("Sending list of all clients registered");
+                            if (Directory.Exists(AccountManager.PathClient))
+                            {
+                                string[] dirs = Directory.GetDirectories(AccountManager.PathClient, "*", SearchOption.TopDirectoryOnly);
+                                ExtendedMessageWriter nameWriter = new ExtendedMessageWriter(0x51);
+
+                                for (int i = 0; i < dirs.Length; i++)
+                                {
+                                    string[] name = dirs[i].Split('\\');
+                                    dirs[i] = name[name.Length - 1];
+                                    nameWriter.WriteString(dirs[i]);
+                                }
+                                Console.Write("Sending:");
+
+                                foreach (string n in dirs)
+                                {
+                                    Console.Write($" {n}");
+                                }
+                                client.Socket.Send(nameWriter.GetBytes());
+                            }
+                            break;
+
                         // Send all patient ids connected with the server.
                         case 0x52:
                             Console.WriteLine("Sending data to Doctor");

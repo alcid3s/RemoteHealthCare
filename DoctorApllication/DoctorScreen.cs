@@ -118,6 +118,5 @@ namespace DoctorApllication
             LoadDataScreen loadData = new LoadDataScreen();
             loadData.Show();
         }
-
     }
 }

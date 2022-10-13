@@ -13,9 +13,10 @@ namespace Server.Accounts
     public class AccountManager
     {
         public bool LoggedIn { get; set; } = false;
+        public static string PathClient { get; } = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
 
         private string _suffix = ".txt";
-        private string _pathClient = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
+        
         private string _pathDoctor = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Doctors";
         private string _username;
         private string _password;
@@ -47,11 +48,11 @@ namespace Server.Accounts
         }
         private void GetData()
         {
-            string pathClient = _pathClient + "/" + _username;
+            string pathClient = PathClient + "/" + _username;
             string pathDoctor = _pathDoctor + "/" + _username;
 
-            if (!Directory.Exists(_pathClient))
-                Directory.CreateDirectory(_pathClient);
+            if (!Directory.Exists(PathClient))
+                Directory.CreateDirectory(PathClient);
             else if (!Directory.Exists(_pathDoctor))
                 Directory.CreateDirectory(_pathDoctor);
 
@@ -126,13 +127,16 @@ namespace Server.Accounts
                 Console.WriteLine("Doctor");
                 if (!Directory.Exists(pathDoctor))
                     Directory.CreateDirectory(pathDoctor);
+
                 Thread.Sleep(10);
                 FileStream fs = File.Create(pathDoctor + "/credentials" + _suffix);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
                 sr.Close();
 
+                Console.WriteLine("Sending data back");
                 MessageWriter writer = new MessageWriter(0x81);
+                writer.WriteByte(0x14);
                 _socket.Send(writer.GetBytes());
             }
         }
@@ -184,7 +188,7 @@ namespace Server.Accounts
         }
         public FileStream CreateFile()
         {
-            return File.Create(_pathClient + "/" + _username +
+            return File.Create(PathClient + "/" + _username +
                     $"/{DateTime.Now.Day}" +
                     $"-{DateTime.Now.Month}" +
                     $"-{DateTime.Now.Year}" +

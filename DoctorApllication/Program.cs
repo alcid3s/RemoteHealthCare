@@ -2,7 +2,7 @@ namespace DoctorApllication
 {
     internal static class Program
     {
-        private static DoktorLogin doctor;
+        private static DoctorLogin doctor;
 
         public static void showDoctorLogin() 
         { 
@@ -14,7 +14,7 @@ namespace DoctorApllication
         [STAThread]
         static void Main()
         {
-             doctor = new DoktorLogin();
+             doctor = new DoctorLogin();
 
             DoctorClient doctorClient = new DoctorClient("127.0.0.1", 1337);
             doctorClient.Connect();

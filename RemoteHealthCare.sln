@@ -10,9 +10,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "ServerSolution\Se
 		{B49AA1C9-592C-4AEC-81C9-89A660F2F1B7} = {B49AA1C9-592C-4AEC-81C9-89A660F2F1B7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageStream", "MessageStream\MessageStream.csproj", "{B49AA1C9-592C-4AEC-81C9-89A660F2F1B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageStream", "MessageStream\MessageStream.csproj", "{B49AA1C9-592C-4AEC-81C9-89A660F2F1B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoctorApllication", "DoctorApllication\DoctorApllication.csproj", "{0EE2001B-2FA9-4229-AB77-026A79BAAEBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoctorApplication", "DoctorApllication\DoctorApplication.csproj", "{0EE2001B-2FA9-4229-AB77-026A79BAAEBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

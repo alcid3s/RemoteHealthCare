@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace DoctorApllication
 {
-    public partial class DoktorLogin : Form
+    public partial class DoctorLogin : Form
     {
         internal static DoctorScreen doctorScreen;
         internal static bool isloggedIn = false;
@@ -20,8 +20,7 @@ namespace DoctorApllication
         public static byte CanLogin { get; set; } = 0x00;
         DoctorLoginCreation doctorLoginCreation;
 
-
-        public DoktorLogin()
+        public DoctorLogin()
         {
             InitializeComponent();
         }
@@ -38,13 +37,13 @@ namespace DoctorApllication
             {
                 Thread.Sleep(100);
                 counter++;
-                if(counter == 50)
+                if (counter == 50)
                 {
                     throw new Exception("Reply takes too long");
                 }
             }
 
-            if(CanLogin == 0x81)
+            if (CanLogin == 0x81)
             {
                 if (!isloggedIn)
                 {
@@ -53,41 +52,23 @@ namespace DoctorApllication
                     Hide();
                     doctorScreen.Show();
                 }
-            }
-
-            //wait for a response and return when there is no response
-            bool response = DoctorClient.waitForReply();
-            if (!response)
-                return;
-            
-            if (DoctorClient.Reply == 0x80)
-            {
-
-            }
-            else if (DoctorClient.Reply == 0x81)
-            {
-                if (!isloggedIn)
+                else if (CanLogin == 0x80)
                 {
-                    doctorScreen = new DoctorScreen();
-                    isloggedIn = true;
-                    Hide();
-                    doctorScreen.Show();
+                    Console.WriteLine("Faulty credentials");
                 }
             }
         }
 
-        private void DoktorLogin_Load(object sender, EventArgs e)
-        {
+            private void DoktorLogin_Load(object sender, EventArgs e)
+            {
 
+            }
+
+            private void button2_Click(object sender, EventArgs e)
+            {
+                doctorLoginCreation = new DoctorLoginCreation();
+                doctorLoginCreation.Show();
+                this.Hide();
+            }
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            doctorLoginCreation = new DoctorLoginCreation();
-            doctorLoginCreation.Show();
-            this.Hide();
-        }
-
-        
     }
-}

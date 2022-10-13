@@ -16,10 +16,9 @@ namespace DoctorApllication
         private int _port;
         private IPAddress _address;
         private static Socket _socket;
-
         public static bool IsRunning { get; private set; } = false;
         public static List<string> accounts { get; set; }
-        public static Dictionary<byte, List<ClientData>> clientData { get; set; } = new Dictionary<byte, List<ClientData>>();
+        public static Dictionary<byte, List<ClientData>> ClientDataList { get; set; } = new Dictionary<byte, List<ClientData>>();
         public static int Reply { get; private set; }
 
         public struct ClientData
@@ -37,7 +36,6 @@ namespace DoctorApllication
                 this.heartRate = heartRate;
             }
         }
-
 
         public DoctorClient(string ip, int port)
         {
@@ -66,7 +64,7 @@ namespace DoctorApllication
         /// <summary>
         /// constantly listening to reply from the server and rewrites reply to the reply Id from the server
         /// </summary>
-        public void Listen()
+        private void Listen()
         {
             byte tempId = 0x00;
             while (true)
@@ -76,18 +74,34 @@ namespace DoctorApllication
                 try
                 {
                     MessageReader reader = new MessageReader(message);
+                    byte id = reader.Id;
+
+                    // Request sent by the doctor client.
                     byte originalRequest = reader.ReadByte();
                     // Check what the server sends to the doctor (mainly used for login)
                     switch (originalRequest)
                     {
-                        // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.
-                        case 0x15:
-                            DoktorLogin.CanLogin = reader.Id;
+                        // Server replies with 0x14 if doctor wants to create account.
+                        case 0x14:
+                            DoctorLoginCreation.Succes = id;
                             break;
 
-                        // server sends packet with all sessions of users.
-                        case 0x53:
-                            byte[] sessions = reader.ReadPacket();
+                        // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.
+                        case 0x15:
+                            DoctorLogin.CanLogin = id;
+                            break;
+                    }
+
+                    switch (id)
+                    {
+                        // Doctor receives all registered accounts;
+                        case 0x51:
+                            Console.WriteLine("received ID");
+                            for(int i = 0; i < 4; i++)
+                            {
+                                Console.WriteLine($"Name: {Encoding.UTF8.GetString(reader.ReadPacket())}");
+                            }
+                            LoadDataScreen.FillIndex(reader);
                             break;
                     }
                 } 
@@ -95,70 +109,57 @@ namespace DoctorApllication
                 {
                     continue;
                 }
-
             }
         }
 
-        public static void sendHistoryRequest(byte id, string s)
-        {
-            MessageWriter writer = new MessageWriter(id);
-            switch (id)
-            {
-                case 0x52:
-                    //send request for all sessions of specific user 
-                    writer.WritePacket(Encoding.UTF8.GetBytes(s));
-                    break;
-                case 0x54:
-                    //opvragen details session
-                    writer.WritePacket(Encoding.UTF8.GetBytes(s));
-                    break;
-            }
-        }
+        //public static void sendHistoryRequest(byte id, string s)
+        //{
+        //    MessageWriter writer = new MessageWriter(id);
+        //    switch (id)
+        //    {
+        //        case 0x52:
+        //            //send request for all sessions of specific user 
+        //            writer.WritePacket(Encoding.UTF8.GetBytes(s));
+        //            break;
+        //        case 0x54:
+        //            //opvragen details session
+        //            writer.WritePacket(Encoding.UTF8.GetBytes(s));
+        //            break;
+        //    }
+        //}
 
-        public static void Receive(MessageReader reader) 
-        {
-            switch (reader.Id) 
-            {
-                //Receive information about a client
-                case 0x21:
-                    byte identifier = reader.ReadByte();
-                    decimal elapsedTime = reader.ReadInt(2) / 4m;
-                    int distance = reader.ReadInt(2);
-                    decimal speed = reader.ReadInt(2) / 1000m;
-                    int heartRate = reader.ReadByte();
-                    clientData.Add(identifier, new List<ClientData>() );
-                    clientData[identifier].Add(new ClientData(elapsedTime, distance, speed, heartRate));
-                    break;
+        //public static void Receive(MessageReader reader)
+        //{
+        //    switch (reader.Id)
+        //    {
+        //        //Receive information about a client
+        //        case 0x21:
+        //            byte identifier = reader.ReadByte();            // requires to be different for every client, however this id is the id of the bicycle.
+        //            decimal elapsedTime = reader.ReadInt(2) / 4m;
+        //            int distance = reader.ReadInt(2);
+        //            decimal speed = reader.ReadInt(2) / 1000m;
+        //            int heartRate = reader.ReadByte();
+        //            ClientDataList.Add(identifier, new List<ClientData>());
+        //            ClientDataList[identifier].Add(new ClientData(elapsedTime, distance, speed, heartRate));
+        //            break;
 
-                case 0x12: 
-                    break;
+        //        case 0x12:
+        //            break;
 
-                case 0x51:
-                    string account = Encoding.UTF8.GetString(reader.ReadPacket());
-                    accounts.Add(account);
-                        break;
+        //        case 0x51:
+        //            string account = Encoding.UTF8.GetString(reader.ReadPacket());
+        //            accounts.Add(account);
+        //            break;
 
-                case 0x53:
-                    //server sends all sessions
+        //        case 0x53:
+        //            //server sends all sessions
 
-                    break;
-            }
-        }
+        //            break;
+        //    }
+        //}
 
         public static void Send(byte[] message)
         {
-            MessageReader reader = new MessageReader(message);
-            switch (reader.Id)
-            {
-                
-                case 0x14:
-                    //creating account
-                    break;
-                
-                case 0x15:
-                    //loging in to account
-                    break;
-            }
             int received = _socket.Send(message);
         }
 

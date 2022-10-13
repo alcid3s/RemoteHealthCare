@@ -66,7 +66,7 @@ namespace Server.Accounts
                 }
             } else if (_state == AccountState.LoginDoctor)
             {
-                var sr = new StreamReader(File.OpenRead(path + "/credentials" + _suffix));
+                var sr = new StreamReader(File.OpenRead(pathDoctor + "/credentials" + _suffix));
                 string? credentials = sr.ReadLine();
                 if (CheckCredentialsDoctor(credentials))
                 {
@@ -98,9 +98,9 @@ namespace Server.Accounts
             else if (_state == AccountState.CreateDoctor)
             {
                 Console.WriteLine("Dokter");
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(pathDoctor);
                 Thread.Sleep(10);
-                FileStream fs = File.Create(path + "/credentials" + _suffix);
+                FileStream fs = File.Create(pathDoctor + "/credentials" + _suffix);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
                 sr.Close();

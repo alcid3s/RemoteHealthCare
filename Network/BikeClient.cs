@@ -14,8 +14,8 @@ using RemoteHealthCare.Scene;
 
 namespace RemoteHealthCare.Network {
     internal class BikeClient {
-        private TcpClient _client;
-        private NetworkStream _stream;
+        private static TcpClient _client;
+        private static NetworkStream _stream;
 
         private byte[] _totalBuffer = new byte[0];
         private byte[] _buffer = new byte[1024];
@@ -26,13 +26,38 @@ namespace RemoteHealthCare.Network {
 
         private Terrain _terrain = new Terrain();
 
+        public static bool Connected { get; set; }
         public string Path { get; }
         public string Id { get; private set; }
 
-        public BikeClient() {
+        private string _ip;
+        private int _port;
+
+        public BikeClient(string ip, int port) {
+
+            // checks if the given ip is valid
+            if (ip == null || port < 1000)
+                throw new MissingFieldException("IP is null or port is already in use");
+
+            _ip = ip;
+            _port = port;
+
             Path = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString() +
                    "/Json";
             Id = string.Empty;
+        }
+
+        public void Disconnect()
+        {
+            if (_stream != null && _client != null)
+            {
+                _stream.Close();
+                _client.Close();
+                Connected = false;
+            }
+            else
+                throw new Exception("Connection with VR server was never even there.");
+
         }
 
         /// <summary>
@@ -40,19 +65,17 @@ namespace RemoteHealthCare.Network {
         /// </summary>
         /// <param name="ip">Address of the server</param>
         /// <param name="port">Port-number the server is running on</param>
-        public void Connect(string ip, int port) {
-            // checks if the given ip is valid
-            if (ip == null || port < 1000) {
-                throw new MissingFieldException("IP is null or port is already in use");
-            }
+        public void Connect() {
+
 
             // makes a connection with the server with the given ip and port
             try {
                 _client = new TcpClient();
-                _client.Connect(ip, port);
-                Console.WriteLine($"Connection made with {ip}:{port}");
+                _client.Connect(_ip, _port);
+                Console.WriteLine($"Connection made with {_ip}:{_port}");
                 _stream = _client.GetStream();
                 Send(@"{""id"": ""session/list""}");
+                Connected = true;
             }
             // writes an exception when connection fails
             catch (Exception e) {
@@ -62,19 +85,6 @@ namespace RemoteHealthCare.Network {
             // creates tunnel to send data 
             _stream.BeginRead(_buffer, 0, 1024, OnRead, null);
             ResetScene();
-        }
-
-        /// <summary>
-        /// Sets the skybox to represent the given time as the time of day
-        /// </summary>
-        /// <param name="time">Representation of the time as day, represented as: HHMM</param>
-        public void SetSkyBox(double time) {
-            JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
-            ob["data"]["dest"] = Id;
-            ob["data"]["data"]["data"]["time"] = time;
-
-            Console.WriteLine($"message: {ob}");
-            Send(ob.ToString());
         }
 
         /// <summary>
@@ -459,12 +469,8 @@ namespace RemoteHealthCare.Network {
                     }
                 }
                 modelPosition[0] = position[0];
+                modelPosition[1] = position[1] + (decimal)minimum;
                 modelPosition[2] = position[2];
-                if (modelName.Contains("shrub")) {
-                    modelPosition[1] = position[1] + (decimal)minimum - (decimal)1.5;
-                } else {
-                    modelPosition[1] = position[1] + (decimal)minimum;
-                }
 
                 model["data"]["data"]["data"]["components"]["transform"]["scale"] = scale;
 
@@ -615,8 +621,7 @@ namespace RemoteHealthCare.Network {
                 Console.WriteLine("Node name " + panelName + " already used");
             }
         }
-
-
+        
         /// <summary>
         /// Applies drawline.json to the given panel
         /// </summary>
@@ -636,7 +641,7 @@ namespace RemoteHealthCare.Network {
                 Console.WriteLine("Node name " + panelName + " already used");
             }
         }
-
+        
         /// <summary>
         /// Checks if the node ID has already been received in <see cref="OnRead"/>
         /// </summary>
@@ -695,7 +700,7 @@ namespace RemoteHealthCare.Network {
         public void UpdateSpeed(decimal speed) {
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/update_bike_speed.json"));
             ob["data"]["dest"] = Id;
-            ob["data"]["data"]["data"]["speed"] = speed;
+            ob["data"]["data"]["data"]["speed"] = speed / 2;
 
             try {
                 ob["data"]["data"]["data"]["node"] = _nodes["Camera"];
@@ -706,7 +711,18 @@ namespace RemoteHealthCare.Network {
 
             Send(ob.ToString());
         }
+        
+        /// <summary>
+        /// Sets the skybox
+        /// </summary>
+        public void SetSkyBox() {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
+            ob["data"]["dest"] = Id;
 
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+        }
+        
         /// <summary>
         /// Add a visible road to a route
         /// </summary>
@@ -727,10 +743,15 @@ namespace RemoteHealthCare.Network {
         public void AddVegetation() {
             Console.WriteLine("Attempting to place vegetation...");
             Random random = new Random();
+            decimal[] treeSpecies = { 4, 4, 4, 7, 7}; //Ratio between tree types
             List<decimal[]> staticBadLocations = SimulateRoute();
             List<decimal[]> dynamicBadLocations = new List<decimal[]>();
+            int treeCounter = 0;
+            int shrubCounter = 0;
 
-            for (int i = 0; i < 10000; i++) {
+            //Adding trees
+            for (int i = 0; i < 5000; i++) {
+                decimal randomScale = (decimal)(random.NextDouble() / 2.5 + 0.8);
                 decimal[] position = new decimal[3];
                 position[0] = random.Next(256);
                 position[2] = random.Next(256);
@@ -738,22 +759,23 @@ namespace RemoteHealthCare.Network {
 
                 foreach (decimal[] badLocation in staticBadLocations) {
                     if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
-                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < (double)(5 * randomScale)) {
                         isValidTree = false;
                     }
                 }
 
                 foreach (decimal[] badLocation in dynamicBadLocations) {
                     if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
-                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < (double)((decimal)4.5 * randomScale) - 1.25) {
                         isValidTree = false;
                     }
                 }
                 
                 if (isValidTree) {
-                    CreateModel("tree" + i, "terrain", position, 2, new decimal[3],
-                        "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
+                    CreateModel("tree" + i, "terrain", position, randomScale * 2, new decimal[3],
+                        "data/NetworkEngine/models/trees/fantasy/tree" + treeSpecies[random.Next(treeSpecies.Length)] +".obj", "", false);
                     dynamicBadLocations.Add(position);
+                    treeCounter++;
                     Console.WriteLine("Placed tree!");
                 }
                 else {
@@ -761,9 +783,12 @@ namespace RemoteHealthCare.Network {
                 }
             }
 
-            for (int i = 0; i < 10000; i++) {
+            //Adding shrubs
+            for (int i = 0; i < 6000; i++) {
+                decimal randomScale = (decimal)(random.NextDouble() / 2.5 + 0.4);
                 decimal[] position = new decimal[3];
                 position[0] = random.Next(256);
+                position[1] = (decimal) - 1.5 * randomScale;
                 position[2] = random.Next(256);
                 bool isValidShrub = true;
 
@@ -776,15 +801,16 @@ namespace RemoteHealthCare.Network {
 
                 foreach (decimal[] badLocation in dynamicBadLocations) {
                     if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
-                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 2.5) {
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < (double)((decimal)2.5 * randomScale)) {
                         isValidShrub = false;
                     }
                 }
                 
                 if (isValidShrub) {
-                    CreateModel("shrub" + i, "terrain", position, 1, new decimal[3],
+                    CreateModel("shrub" + i, "terrain", position, randomScale, new decimal[3],
                         "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
                     staticBadLocations.Add(position);
+                    shrubCounter++;
                     Console.WriteLine("Placed shrub!");
                 }
                 else {
@@ -792,7 +818,8 @@ namespace RemoteHealthCare.Network {
                 }
             }
 
-            Console.WriteLine("Finished placing vegetation!");
+            Console.WriteLine("Finished placing vegetation!\nTrees: " + treeCounter + "\nShrubs: " + shrubCounter);
+            
         }
         
         /// <summary>
@@ -801,34 +828,36 @@ namespace RemoteHealthCare.Network {
         /// <returns>Returns a list containing all points along the route including turn points using decimal arrays where index 0 is X coordinate, index 2 is Y coordinates</returns>
         private List<decimal[]> SimulateRoute() {
             Console.WriteLine("Creating list of bad locations...");
+            int xOffset = 33;
+            int yOffset = 63;
             List<decimal[]> badLocations = new List<decimal[]>();
             List<decimal[]> initialBadLocations = new List<decimal[]>
             {
-                new decimal[] {50, 0, 10},
-                new decimal[] {130, 0, 60},
-                new decimal[] {165, 0 ,60},
-                new decimal[] {140, 0, 30},
-                new decimal[] {150, 0, 20},
-                new decimal[] {205, 0, 55},
-                new decimal[] {210, 0, 100},
-                new decimal[] {180, 0, 100},
-                new decimal[] {145, 0, 110},
-                new decimal[] {150, 0, 135},
-                new decimal[] {115, 0, 150},
-                new decimal[] {105, 0, 125},
-                new decimal[] {105, 0, 105},
-                new decimal[] {65, 0, 70},
-                new decimal[] {30, 0, 70},
-                new decimal[] {15, 0, 85},
-                new decimal[] {25, 0, 115},
-                new decimal[] {20, 0, 140},
-                new decimal[] {65, 0, 150},
-                new decimal[] {110, 0, 120},
-                new decimal[] {115, 0, 70},
-                new decimal[] {55, 0, 50},
-                new decimal[] {30, 0, 60},
-                new decimal[] {10, 0, 40},
-                new decimal[] {50, 0, 10}
+                new decimal[] {xOffset + 40, 0, 0 + yOffset},
+                new decimal[] {xOffset + 120, 0, 50 + yOffset},
+                new decimal[] {xOffset + 155, 0 ,50 + yOffset},
+                new decimal[] {xOffset + 130, 0, 20 + yOffset},
+                new decimal[] {xOffset + 140, 0, 10 + yOffset},
+                new decimal[] {xOffset + 195, 0, 45 + yOffset},
+                new decimal[] {xOffset + 200, 0, 90 + yOffset},
+                new decimal[] {xOffset + 170, 0, 90 + yOffset},
+                new decimal[] {xOffset + 135, 0, 100 + yOffset},
+                new decimal[] {xOffset + 140, 0, 125 + yOffset},
+                new decimal[] {xOffset + 105, 0, 140 + yOffset},
+                new decimal[] {xOffset + 95, 0, 115 + yOffset},
+                new decimal[] {xOffset + 95, 0, 95 + yOffset},
+                new decimal[] {xOffset + 55, 0, 60 + yOffset},
+                new decimal[] {xOffset + 20, 0, 60 + yOffset},
+                new decimal[] {xOffset + 5, 0, 75 + yOffset},
+                new decimal[] {xOffset + 15, 0, 105 + yOffset},
+                new decimal[] {xOffset + 10, 0, 130 + yOffset},
+                new decimal[] {xOffset + 55, 0, 140 + yOffset},
+                new decimal[] {xOffset + 100, 0, 110 + yOffset},
+                new decimal[] {xOffset + 105, 0, 60 + yOffset},
+                new decimal[] {xOffset + 45, 0, 40 + yOffset},
+                new decimal[] {xOffset + 20, 0, 50 + yOffset},
+                new decimal[] {xOffset + 00, 0, 30 + yOffset},
+                new decimal[] { xOffset + 40, 0, 0 + yOffset}
             };
         
             for (int i = 0; i < initialBadLocations.Count - 1; i++) {
@@ -871,5 +900,7 @@ namespace RemoteHealthCare.Network {
         
             return points;
         }
+
+
     }
 }

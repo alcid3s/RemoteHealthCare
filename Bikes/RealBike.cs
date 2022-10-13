@@ -24,6 +24,8 @@ namespace RemoteHealthCare.Bikes
 
         public int HeartRate => _heartRate;
 
+        public bool IsRunning { get; set; }
+
         private decimal _elapsedTime;
         private int _distanceTravelled;
         private decimal _speed;
@@ -77,6 +79,12 @@ namespace RemoteHealthCare.Bikes
 
             heart.SubscriptionValueChanged += UpdateHeartrateData;
             await heart.SubscribeToCharacteristic("HeartRateMeasurement");
+            IsRunning = true;
+        }
+
+        public void Stop()
+        {
+            IsRunning = false;
         }
 
         private void UpdateBikeData(object sender, BLESubscriptionValueChangedEventArgs e)

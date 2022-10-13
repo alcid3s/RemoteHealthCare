@@ -116,5 +116,10 @@ namespace RemoteHealthCare.Bikes
         {
             IsRunning = true;
         }
+
+        public void Stop()
+        {
+            IsRunning = false;
+        }
     }
 }

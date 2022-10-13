@@ -133,7 +133,7 @@ namespace DoctorApllication
             }
         }
 
-        internal static void Send(byte[] message)
+        public static void Send(byte[] message)
         {
             MessageReader reader = new MessageReader(message);
             switch (reader.Id)

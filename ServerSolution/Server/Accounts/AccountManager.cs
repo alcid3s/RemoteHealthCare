@@ -104,6 +104,9 @@ namespace Server.Accounts
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
                 sr.Close();
+
+                MessageWriter writer = new MessageWriter(0x81);
+                _socket.Send(writer.GetBytes());
             }
         }
 

@@ -641,7 +641,7 @@ namespace RemoteHealthCare.Network {
                 Console.WriteLine("Node name " + panelName + " already used");
             }
         }
-
+        
         /// <summary>
         /// Checks if the node ID has already been received in <see cref="OnRead"/>
         /// </summary>
@@ -711,7 +711,18 @@ namespace RemoteHealthCare.Network {
 
             Send(ob.ToString());
         }
+        
+        /// <summary>
+        /// Sets the skybox
+        /// </summary>
+        public void SetSkyBox() {
+            JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
+            ob["data"]["dest"] = Id;
 
+            Console.WriteLine($"message: {ob}");
+            Send(ob.ToString());
+        }
+        
         /// <summary>
         /// Add a visible road to a route
         /// </summary>
@@ -725,17 +736,6 @@ namespace RemoteHealthCare.Network {
             Console.WriteLine($"message: {add_road}");
             Send(add_road.ToString());
         }
-        
-        /// <summary>
-        /// Sets the skybox
-        /// </summary>
-        public void SetSkyBox() {
-            JObject ob = JObject.Parse(File.ReadAllText(Path + "/skybox.json"));
-            ob["data"]["dest"] = Id;
-
-            Console.WriteLine($"message: {ob}");
-            Send(ob.ToString());
-        }
 
         /// <summary>
         /// Add trees around the road, avoiding said road
@@ -743,13 +743,15 @@ namespace RemoteHealthCare.Network {
         public void AddVegetation() {
             Console.WriteLine("Attempting to place vegetation...");
             Random random = new Random();
-            decimal[] treeSpecies = { 4, 4, 4, 7, 7};
+            decimal[] treeSpecies = { 4, 4, 4, 7, 7}; //Ratio between tree types
             List<decimal[]> staticBadLocations = SimulateRoute();
             List<decimal[]> dynamicBadLocations = new List<decimal[]>();
             int treeCounter = 0;
             int shrubCounter = 0;
 
+            //Adding trees
             for (int i = 0; i < 5000; i++) {
+                decimal randomScale = (decimal)(random.NextDouble() / 2.5 + 0.8);
                 decimal[] position = new decimal[3];
                 position[0] = random.Next(256);
                 position[2] = random.Next(256);
@@ -757,20 +759,20 @@ namespace RemoteHealthCare.Network {
 
                 foreach (decimal[] badLocation in staticBadLocations) {
                     if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
-                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 5) {
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < (double)(5 * randomScale)) {
                         isValidTree = false;
                     }
                 }
 
                 foreach (decimal[] badLocation in dynamicBadLocations) {
                     if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
-                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 4.5) {
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < (double)((decimal)4.5 * randomScale) - 1.25) {
                         isValidTree = false;
                     }
                 }
                 
                 if (isValidTree) {
-                    CreateModel("tree" + i, "terrain", position, 2, new decimal[3],
+                    CreateModel("tree" + i, "terrain", position, randomScale * 2, new decimal[3],
                         "data/NetworkEngine/models/trees/fantasy/tree" + treeSpecies[random.Next(treeSpecies.Length)] +".obj", "", false);
                     dynamicBadLocations.Add(position);
                     treeCounter++;
@@ -781,10 +783,12 @@ namespace RemoteHealthCare.Network {
                 }
             }
 
-            for (int i = 0; i < 7500; i++) {
+            //Adding shrubs
+            for (int i = 0; i < 6000; i++) {
+                decimal randomScale = (decimal)(random.NextDouble() / 2.5 + 0.4);
                 decimal[] position = new decimal[3];
                 position[0] = random.Next(256);
-                position[1] = (decimal)-1.5;
+                position[1] = (decimal) - 1.5 * randomScale;
                 position[2] = random.Next(256);
                 bool isValidShrub = true;
 
@@ -797,13 +801,13 @@ namespace RemoteHealthCare.Network {
 
                 foreach (decimal[] badLocation in dynamicBadLocations) {
                     if (Math.Sqrt(Math.Pow(Decimal.ToDouble(position[0] - badLocation[0]), 2) +
-                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < 2.5) {
+                                  Math.Pow(Decimal.ToDouble(position[2] - badLocation[2]), 2)) < (double)((decimal)2.5 * randomScale)) {
                         isValidShrub = false;
                     }
                 }
                 
                 if (isValidShrub) {
-                    CreateModel("shrub" + i, "terrain", position, 1, new decimal[3],
+                    CreateModel("shrub" + i, "terrain", position, randomScale, new decimal[3],
                         "data/NetworkEngine/models/trees/fantasy/tree4.obj", "", false);
                     staticBadLocations.Add(position);
                     shrubCounter++;

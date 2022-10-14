@@ -17,7 +17,7 @@ namespace RemoteHealthCare.GUI
             InitializeComponent();
             new Thread(() =>
             {
-                StartBike(false);
+                StartBike(true);
             }).Start();
             
         }
@@ -156,6 +156,10 @@ namespace RemoteHealthCare.GUI
 
             _bike.Init();
 
+            ((RealBike)_bike).SetResistance(0);
+
+            Console.WriteLine("we might still be good");
+
             short errorcounter = 0;
             _bike.OnUpdate += delegate
             {
@@ -207,7 +211,8 @@ namespace RemoteHealthCare.GUI
                         LocalNetworkEngineRunning = false;
                     }
                 }
-                    
+
+
             };
         }
     }

@@ -19,11 +19,12 @@ namespace RemoteHealthCare.GUI
     {
         internal static ClientScreen ClientScreen;
         internal static bool IsLoggedIn = false;
+        AccountTypeSelector accountTypeSelector;
         public AccountLogin()
         {
             InitializeComponent();
         }
-        AccountTypeSelector accountTypeSelector;
+
 
 
         private void textBox1_TextChanged(object sender, EventArgs e)

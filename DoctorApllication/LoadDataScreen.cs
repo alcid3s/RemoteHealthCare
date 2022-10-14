@@ -20,16 +20,14 @@ namespace DoctorApllication
         public LoadDataScreen()
         {
             InitializeComponent();
-            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
+            Console.WriteLine($"Running constructor, size of list {ClientNameList.Count}");
         }
 
-        public static void FillIndex(MessageReader reader)
+        public static void FillIndex(string name)
         {
-            for(int i = 0; i < 4; i++)
-            {
-                ClientNameList.Add(Encoding.UTF8.GetString(reader.ReadPacket()));
-            }
-            
+            Console.WriteLine($"Size of list {ClientNameList.Count}");
+            ClientNameList.Add(name);
+            Console.WriteLine($"Size of ClientNameList: {ClientNameList.Count}");
         }
 
         private void Test(object sender, EventArgs e)

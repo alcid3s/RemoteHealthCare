@@ -55,7 +55,7 @@ namespace DoctorApllication
                 IsRunning = true;
                 Console.WriteLine($"Connecting to{_socket.Connected}");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Exception connecting to Doctor Client to server:\n{ex}");
             }
@@ -76,35 +76,37 @@ namespace DoctorApllication
                     MessageReader reader = new MessageReader(message);
                     byte id = reader.Id;
 
-                    // Request sent by the doctor client.
-                    byte originalRequest = reader.ReadByte();
-                    // Check what the server sends to the doctor (mainly used for login)
-                    switch (originalRequest)
-                    {
-                        // Server replies with 0x14 if doctor wants to create account.
-                        case 0x14:
-                            DoctorLoginCreation.Succes = id;
-                            break;
-
-                        // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.
-                        case 0x15:
-                            DoctorLogin.CanLogin = id;
-                            break;
-                    }
-
                     switch (id)
                     {
                         // Doctor receives all registered accounts;
                         case 0x51:
-                            Console.WriteLine("received ID");
-                            for(int i = 0; i < 4; i++)
-                            {
-                                Console.WriteLine($"Name: {Encoding.UTF8.GetString(reader.ReadPacket())}");
-                            }
-                            LoadDataScreen.FillIndex(reader);
+                            Console.WriteLine("Received ID");
+                            string name = Encoding.UTF8.GetString(reader.ReadPacket());
+                            LoadDataScreen.FillIndex(name);
                             break;
                     }
-                } 
+
+                    // Used only for login now.
+                    if(id == 0x80 || id == 0x81)
+                    {
+                        // Request sent by the doctor client.
+                        byte originalRequest = reader.ReadByte();
+
+                        // Check what the server sends to the doctor (mainly used for login)
+                        switch (originalRequest)
+                        {
+                            // Server replies with 0x14 if doctor wants to create account.
+                            case 0x14:
+                                DoctorLoginCreation.Succes = id;
+                                break;
+
+                            // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.
+                            case 0x15:
+                                DoctorLogin.CanLogin = id;
+                                break;
+                        }
+                    }
+                }
                 catch (Exception ex)
                 {
                     continue;
@@ -177,7 +179,7 @@ namespace DoctorApllication
                     return false;
                 }
             }
-            
+
             //Got a response
             return true;
         }

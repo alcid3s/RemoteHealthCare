@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessageStream;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,12 @@ namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
+        private LoadDataScreen _loadDataScreen;
         public DoctorScreen()
         {
+            _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
+            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
         }
         
 
@@ -115,8 +119,8 @@ namespace DoctorApllication
 
         private void btnLoadData_Click(object sender, EventArgs e)
         {
-            LoadDataScreen loadData = new LoadDataScreen();
-            loadData.Show();
+            Console.WriteLine("Loading LoadDataScreen");
+            _loadDataScreen.Show();
         }
     }
 }

@@ -176,13 +176,15 @@ namespace Server
                             if (Directory.Exists(AccountManager.PathClient))
                             {
                                 string[] dirs = Directory.GetDirectories(AccountManager.PathClient, "*", SearchOption.TopDirectoryOnly);
-                                ExtendedMessageWriter nameWriter = new ExtendedMessageWriter(0x51);
 
                                 for (int i = 0; i < dirs.Length; i++)
                                 {
+                                    MessageWriter nameWriter = new MessageWriter(0x51);
                                     string[] name = dirs[i].Split('\\');
                                     dirs[i] = name[name.Length - 1];
-                                    nameWriter.WriteString(dirs[i]);
+                                    nameWriter.WritePacket(Encoding.UTF8.GetBytes(dirs[i]));
+                                    client.Socket.Send(nameWriter.GetBytes());
+                                    Thread.Sleep(10);
                                 }
 
                                 Console.Write("Sending:");
@@ -190,7 +192,7 @@ namespace Server
                                 {
                                     Console.Write($" {n}");
                                 }
-                                client.Socket.Send(nameWriter.GetBytes());
+                                //client.Socket.Send(nameWriter.GetBytes());
                             }
                             break;
 

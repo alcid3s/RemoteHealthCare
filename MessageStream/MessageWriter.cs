@@ -126,6 +126,9 @@ namespace MessageStream
 
             WriteByte(checksum);
 
+            //The length can't be encrypted because decryption is length-dependent
+            _data = new byte[] { _data[0] }.Concat(MessageEncryption.Encrypt(_data.Skip(1).ToArray())).ToList();
+
             _closed = true;
         }
 

@@ -8,21 +8,14 @@ namespace MessageStream
     {
         static void Main(string[] args)
         {
-            ExtendedMessageWriter writer = new ExtendedMessageWriter(0x43);
-            writer.WriteString("Hallo Wereld!");
-            writer.WriteBikeData(65.25m, 120, 4.53m, 110);
+            ExtendedMessageWriter writer = new ExtendedMessageWriter(0xFE);
+            writer.WriteString("Data kan nu encrypted worden doorgestuurd!");
 
-            Console.WriteLine(writer.ToString());
+            byte[] data = writer.GetBytes();
+            Console.WriteLine("Transmitting: " + BitConverter.ToString(data).Replace('-', ' '));
 
-            ExtendedMessageReader reader = new ExtendedMessageReader(writer.GetBytes());
-
-
-            Console.WriteLine("0x" + BitConverter.ToString(new byte[] { reader.Id }));
-            Console.WriteLine(reader);
+            ExtendedMessageReader reader = new ExtendedMessageReader(data);
             Console.WriteLine(reader.ReadString());
-            Console.WriteLine(reader);
-            Console.WriteLine(reader.ReadBikeData());
-            Console.WriteLine(reader);
         }
     }
 }

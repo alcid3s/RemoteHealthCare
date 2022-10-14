@@ -23,7 +23,7 @@ namespace MessageStream
             if (length + 1 > data.Length)
                 throw new ArgumentException();
 
-            _data = data.Take(length + 1).ToArray();
+            _data = new byte[] { data[0] }.Concat(MessageEncryption.Decrypt(data.Skip(1).Take(length).ToArray())).ToArray();
             _index = 1;
 
             _id = ReadByte();

@@ -14,8 +14,12 @@ namespace MessageStream
         private byte _id;
         public byte Id { get => GetId(); }
 
-        public MessageReader(byte[] data)
+        public MessageReader(byte[] data) : this(data, 0) { }
+
+        public MessageReader(byte[] data, byte address)
         {
+            MessageEncryption encryption = EncryptionManager.Manager.GetEncryption(address);
+
             if (data.Length == 0)
                 throw new ArgumentException();
 
@@ -23,7 +27,7 @@ namespace MessageStream
             if (length + 1 > data.Length)
                 throw new ArgumentException();
 
-            _data = new byte[] { data[0] }.Concat(MessageEncryption.Decrypt(data.Skip(1).Take(length).ToArray())).ToArray();
+            _data = new byte[] { data[0] }.Concat(encryption.Decrypt(data.Skip(1).Take(length).ToArray())).ToArray();
             _index = 1;
 
             _id = ReadByte();

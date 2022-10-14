@@ -10,17 +10,27 @@ namespace MessageStream
     public class MessageEncryption
     {
         //must be a single byte
-        private static byte s_xorKey1 = 0x69;
-        private static byte s_xorKey2 = 0x42;
+        public byte XorKey1 { get; private set; }
+        public byte XorKey2 { get; private set; }
         //can be any integer
-        private static uint s_startIndex = 4200429899;
+        public uint StartIndex { get; private set; }
         //must be 2^k to stay coprime with 8n+1
-        private static uint s_stepLength = 1 << 7;
+        public uint StepLength { get; private set; }
 
-        public static byte[] Encrypt(byte[] data)
+        public MessageEncryption() : this(0x00, 0x00, 0, 0) { }
+
+        public MessageEncryption(byte xorKey1, byte xorKey2, uint startIndex, byte stepLength)
+        {
+            XorKey1 = xorKey1;
+            XorKey2 = xorKey2;
+            StartIndex = startIndex;
+            StepLength = (uint)(1 << stepLength);
+        }
+
+        public byte[] Encrypt(byte[] data)
         {
             //Console.WriteLine(BitConverter.ToString(data));
-            byte[] initialBytes = data.Select(x => (byte)(x ^ s_xorKey1)).ToArray();
+            byte[] initialBytes = data.Select(x => (byte)(x ^ XorKey1)).ToArray();
             //Console.WriteLine(BitConverter.ToString(initialBytes));
 
             bool[] initialBits = new bool[initialBytes.Length * 8 + 1];
@@ -37,7 +47,7 @@ namespace MessageStream
             bool[] finalBits = new bool[initialBits.Length];
             for (int i = 0; i < initialBits.Length; i++)
             {
-                finalBits[i] = initialBits[(s_startIndex + i * (s_stepLength % initialBits.Length)) % initialBits.Length];
+                finalBits[i] = initialBits[(StartIndex + i * (StepLength % initialBits.Length)) % initialBits.Length];
             }
 
             //Console.WriteLine(string.Join("", finalBits.Select(x => x ? 1 : 0)));
@@ -49,16 +59,16 @@ namespace MessageStream
             }
 
             //Console.WriteLine(BitConverter.ToString(finalBytes));
-            byte[] result = finalBytes.Select(x => (byte)(x ^ s_xorKey2)).ToArray();
+            byte[] result = finalBytes.Select(x => (byte)(x ^ XorKey2)).ToArray();
             //Console.WriteLine(BitConverter.ToString(result));
 
             return result;
         }
 
-        public static byte[] Decrypt(byte[] data)
+        public byte[] Decrypt(byte[] data)
         {
             //Console.WriteLine(BitConverter.ToString(data));
-            byte[] initialBytes = data.Select(x => (byte)(x ^ s_xorKey2)).ToArray();
+            byte[] initialBytes = data.Select(x => (byte)(x ^ XorKey2)).ToArray();
             //Console.WriteLine(BitConverter.ToString(initialBytes));
 
             bool[] initialBits = new bool[initialBytes.Length * 8 + 1];
@@ -75,7 +85,7 @@ namespace MessageStream
             bool[] finalBits = new bool[initialBits.Length];
             for (int i = 0; i < initialBits.Length; i++)
             {
-                finalBits[(s_startIndex + i * (s_stepLength % initialBits.Length)) % initialBits.Length] = initialBits[i];
+                finalBits[(StartIndex + i * (StepLength % initialBits.Length)) % initialBits.Length] = initialBits[i];
             }
 
             //Console.WriteLine(string.Join("", finalBits.Select(x => x ? 1 : 0)));
@@ -87,10 +97,21 @@ namespace MessageStream
             }
 
             //Console.WriteLine(BitConverter.ToString(finalBytes));
-            byte[] result = finalBytes.Select(x => (byte)(x ^ s_xorKey1)).ToArray();
+            byte[] result = finalBytes.Select(x => (byte)(x ^ XorKey1)).ToArray();
             //Console.WriteLine(BitConverter.ToString(result));
 
             return result;
+        }
+
+        internal static MessageEncryption Generate()
+        {
+            Random random = new Random();
+            return new MessageEncryption((byte)random.Next(256), (byte)random.Next(256), (uint)random.Next(), (byte)random.Next(32));
+        }
+
+        public override string ToString()
+        {
+            return BitConverter.ToString(new byte[] { XorKey1, XorKey2 }) + "-" + StartIndex.ToString("X8") + "-" + ((int)Math.Round(Math.Log(StepLength) / Math.Log(2))).ToString("X2");
         }
     }
 }

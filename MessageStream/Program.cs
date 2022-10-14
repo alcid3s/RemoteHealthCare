@@ -8,6 +8,10 @@ namespace MessageStream
     {
         static void Main(string[] args)
         {
+            new EncryptionManager(false);
+            EncryptionManager.Manager.SetEncryption(MessageEncryption.Generate());
+            Console.WriteLine("Generated keys: " + EncryptionManager.Manager.GetEncryption(0));
+
             ExtendedMessageWriter writer = new ExtendedMessageWriter(0xFE);
             writer.WriteString("Data kan nu encrypted worden doorgestuurd!");
 

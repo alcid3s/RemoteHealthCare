@@ -13,8 +13,14 @@ namespace MessageStream
         private List<byte> _data;
         private bool _closed;
 
-        public MessageWriter(byte id)
+        private byte _address = 0;
+
+        public MessageWriter(byte id) : this(id, 0) { }
+
+        public MessageWriter(byte id, byte address)
         {
+            _address = address;
+
             _data = new List<byte>();
             _closed = false;
 
@@ -127,7 +133,7 @@ namespace MessageStream
             WriteByte(checksum);
 
             //The length can't be encrypted because decryption is length-dependent
-            _data = new byte[] { _data[0] }.Concat(MessageEncryption.Encrypt(_data.Skip(1).ToArray())).ToList();
+            _data = new byte[] { _data[0] }.Concat(EncryptionManager.Manager.GetEncryption(_address).Encrypt(_data.Skip(1).ToArray())).ToList();
 
             _closed = true;
         }

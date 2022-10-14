@@ -150,6 +150,7 @@ namespace DoctorApllication
             int received = _socket.Send(message);
         }
 
+        //wait until a new server has received
         public static bool waitForReply()
         {
             int counter = 0;

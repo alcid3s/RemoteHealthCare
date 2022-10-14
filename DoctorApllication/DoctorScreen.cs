@@ -14,7 +14,9 @@ namespace DoctorApllication
     {
         public DoctorScreen()
         {
+            
             InitializeComponent();
+            this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
         }
         
 
@@ -119,5 +121,23 @@ namespace DoctorApllication
             loadData.Show();
         }
 
+        private void txtChatBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtChatInput_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+
+            {
+                txtInfo.Text = txtChatInput.Text;
+            }
+        }
     }
 }

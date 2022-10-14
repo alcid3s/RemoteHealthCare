@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MessageStream
 {
-    internal class MessageEncryption
+    public class MessageEncryption
     {
         //must be a single byte
         private static byte s_xorKey1 = 0x69;

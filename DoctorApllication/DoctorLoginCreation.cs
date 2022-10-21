@@ -14,6 +14,7 @@ namespace DoctorApllication
 {
     public partial class DoctorLoginCreation : Form
     {
+        internal static byte Succes { get; set; } = 0x00;
         public DoctorLoginCreation()
         {
             InitializeComponent();
@@ -42,20 +43,29 @@ namespace DoctorApllication
 
                         DoctorClient.Send(writer.GetBytes());
 
-                        bool response = DoctorClient.waitForReply();
-
-                        if (!response)
+                        int counter = 0;
+                        while (Succes == 0x00)
                         {
-                            txtErrorMessage.Text = "Error with server";
-                        }
-                        else if (DoctorClient.Reply == 0x81)
-                        {
-                            txtErrorMessage.ForeColor = Color.Green;
-                            txtErrorMessage.Text = "Account created";
+                            Thread.Sleep(100);
+                            counter++;
+                            if(counter > 50)
+                            {
+                                txtErrorMessage.Text = "Error with server, please try again.";
+                                return;
+                            }
                         }
 
+                        if(Succes == 0x81)
+                        {
+                            DoctorLogin login = new DoctorLogin();
+                            login.Show();
+                            Close();
+                        }else if(Succes == 0x80)
+                        {
+                            Console.WriteLine("UnSuccessfull");
+                        }
                     }
-                    else 
+                    else
                     {
                         txtErrorMessage.Text = "Wrong password confirmation";
                     }
@@ -82,6 +92,11 @@ namespace DoctorApllication
         }
 
         private void txtResponse_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DoctorLoginCreation_Load(object sender, EventArgs e)
         {
 
         }

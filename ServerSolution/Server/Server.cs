@@ -14,9 +14,9 @@ namespace Server
         private int _port;
         private struct Client
         {
-            public Socket? Socket { get; private set; }
-            public int Id { get; }
-            public Client(Socket? socket, int id)
+            public Socket? Socket { get; }
+            public byte Id { get; }
+            public Client(Socket? socket, byte id)
             {
                 Socket = socket;
                 Id = id;
@@ -69,7 +69,7 @@ namespace Server
                         socket = ServerSocket.Accept();
 
                     // saving client to list.
-                    Client client = new(socket, clientList.Count + 1);
+                    Client client = new(socket, (byte)(clientList.Count + 1));
                     clientList.Add(client);
 
                     // Every client gets its own thread.
@@ -144,11 +144,13 @@ namespace Server
                             new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
                             break;
 
+                        // Doctor wants to login
                         case 0x15:
                             string usernameCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
-                            account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor, client.Socket, AccountManager.AccountState.LoginDoctor);
+                            account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor,
+                                client.Socket, AccountManager.AccountState.LoginDoctor);
                             break;
 
                         // Bike information from client to server
@@ -163,14 +165,87 @@ namespace Server
                                     firstRun = false;
                                 }
 
-                                if(sr != null)
+                                if (sr != null)
                                     account.SaveData(message, sr);
                             }
                             break;
-                        case 0x52:
 
+                        // Doctor requests all usernames of registered accounts on the server.
+                        case 0x50:
+                            Console.WriteLine("Sending list of all clients registered");
+                            if (Directory.Exists(AccountManager.PathClient))
+                            {
+                                string[] dirs = Directory.GetDirectories(AccountManager.PathClient, "*", SearchOption.TopDirectoryOnly);
+
+                                for (int i = 0; i < dirs.Length; i++)
+                                {
+                                    MessageWriter nameWriter = new MessageWriter(0x51);
+                                    string[] name = dirs[i].Split('\\');
+                                    dirs[i] = name[name.Length - 1];
+                                    nameWriter.WritePacket(Encoding.UTF8.GetBytes(dirs[i]));
+                                    client.Socket.Send(nameWriter.GetBytes());
+                                    Thread.Sleep(10);
+                                }
+
+                                Console.Write("Sending:");
+                                foreach (string n in dirs)
+                                {
+                                    Console.Write($" {n}");
+                                }
+                                Console.WriteLine();
+                                //client.Socket.Send(nameWriter.GetBytes());
+                            }
+                            else
+                            {
+                                //TODO: SEND ERROR MESSAGE
+                            }
                             break;
 
+                        // Send all patient ids connected with the server.
+                        case 0x52:
+                            Console.WriteLine("Received 0x52");
+                            string accountName = Encoding.UTF8.GetString(reader.ReadPacket());
+                            if (Directory.Exists(AccountManager.PathClient))
+                            {
+                                string path = AccountManager.PathClient + "/" + accountName;
+                                if (Directory.Exists(path))
+                                {
+                                    string[] dirs = Directory.GetFiles(path);
+
+                                    foreach (var n in dirs)
+                                    {
+                                        if (!n.Contains("credentials"))
+                                        {
+                                            string[] nameOfSession = n.Split('\\');
+                                            string[] removeSuffix = nameOfSession[nameOfSession.Length - 1].Split('.');
+
+                                            MessageWriter writer = new MessageWriter(0x53);
+                                            writer.WritePacket(Encoding.UTF8.GetBytes(removeSuffix[0]));
+                                            Console.WriteLine($"BYTE: {(byte)(dirs.Length - 1)}");
+                                            writer.WriteByte((byte)(dirs.Length - 1));
+                                            client.Socket.Send(writer.GetBytes());
+                                            Thread.Sleep(10);
+                                        }
+
+                                    }
+                                }
+                            }
+
+
+
+                            //Console.WriteLine("Sending data to Doctor");
+                            //byte[] packet = new byte[clientList.Count];
+
+                            //for (int i = 0; i < packet.Length; i++)
+                            //{
+                            //    packet[i] = clientList.ElementAt(i).Id;
+                            //}
+
+                            //MessageWriter writer = new MessageWriter(0x53);
+                            //writer.WritePacket(packet);
+
+                            //client.Socket.Send(writer.GetBytes());
+                            break;
                         case 0x60:
                             Logout(client);
                             firstRun = true;
@@ -203,7 +278,7 @@ namespace Server
             return new BikeData(identifier, elapsedTime, distanceTravelled, speed, heartRate);
         }
         private void PrintBikeInformation(BikeData data, Client client)
-        { 
+        {
             Console.WriteLine($"Message from: {client.Id}: id: {data.Identifier}, ep:{data.ElapsedTime}, " +
                 $"dt: {data.DistanceTravelled}, " +
                 $"sp: {data.Speed}, " +

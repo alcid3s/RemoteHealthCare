@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+﻿using MessageStream;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,11 +16,13 @@ namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
+        private LoadDataScreen _loadDataScreen;
         public DoctorScreen()
         {
-            
+            _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
         }
         
 
@@ -46,7 +49,7 @@ namespace DoctorApllication
         }
         private void btnConnectClient_Click(object sender, EventArgs e)
         {
-            //create code that cheks if the selected item is actually a bike and use Send() to
+            //create code that checks if the selected item is actually a bike and use Send() to
             //send a message to the server, with the code for the switch case
             if (lstClients.SelectedItems != null)
             {
@@ -57,7 +60,7 @@ namespace DoctorApllication
                     if (s.ToString().Equals("Simulation Bike"))
                     {
                         txtInfo.Text += " 1"; 
-                        DoctorClient.Send(1);
+                        //DoctorClient.Send(1);
                     }
                 //continue like this for all existing bikes, its only five(better if done with switch case)
                 }
@@ -114,14 +117,13 @@ namespace DoctorApllication
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
-            // create code that scans all possible nearby bluetooth devices
-            // and displays them in de nike list view if they are bikes 
+           
         }
 
         private void btnLoadData_Click(object sender, EventArgs e)
         {
-            LoadDataScreen loadData = new LoadDataScreen();
-            loadData.Show();
+            Console.WriteLine("Loading LoadDataScreen");
+            _loadDataScreen.Show();
         }
 
         private void txtChatBox_TextChanged(object sender, EventArgs e)

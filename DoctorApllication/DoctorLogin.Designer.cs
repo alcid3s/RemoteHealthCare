@@ -1,6 +1,6 @@
 ﻿namespace DoctorApllication
 {
-    partial class DoktorLogin
+    partial class DoctorLogin
     {
         /// <summary>
         /// Required designer variable.

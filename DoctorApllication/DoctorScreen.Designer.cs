@@ -44,6 +44,7 @@
             this.btnLoadData = new System.Windows.Forms.Button();
             this.txtChatInput = new System.Windows.Forms.TextBox();
             this.lstChatView = new System.Windows.Forms.ListView();
+            this.ChatCollomn = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // textBox5
@@ -206,6 +207,8 @@
             // lstChatView
             // 
             this.lstChatView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstChatView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ChatCollomn});
             this.lstChatView.FullRowSelect = true;
             this.lstChatView.GridLines = true;
             this.lstChatView.Location = new System.Drawing.Point(394, 46);
@@ -214,8 +217,13 @@
             this.lstChatView.TabIndex = 0;
             this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
             this.lstChatView.UseCompatibleStateImageBehavior = false;
-            this.lstChatView.View = System.Windows.Forms.View.List;
+            this.lstChatView.View = System.Windows.Forms.View.Details;
             this.lstChatView.SelectedIndexChanged += new System.EventHandler(this.lstChatView_SelectedIndexChanged);
+            // 
+            // ChatCollomn
+            // 
+            this.ChatCollomn.Text = "Messages";
+            this.ChatCollomn.Width = 338;
             // 
             // DoctorScreen
             // 
@@ -265,5 +273,6 @@
         private TextBox txtChatBox;
         private TextBox txtChatInput;
         private ListView lstChatView;
+        private ColumnHeader ChatCollomn;
     }
 }

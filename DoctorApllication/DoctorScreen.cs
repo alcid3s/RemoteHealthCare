@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DoctorApllication
 {
@@ -137,20 +138,25 @@ namespace DoctorApllication
             }
         }
 
+        //currently only local, space the text out so that it fits on the chatbox
         private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
-                lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8)));
+                //put the time above the message, can later also have the sender
+                lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8) + " - You"));
 
+                //get all the words from the input
                 string[] words = txtChatInput.Text.Split(" ");
                 string line = "";
 
                 int lineNr = 1;
                 for (int i = 0; i < words.Length; i++) 
                 {
+                    //check if the word is bigger than a line
                     if (words[i].Length > 40)
                     {
+                        //if the line already has text print it out
                         if (line.Length > 0)
                         {
                             lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length)));
@@ -158,26 +164,30 @@ namespace DoctorApllication
                             lineNr++;
                         }
 
+                        //print out the long word bit by bit
                         string longWord = words[i];
 
                         while (longWord.Length > 40)
                         {
-                            lstChatView.Items.Insert(lineNr, new ListViewItem(longWord.Substring(0, 39) + "-"));
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(longWord.Substring(0, 38) + "-"));
                             lineNr++;
-                            longWord = longWord.Substring(39);
+                            longWord = longWord.Substring(38);
                         }
                         lstChatView.Items.Insert(lineNr, new ListViewItem(longWord));
                         lineNr++;
                     }
                     else
                     {
-
+                        //add a word to the line
                         line += " " + words[i];
 
+                        //check if there is a next word
                         if (words.Length > i + 1)
                         {
+                            //check if the next word will fit on the line
                             if ((line + " " + words[i + 1]).Length > 41)
                             {
+                                //print out the line
                                 lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length-1)));
                                 line = "";
                                 lineNr++;
@@ -185,12 +195,16 @@ namespace DoctorApllication
                         }
                         else
                         {
+                            //print out the last line
                             lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length-1)));
                             line = "";
                             lineNr++;
                         }
                     }
                 }
+                //add an empty line for clarity
+                lstChatView.Items.Insert(lineNr, new ListViewItem());
+                //reset the chat input
                 txtChatInput.Text = "";
             }
         }

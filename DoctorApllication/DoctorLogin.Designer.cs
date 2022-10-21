@@ -40,21 +40,21 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(76, 255);
+            this.button1.Location = new System.Drawing.Point(84, 257);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(88, 23);
             this.button1.TabIndex = 2;
-            this.button1.Text = "btnLogin";
+            this.button1.Text = "Login";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(76, 300);
+            this.button2.Location = new System.Drawing.Point(84, 300);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(88, 23);
             this.button2.TabIndex = 3;
-            this.button2.Text = "btnCreateAccount";
+            this.button2.Text = "New Account";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -98,18 +98,18 @@
             this.textBox2.TabIndex = 4;
             this.textBox2.Text = "Account name:";
             // 
-            // DoktorLogin
+            // DoctorLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(239, 413);
+            this.ClientSize = new System.Drawing.Size(240, 413);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtAccountName);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Name = "DoktorLogin";
+            this.Name = "DoctorLogin";
             this.Text = "DoktorLogin";
             this.Load += new System.EventHandler(this.DoktorLogin_Load);
             this.ResumeLayout(false);

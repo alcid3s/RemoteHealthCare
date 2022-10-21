@@ -24,11 +24,11 @@ namespace RemoteHealthCare
 
             // Making connection with the VR server
             BikeClient = new BikeClient("145.48.6.10", 6666);
-            //BikeClient.Connect();
+            BikeClient.Connect();
 
             Thread.Sleep(1000);
 
-            //NetworkEngine();
+            NetworkEngine();
 
             Application.Run(loginScreen);
             for (; ; );

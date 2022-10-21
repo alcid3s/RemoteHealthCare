@@ -17,8 +17,8 @@ namespace DoctorApllication
         internal static DoctorScreen doctorScreen;
         internal static bool isloggedIn = false;
 
-        public static byte CanLogin { get; set; } = 0x00;
         DoctorLoginCreation doctorLoginCreation;
+
 
         public DoctorLogin()
         {
@@ -31,32 +31,6 @@ namespace DoctorApllication
             writer.WriteString(txtAccountName.Text);
             writer.WriteString(txtPassword.Text);
             DoctorClient.Send(writer.GetBytes());
-
-            int counter = 0;
-            while (CanLogin == 0x00)
-            {
-                Thread.Sleep(100);
-                counter++;
-                if (counter == 50)
-                {
-                    throw new Exception("Reply takes too long");
-                }
-            }
-
-            if (CanLogin == 0x81)
-            {
-                if (!isloggedIn)
-                {
-                    doctorScreen = new DoctorScreen();
-                    isloggedIn = true;
-                    Hide();
-                    doctorScreen.Show();
-                }
-                else if (CanLogin == 0x80)
-                {
-                    Console.WriteLine("Faulty credentials");
-                }
-            }
         }
 
             private void DoktorLogin_Load(object sender, EventArgs e)
@@ -70,5 +44,30 @@ namespace DoctorApllication
                 doctorLoginCreation.Show();
                 this.Hide();
             }
+
+        public void login(byte CanLogin)
+        {
+            
+            if (CanLogin == 0x81 && this.InvokeRequired)
+            {
+                if (!isloggedIn)
+                {
+
+
+                    this.Invoke(new Action(new Action(() => { 
+                        doctorScreen = new DoctorScreen();
+                        isloggedIn = true;
+                        doctorScreen.Show();
+                        Hide();
+                    })));
+                    
+                }
+
+            }
+            else if (CanLogin == 0x80 && this.InvokeRequired)
+            {
+                Console.WriteLine("Faulty credentials");
+            }
         }
+    }
     }

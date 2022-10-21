@@ -2,7 +2,7 @@ namespace DoctorApllication
 {
     internal static class Program
     {
-        private static DoctorLogin doctor;
+        public static DoctorLogin doctor;
 
         public static void showDoctorLogin() 
         { 

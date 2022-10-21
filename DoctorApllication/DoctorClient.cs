@@ -80,10 +80,17 @@ namespace DoctorApllication
                     {
                         // Doctor receives all registered accounts;
                         case 0x51:
-                            Console.WriteLine("Received ID");
+                            Console.WriteLine("Received 0x51");
                             string name = Encoding.UTF8.GetString(reader.ReadPacket());
                             LoadDataScreen.FillIndex(name);
                             break;
+                        case 0x53:
+                            Console.WriteLine("Received 0x53");
+                            string sessionName = Encoding.UTF8.GetString(reader.ReadPacket());
+                            int size = reader.ReadByte();
+                            LoadDataScreen.FillSessions(sessionName, size);
+                            break;
+
                     }
 
                     // Used only for login now.

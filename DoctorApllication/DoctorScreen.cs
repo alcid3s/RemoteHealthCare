@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Tracing;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -128,16 +130,79 @@ namespace DoctorApllication
 
         private void txtChatInput_TextChanged(object sender, EventArgs e)
         {
-            
+            if (txtChatInput.Text.Length > 200) 
+            {
+                txtChatInput.Text = txtChatInput.Text.Substring(0, 200);
+                txtInfo.Text = "message can have up to 200 characters";
+            }
         }
 
         private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Return)
-
+            if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
-                txtInfo.Text = txtChatInput.Text;
+                lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8)));
+
+                string[] words = txtChatInput.Text.Split(" ");
+                string line = "";
+
+                int lineNr = 1;
+                for (int i = 0; i < words.Length; i++) 
+                {
+                    if (words[i].Length > 40)
+                    {
+                        if (line.Length > 0)
+                        {
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length)));
+                            line = "";
+                            lineNr++;
+                        }
+
+                        string longWord = words[i];
+
+                        while (longWord.Length > 40)
+                        {
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(longWord.Substring(0, 39) + "-"));
+                            lineNr++;
+                            longWord = longWord.Substring(39);
+                        }
+                        lstChatView.Items.Insert(lineNr, new ListViewItem(longWord));
+                        lineNr++;
+                    }
+                    else
+                    {
+
+                        line += " " + words[i];
+
+                        if (words.Length > i + 1)
+                        {
+                            if ((line + " " + words[i + 1]).Length > 41)
+                            {
+                                lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length-1)));
+                                line = "";
+                                lineNr++;
+                            }
+                        }
+                        else
+                        {
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length-1)));
+                            line = "";
+                            lineNr++;
+                        }
+                    }
+                }
+                txtChatInput.Text = "";
             }
+        }
+
+        private void lstChatBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

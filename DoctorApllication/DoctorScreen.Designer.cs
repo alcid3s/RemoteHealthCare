@@ -42,8 +42,8 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.txtInfo = new System.Windows.Forms.TextBox();
             this.btnLoadData = new System.Windows.Forms.Button();
-            this.txtChatBox = new System.Windows.Forms.TextBox();
             this.txtChatInput = new System.Windows.Forms.TextBox();
+            this.lstChatView = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
             // textBox5
@@ -194,32 +194,36 @@
             this.btnLoadData.UseVisualStyleBackColor = false;
             this.btnLoadData.Click += new System.EventHandler(this.btnLoadData_Click);
             // 
-            // txtChatBox
-            // 
-            this.txtChatBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.txtChatBox.Location = new System.Drawing.Point(394, 46);
-            this.txtChatBox.Multiline = true;
-            this.txtChatBox.Name = "txtChatBox";
-            this.txtChatBox.ReadOnly = true;
-            this.txtChatBox.Size = new System.Drawing.Size(198, 229);
-            this.txtChatBox.TabIndex = 0;
-            this.txtChatBox.TextChanged += new System.EventHandler(this.txtChatBox_TextChanged);
-            // 
             // txtChatInput
             // 
             this.txtChatInput.Location = new System.Drawing.Point(394, 282);
             this.txtChatInput.Name = "txtChatInput";
+            this.txtChatInput.PlaceholderText = "Message.";
             this.txtChatInput.Size = new System.Drawing.Size(168, 23);
             this.txtChatInput.TabIndex = 1;
             this.txtChatInput.TextChanged += new System.EventHandler(this.txtChatInput_TextChanged);
+            // 
+            // lstChatView
+            // 
+            this.lstChatView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstChatView.FullRowSelect = true;
+            this.lstChatView.GridLines = true;
+            this.lstChatView.Location = new System.Drawing.Point(394, 46);
+            this.lstChatView.Name = "lstChatView";
+            this.lstChatView.Size = new System.Drawing.Size(238, 230);
+            this.lstChatView.TabIndex = 0;
+            this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
+            this.lstChatView.UseCompatibleStateImageBehavior = false;
+            this.lstChatView.View = System.Windows.Forms.View.List;
+            this.lstChatView.SelectedIndexChanged += new System.EventHandler(this.lstChatView_SelectedIndexChanged);
             // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.txtChatInput);
-            this.Controls.Add(this.txtChatBox);
             this.Controls.Add(this.btnLoadData);
             this.Controls.Add(this.txtInfo);
             this.Controls.Add(this.textBox6);
@@ -260,5 +264,6 @@
         private Button btnLoadData;
         private TextBox txtChatBox;
         private TextBox txtChatInput;
+        private ListView lstChatView;
     }
 }

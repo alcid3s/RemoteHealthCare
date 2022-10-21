@@ -219,8 +219,6 @@ namespace Server
                                             string[] nameOfSession = n.Split('\\');
                                             string[] removeSuffix = nameOfSession[nameOfSession.Length - 1].Split('.');
 
-
-                                            Console.WriteLine(nameOfSession);
                                             MessageWriter writer = new MessageWriter(0x53);
                                             writer.WritePacket(Encoding.UTF8.GetBytes(removeSuffix[0]));
                                             Console.WriteLine($"BYTE: {(byte)(dirs.Length - 1)}");

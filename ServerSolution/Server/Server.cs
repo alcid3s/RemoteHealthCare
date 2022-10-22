@@ -212,6 +212,18 @@ namespace Server
                                 {
                                     string[] dirs = Directory.GetFiles(path);
 
+                                    // if credentials is the only thing in the dirs array.
+                                    if(dirs.Length == 1)
+                                    {
+                                        MessageWriter writer = new MessageWriter(0x53);
+                                        writer.WritePacket(Encoding.UTF8.GetBytes("No sessions found"));
+                                        writer.WriteByte(1);
+                                        client.Socket.Send(writer.GetBytes());
+
+                                        // break used for switch case. 
+                                        break;
+                                    }
+
                                     foreach (var n in dirs)
                                     {
                                         if (!n.Contains("credentials"))
@@ -230,6 +242,13 @@ namespace Server
                                     }
                                 }
                             }
+                            break;
+                        case 0x54:
+                            Console.WriteLine("Received 0x54");
+                            string accountUser = Encoding.UTF8.GetString(reader.ReadPacket());
+                            string sessionName = Encoding.UTF8.GetString(reader.ReadPacket());
+                            Console.WriteLine($"user: {accountUser}, session: {sessionName}");
+                            break;
 
 
 
@@ -260,6 +279,8 @@ namespace Server
                     Console.WriteLine($"ERROR WITH CLIENT: {e}");
                 }
             }
+
+            client.Socket.Close();
         }
         private void Logout(Client client)
         {

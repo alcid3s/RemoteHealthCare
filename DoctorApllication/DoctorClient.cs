@@ -94,7 +94,7 @@ namespace DoctorApllication
                     }
 
                     // Used only for login now.
-                    if(id == 0x80 || id == 0x81)
+                    if (id == 0x80 || id == 0x81)
                     {
                         // Request sent by the doctor client.
                         byte originalRequest = reader.ReadByte();

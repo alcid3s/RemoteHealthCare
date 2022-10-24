@@ -17,8 +17,7 @@ namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
-        public static string clientUsername { private get; set; } = "";
-        public static string clientSession { private get; set; } = "";
+
 
         private LoadDataScreen _loadDataScreen;
         private Dictionary<byte, List<ClientData>> data = new Dictionary<byte, List<ClientData>>();

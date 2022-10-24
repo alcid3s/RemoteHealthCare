@@ -1,4 +1,5 @@
-﻿using MessageStream;
+﻿using DoctorApplication;
+using MessageStream;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -125,8 +126,10 @@ namespace DoctorApllication
                 writer.WritePacket(Encoding.UTF8.GetBytes(selectedItem));
                 DoctorClient.Send(writer.GetBytes());
 
-                DoctorScreen.clientUsername = _selectedUser;
-                DoctorScreen.clientSession = selectedItem;
+                DoctorScreenHistorie doctorScreen = new DoctorScreenHistorie();
+                doctorScreen.clientUsername = _selectedUser;
+                doctorScreen.clientSession = selectedItem;
+                doctorScreen.Show();
                 Close();
             }
         }

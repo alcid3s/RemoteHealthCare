@@ -52,6 +52,7 @@ namespace DoctorApllication
                 txtInfo.Text = "connecting to ";
                 foreach(object s in lstClients.SelectedItems)
                 {
+                   
                     txtInfo.Text += s.ToString();
                     if (s.ToString().Equals("Simulation Bike"))
                     {
@@ -70,7 +71,7 @@ namespace DoctorApllication
             }
         }
 
-
+        
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
 

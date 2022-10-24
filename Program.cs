@@ -13,7 +13,8 @@ namespace RemoteHealthCare
 {
     class Program
     {
-        private static bool networkEngineRunning = false;
+        public static bool NetworkEngineRunning = false;
+        public static BikeClient BikeClient;
         static void Main(string[] args)
         {
             AccountLogin loginScreen = new AccountLogin();
@@ -22,42 +23,12 @@ namespace RemoteHealthCare
             serverClient.Connect();
 
             // Making connection with the VR server
-            BikeClient bikeClient = new BikeClient();
-            bikeClient.Connect("145.48.6.10", 6666);
+            BikeClient = new BikeClient("145.48.6.10", 6666);
+            BikeClient.Connect();
 
             Thread.Sleep(1000);
 
-            //NetworkEngine(bikeClient);
-
-            // Kind of bikes available
-
-            IBike bike = new SimulationBike();
-            bike.Init();
-
-            bike.OnUpdate += delegate
-            {
-                if (AccountLogin.ClientScreen != null)
-                {
-                    //ClientScreen clientScreen = new ClientScreen();
-                    AccountLogin.ClientScreen.setTxtSpeed(bike.Speed);
-                    AccountLogin.ClientScreen.setTxtDistanceTravelled(bike.DistanceTravelled);
-                    AccountLogin.ClientScreen.setTxtElapsedTime(bike.ElapsedTime);
-                    AccountLogin.ClientScreen.setTxtHeartRate(bike.HeartRate);
-                }
-                serverClient.Send(0x21, bike.ElapsedTime, bike.DistanceTravelled, bike.Speed, bike.HeartRate);
-
-                    if (networkEngineRunning)
-                    {
-                        bikeClient.UpdateSpeed(bike.Speed);
-
-                        bikeClient.ClearPanel("panel1");
-                        bikeClient.AddTextToPanel("panel1", "Speed: " + Math.Round(bike.Speed, 2) + " m/s", 1);
-                        bikeClient.AddTextToPanel("panel1", "Distance traveled: " + bike.DistanceTravelled + "m", 2);
-                        bikeClient.AddTextToPanel("panel1", "Elapsed time: " + (int)bike.ElapsedTime + "s", 3);
-                        bikeClient.AddTextToPanel("panel1", "Heartrate: " + bike.HeartRate + " bpm", 4);
-                        bikeClient.SwapPanelBuffer("panel1");
-                    }
-                };
+            NetworkEngine();
 
             Application.Run(loginScreen);
             for (; ; );
@@ -67,40 +38,39 @@ namespace RemoteHealthCare
         /// Creates a network engine with all required nodes
         /// </summary>
         /// <param name="bikeClient">The client that will receive all the commands</param>
-        private static void NetworkEngine(BikeClient bikeClient)
+        private static void NetworkEngine()
         {
-            bikeClient.ResetScene();
-            bikeClient.GetScene();
+            BikeClient.ResetScene();
+            BikeClient.GetScene();
 
             //wait for the getscene response
-            while (!bikeClient.IdReceived("GroundPlane") || !bikeClient.IdReceived("LeftHand") || !bikeClient.IdReceived("RightHand") || !bikeClient.IdReceived("Camera"))
+            while (!BikeClient.IdReceived("GroundPlane") || !BikeClient.IdReceived("LeftHand") || !BikeClient.IdReceived("RightHand") || !BikeClient.IdReceived("Camera"))
                 Thread.Sleep(1);
-
             //head cant be removed for some reason
             //bikeClient.DeleteNode("Head");
-            
+
             //Remove the standard nodes
-            bikeClient.DeleteNode("GroundPlane");
+            BikeClient.DeleteNode("GroundPlane");
             //bikeClient.DeleteNode("LeftHand");
             //bikeClient.DeleteNode("RightHand");
 
-            bikeClient.SetSkyBox(16);
-            bikeClient.CreateTerrain("terrain");
-            bikeClient.CreateBike("bike");
+            BikeClient.SetSkyBox();
+            BikeClient.CreateTerrain("terrain");
+            BikeClient.CreateBike("bike");
             //bikeClient.CreateBike("bike2");
 
-            bikeClient.AddRoute();
+            BikeClient.AddRoute();
 
             //Add road texture and trees
             Console.WriteLine("waiting for route");
-            while (!bikeClient.RouteExists(0)) {
+            while (!BikeClient.RouteExists(0))
                 Thread.Sleep(1);
-            }
-            bikeClient.AddRoad(0);
-            bikeClient.AddTrees();
-
-            bikeClient.AddPanel("panel1");
             
+            BikeClient.AddRoad(0);
+            BikeClient.AddVegetation();
+
+            BikeClient.AddPanel("panel1");
+
 
             //wait for the node and route ids
             Console.WriteLine("waiting for ids");
@@ -108,13 +78,11 @@ namespace RemoteHealthCare
             //    Thread.Sleep(1);
             Thread.Sleep(5000);
 
-
-
-            while (!bikeClient.IdReceived("panel1"))
+            while (!BikeClient.IdReceived("panel1"))
                 Thread.Sleep(1);
 
-            bikeClient.FollowRoute(0, "Camera");
-            networkEngineRunning = true;
+            BikeClient.FollowRoute(0, "Camera");
+            NetworkEngineRunning = true;
         }
     }
 }

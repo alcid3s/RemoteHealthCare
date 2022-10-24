@@ -33,6 +33,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.btnLoad = new System.Windows.Forms.Button();
+            this.txtError = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lstAccounts
@@ -41,8 +42,9 @@
             this.lstAccounts.ItemHeight = 15;
             this.lstAccounts.Location = new System.Drawing.Point(39, 47);
             this.lstAccounts.Name = "lstAccounts";
-            this.lstAccounts.Size = new System.Drawing.Size(154, 334);
+            this.lstAccounts.Size = new System.Drawing.Size(163, 304);
             this.lstAccounts.TabIndex = 0;
+            this.lstAccounts.SelectedIndexChanged += new System.EventHandler(this.lstAccounts_SelectedIndexChanged);
             // 
             // lstSessions
             // 
@@ -50,8 +52,9 @@
             this.lstSessions.ItemHeight = 15;
             this.lstSessions.Location = new System.Drawing.Point(208, 47);
             this.lstSessions.Name = "lstSessions";
-            this.lstSessions.Size = new System.Drawing.Size(209, 334);
+            this.lstSessions.Size = new System.Drawing.Size(208, 304);
             this.lstSessions.TabIndex = 1;
+            this.lstSessions.SelectedIndexChanged += new System.EventHandler(this.lstSessions_SelectedIndexChanged);
             // 
             // textBox1
             // 
@@ -72,6 +75,7 @@
             this.textBox2.Size = new System.Drawing.Size(100, 16);
             this.textBox2.TabIndex = 3;
             this.textBox2.Text = "Sessions: ";
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // btnLoad
             // 
@@ -85,11 +89,23 @@
             this.btnLoad.UseVisualStyleBackColor = false;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
+            // txtError
+            // 
+            this.txtError.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtError.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.txtError.ForeColor = System.Drawing.Color.Red;
+            this.txtError.Location = new System.Drawing.Point(40, 357);
+            this.txtError.Name = "txtError";
+            this.txtError.ReadOnly = true;
+            this.txtError.Size = new System.Drawing.Size(377, 22);
+            this.txtError.TabIndex = 5;
+            // 
             // LoadDataScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(560, 418);
+            this.Controls.Add(this.txtError);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
@@ -97,6 +113,7 @@
             this.Controls.Add(this.lstAccounts);
             this.Name = "LoadDataScreen";
             this.Text = "LoadDataScreen";
+            this.Load += new System.EventHandler(this.LoadDataScreen_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -109,5 +126,6 @@
         private TextBox textBox1;
         private TextBox textBox2;
         private Button btnLoad;
+        private TextBox txtError;
     }
 }

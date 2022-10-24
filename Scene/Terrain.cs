@@ -25,8 +25,8 @@ namespace RemoteHealthCare.Scene
             public TerrainSine(double offset, double length, double angle, double height)
             {
                 _offset = offset;
-                _xLength = length * Math.Cos(angle);
-                _yLength = length * Math.Sin(angle);
+                _xLength = Math.Cos(angle) * length;
+                _yLength = Math.Sin(angle) * length;
                 _height = height;
             }
 
@@ -56,11 +56,12 @@ namespace RemoteHealthCare.Scene
         {
             Random random = new Random();
             List<TerrainSine> terrainSines = new List<TerrainSine>();
-            for (int i = 0; i < random.Next(3, 6); i++)
+            double nOfSines = 4;
+            for (double i = 0.0; i < nOfSines; i++)
             {
-                double waveSize = random.NextDouble();
-                terrainSines.Add(new TerrainSine(random.NextDouble() * Math.PI, 32 + waveSize * 224,
-                    random.NextDouble() * Math.PI, waveSize * 6));
+                double waveSize = random.NextDouble() * 7 + 2;
+                terrainSines.Add(new TerrainSine(random.Next() * Math.PI, waveSize * 12,
+                    1 + i / nOfSines * Math.PI, waveSize));
             }
 
             TerrainHeights = new double[256, 256];

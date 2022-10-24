@@ -1,4 +1,4 @@
-﻿{
+{
   "id": "tunnel/send",
   "data": {
     "dest": "",
@@ -9,7 +9,7 @@
         "text": "Hello World",
         "position": [ 16.0, 16.0 ],
         "size": 54,
-        "color": [ 0.5, 0.5, 0.5, 1 ],
+        "color": [ 1, 1, 1, 1 ],
         "font": "segoeui"
       }
     }

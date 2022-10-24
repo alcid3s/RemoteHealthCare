@@ -2,18 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
 
 namespace Server.Accounts
 {
     public class AccountManager
     {
-        private string _suffix = ".txt";
-        private string _path = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
-
+        public bool LoggedIn { get; set; } = false;
+        public static string PathClient { get; } = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
+        public static string Suffix { get; } = ".txt";
+        
+        private string _pathDoctor = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Doctors";
         private string _username;
         private string _password;
         private Socket _socket;
@@ -22,10 +25,17 @@ namespace Server.Accounts
 
         public enum AccountState
         {
+            Client,
+            Doctor,
+
             CreateClient,
             LoginClient,
             EditClient,
-            RemoveClient
+            RemoveClient,
+
+            LoginDoctor,
+            CreateDoctor,
+            RemoveDoctor
         }
         public AccountManager(string username, string password, Socket socket, AccountState state)
         {
@@ -37,31 +47,110 @@ namespace Server.Accounts
         }
         private void GetData()
         {
-            string path = _path + "/" + _username + _suffix;
-            if (File.Exists(path))
+            string pathClient = PathClient + "/" + _username;
+            string pathDoctor = _pathDoctor + "/" + _username;
+
+            if (!Directory.Exists(PathClient))
+                Directory.CreateDirectory(PathClient);
+            else if (!Directory.Exists(_pathDoctor))
+                Directory.CreateDirectory(_pathDoctor);
+
+            if (_state == AccountState.LoginClient)
             {
-                if (_state == AccountState.LoginClient)
+                if (Directory.Exists(pathClient))
                 {
-                    var sr = new StreamReader(File.OpenRead(path));
+                    var sr = new StreamReader(File.OpenRead(pathClient + "/credentials" + Suffix));
                     string? credentials = sr.ReadLine();
-                    CheckCredentials(credentials);
+                    if (CheckCredentials(credentials, AccountState.Client))
+                    {
+                        LoggedIn = true;
+                        MessageWriter writer = new MessageWriter(0x81);
+                        writer.WriteByte(0x11);
+                        _socket.Send(writer.GetBytes());
+                    }
                 }
-                else if (_state == AccountState.RemoveClient)
+                else
                 {
-                    // TODO 05-10-2022: Remove account
+                    MessageWriter writer = new MessageWriter(0x80);
+                    writer.WriteByte(0x11);
+                    _socket.Send(writer.GetBytes());
                 }
             }
+
+            else if (_state == AccountState.RemoveClient)
+            {
+                // TODO 05-10-2022: Remove account
+            }
+
             else if (_state == AccountState.CreateClient)
             {
-                FileStream fs = File.Create(path);
+                if (!Directory.Exists(pathClient))
+                    Directory.CreateDirectory(pathClient);
+
+                Thread.Sleep(10);
+                FileStream fs = File.Create(pathClient + "/credentials" + Suffix);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
                 sr.Close();
+            }
 
+            else if (_state == AccountState.LoginDoctor)
+            {
+                //check if the requested the account exist
+                if (Directory.Exists(pathDoctor))
+                {
+                    var sr = new StreamReader(File.OpenRead(pathDoctor + "/credentials" + Suffix));
+                    string? credentials = sr.ReadLine();
+                    if (CheckCredentials(credentials, AccountState.Doctor))
+                    {
+                        //send login is ok back
+                        LoggedIn = true;
+                        MessageWriter writer = new MessageWriter(0x81);
+                        writer.WriteByte(0x15);
+                        _socket.Send(writer.GetBytes());
+                    }
+                    else
+                    {
+                        //send cannot log in back as password is incorrect
+                        MessageWriter writer = new MessageWriter(0x80);
+                        writer.WriteByte(0x15);
+                        _socket.Send(writer.GetBytes());
+                    }
+                }
+                else
+                {
+                    //send cannot log in back as username is unused
+                    MessageWriter writer = new MessageWriter(0x80);
+                    writer.WriteByte(0x15);
+                    _socket.Send(writer.GetBytes());
+                }
+            }
+
+            else if (_state == AccountState.RemoveDoctor)
+            {
+                // Remove Doctor
+            }
+
+            else if (_state == AccountState.CreateDoctor)
+            {
+                Console.WriteLine("Doctor");
+                if (!Directory.Exists(pathDoctor))
+                    Directory.CreateDirectory(pathDoctor);
+
+                Thread.Sleep(10);
+                FileStream fs = File.Create(pathDoctor + "/credentials" + Suffix);
+                var sr = new StreamWriter(fs);
+                sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
+                sr.Close();
+
+                Console.WriteLine("Sending data back");
+                MessageWriter writer = new MessageWriter(0x81);
+                writer.WriteByte(0x14);
+                _socket.Send(writer.GetBytes());
             }
         }
 
-        private void CheckCredentials(string? credentials)
+        private bool CheckCredentials(string? credentials, AccountState doctorOrClient)
         {
             if (credentials != null)
             {
@@ -76,26 +165,46 @@ namespace Server.Accounts
                 type = type.Replace(']', ' ');
                 type = type.Trim();
 
-                MessageWriter writer;
-
-                if (_username.Equals(username) && _password.Equals(password) && type.Equals("c"))
+                if (_username.Equals(username) && _password.Equals(password)
+                    && type.Equals("c") && doctorOrClient == AccountState.Client)
                 {
-                    writer = new MessageWriter(0x81);
-                    Console.WriteLine("Login credentials are correct");
+                    Console.WriteLine("Login credentials for client are correct");
+                    return true;
+                }
+                else if (_username.Equals(username) && _password.Equals(password)
+                    && type.Equals("d") && doctorOrClient == AccountState.Doctor)
+                {
+                    Console.WriteLine("Login credentials for doctor are correct");
+                    return true;
                 }
                 else
                 {
-                    writer = new MessageWriter(0x80);
                     Console.WriteLine("Login credentials are faulty");
+                    return false;
                 }
-
-                writer.WriteByte(0x11);
-                _socket.Send(writer.GetBytes());
             }
             else
-            {
-                Console.WriteLine("credentials is null");
-            }
+                return false;
+        }
+        public void SaveData(byte[] message, StreamWriter sr)
+        {
+            MessageReader reader = new MessageReader(message);
+            sr.WriteLine('[' +
+                Encoding.UTF8.GetString(
+                Enumerable.Range(0, 7).
+                Select(_ => reader.ReadByte()).
+                ToArray()) + ']');
+        }
+        public FileStream CreateFile()
+        {
+            return File.Create(PathClient + "/" + _username +
+                    $"/{DateTime.Now.Day}" +
+                    $"-{DateTime.Now.Month}" +
+                    $"-{DateTime.Now.Year}" +
+                    $"_{DateTime.Now.Hour}" +
+                    $"-{DateTime.Now.Minute}" +
+                    $"-{DateTime.Now.Second}" +
+                    Suffix);
         }
     }
 }

@@ -38,8 +38,6 @@ namespace MessageStream
             _index = 2;
         }
 
-        
-
         /// <summary>
         /// Reads the current byte and moves the indexer
         /// </summary>

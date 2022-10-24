@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MessageStream
 {
-    internal class ExtendedMessageWriter : MessageWriter
+    public class ExtendedMessageWriter : MessageWriter
     {
         public ExtendedMessageWriter(byte id) : base(id) { }
 

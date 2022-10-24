@@ -14,12 +14,14 @@ namespace Server
         private int _port;
         private struct Client
         {
+            public string? Name { get; set; }
             public Socket? Socket { get; }
             public byte Id { get; }
-            public Client(Socket? socket, byte id)
+            public Client(Socket? socket, byte id, string? name)
             {
                 Socket = socket;
                 Id = id;
+                Name = name;
             }
         }
 
@@ -69,7 +71,7 @@ namespace Server
                         socket = ServerSocket.Accept();
 
                     // saving client to list.
-                    Client client = new(socket, (byte)(clientList.Count + 1));
+                    Client client = new(socket, (byte)(clientList.Count + 1), null);
                     clientList.Add(client);
 
                     // Every client gets its own thread.
@@ -129,6 +131,11 @@ namespace Server
                             if (account.LoggedIn) 
                             {
                                 Console.WriteLine("logged in");
+                                clientList.Remove(client);
+                                client.Name = usernameLogin;
+                                clientList.Add(client);
+                                Console.WriteLine("client: " + client.Name + " username: " + usernameLogin);
+                                
                             }
                             break;
 
@@ -205,7 +212,7 @@ namespace Server
                             }
                             break;
 
-                        // Send all patient ids connected with the server.
+                        // Send all given patient history
                         case 0x52:
                             Console.WriteLine("Received 0x52");
                             string accountName = Encoding.UTF8.GetString(reader.ReadPacket());
@@ -234,22 +241,30 @@ namespace Server
                                     }
                                 }
                             }
-
-
-
-                            //Console.WriteLine("Sending data to Doctor");
-                            //byte[] packet = new byte[clientList.Count];
-
-                            //for (int i = 0; i < packet.Length; i++)
-                            //{
-                            //    packet[i] = clientList.ElementAt(i).Id;
-                            //}
-
-                            //MessageWriter writer = new MessageWriter(0x53);
-                            //writer.WritePacket(packet);
-
-                            //client.Socket.Send(writer.GetBytes());
                             break;
+
+                        // pass a message from the doctor to a client
+                        case 0x30:
+
+                            break;
+
+                        case 0x42:
+                            Console.WriteLine("received client request");
+                            foreach (Client connectedClient in Server.clientList)
+                            {
+                                Console.WriteLine("has client: " + connectedClient.Name);
+
+                                if (connectedClient.Name != null)
+                                {
+                                    ExtendedMessageWriter messageWriter = new ExtendedMessageWriter(0x43);
+                                    messageWriter.WriteByte(connectedClient.Id);
+                                    messageWriter.WriteString(connectedClient.Name);
+                                    Console.WriteLine("sending: " + connectedClient.Name);
+                                    client.Socket.Send(messageWriter.GetBytes());
+                                }
+                            }
+                            break;
+
                         case 0x60:
                             Logout(client);
                             firstRun = true;

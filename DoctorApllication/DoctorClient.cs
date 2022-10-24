@@ -73,7 +73,7 @@ namespace DoctorApllication
                 int receive = _socket.Receive(message);
                 try
                 {
-                    MessageReader reader = new MessageReader(message);
+                    ExtendedMessageReader reader = new ExtendedMessageReader(message);
                     byte id = reader.Id;
 
                     switch (id)
@@ -89,6 +89,9 @@ namespace DoctorApllication
                             string sessionName = Encoding.UTF8.GetString(reader.ReadPacket());
                             int size = reader.ReadByte();
                             LoadDataScreen.FillSessions(sessionName, size);
+                            break;
+                        case 0x43:
+                            DoctorLogin.doctorScreen.addClient(reader.ReadByte(), reader.ReadString());
                             break;
 
                     }

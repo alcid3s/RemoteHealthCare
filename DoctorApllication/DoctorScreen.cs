@@ -11,18 +11,44 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Net.Sockets;
 
 namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
         private LoadDataScreen _loadDataScreen;
+        private static List<Client> clientList = new List<Client>();
         public DoctorScreen()
         {
             _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+            refreshAvailableClients();
             DoctorClient.Send(new MessageWriter(0x50).GetBytes());
+        }
+
+        private struct Client
+        {
+            public string Name { get; set; }
+            public byte Id { get; }
+            public Client(byte id, string name)
+            {
+                Id = id;
+                Name = name;
+            }
+        }
+
+        public void refreshAvailableClients()
+        {
+            DoctorClient.Send(new MessageWriter(0x42).GetBytes());
+        }
+
+        public void addClient(byte clientId, string clientName)
+        {
+            Console.WriteLine("got client: " + clientName);
+            clientList.Add(new Client(clientId, clientName));
+            lstClients.Items.Add(clientName + " id: " + clientId);
         }
         
 
@@ -219,6 +245,11 @@ namespace DoctorApllication
         private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            refreshAvailableClients();
         }
     }
 }

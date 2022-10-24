@@ -14,7 +14,7 @@ namespace DoctorApllication
 {
     public partial class DoctorLogin : Form
     {
-        internal static DoctorScreen doctorScreen;
+        public static DoctorScreen doctorScreen;
         internal static bool isloggedIn = false;
 
         DoctorLoginCreation doctorLoginCreation;

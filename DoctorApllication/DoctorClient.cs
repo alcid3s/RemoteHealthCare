@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DoctorApllication
 {
@@ -71,6 +72,7 @@ namespace DoctorApllication
             {
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
+                Console.WriteLine("received message");
                 try
                 {
                     ExtendedMessageReader reader = new ExtendedMessageReader(message);
@@ -92,6 +94,10 @@ namespace DoctorApllication
                             break;
                         case 0x43:
                             DoctorLogin.doctorScreen.addClient(reader.ReadByte(), reader.ReadString());
+                            break;
+                        case 0x21:
+                            Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
+
                             break;
 
                     }

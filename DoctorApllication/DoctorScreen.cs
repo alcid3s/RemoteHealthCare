@@ -24,18 +24,21 @@ namespace DoctorApllication
             _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-            refreshAvailableClients();
+            
             DoctorClient.Send(new MessageWriter(0x50).GetBytes());
+            refreshAvailableClients();
         }
 
         private struct Client
         {
             public string Name { get; set; }
             public byte Id { get; }
-            public Client(byte id, string name)
+            public bool Selected { get; set; }
+            public Client(byte id, string name, bool selected)
             {
                 Id = id;
                 Name = name;
+                Selected = selected;
             }
         }
 
@@ -49,7 +52,7 @@ namespace DoctorApllication
         public void addClient(byte clientId, string clientName)
         {
             Console.WriteLine("got client: " + clientName);
-            clientList.Add(new Client(clientId, clientName));
+            clientList.Add(new Client(clientId, clientName, false));
             lstClients.Items.Add(clientName + " id: " + clientId);
         }
         
@@ -81,6 +84,17 @@ namespace DoctorApllication
             //send a message to the server, with the code for the switch case
             if (lstClients.SelectedItems != null)
             {
+                foreach (var x in lstClients.SelectedItems)
+                {
+/*                    byte ids = (byte)x.ToString().Split(" ")[x.ToString().Split(" ").Length-1];
+                    foreach (Client client in clientList)
+                    {
+                        if ()
+                        {
+
+                        }
+                    }*/
+                }
 
 
 

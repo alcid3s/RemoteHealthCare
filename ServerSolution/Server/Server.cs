@@ -191,8 +191,24 @@ namespace Server
                             }
                             break;
 
+                            // gets a message from the doctor and sends this to the corresponding client.
                         case 0x30:
                             Console.WriteLine("Received 0x30");
+                            byte id30 = reader.ReadByte();
+                            string message30 = Encoding.UTF8.GetString(reader.ReadPacket());
+                            Console.WriteLine($"Doctor said: {id30}: {message30}");
+
+                            MessageWriter writer30 = new MessageWriter(0x31);
+                            writer30.WriteByte(id30);
+                            writer30.WritePacket(Encoding.UTF8.GetBytes(message30));
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if(clientTarget.Id == id30)
+                                {
+                                    clientTarget.Socket.Send(writer30.GetBytes());
+                                }
+                            });
+
                             break;
 
                         case 0x42:

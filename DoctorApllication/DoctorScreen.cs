@@ -21,6 +21,8 @@ namespace DoctorApllication
         public static List<(byte, string)> ClientList = new List<(byte, string)>();
         private int _index = 0;
 
+        private byte _selectedUser = 0;
+
         private LoadDataScreen _loadDataScreen;
         public DoctorScreen()
         {
@@ -142,6 +144,18 @@ namespace DoctorApllication
         {
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
+                // Send text input to the server
+                string message = txtChatInput.Text;
+                if(message != "" && _selectedUser != 0)
+                {
+                    // Sends a message to the server, server send it to the client.
+                    MessageWriter writer = new MessageWriter(0x30);
+                    writer.WriteByte(_selectedUser);
+                    writer.WritePacket(Encoding.UTF8.GetBytes(message));
+                    DoctorClient.Send(writer.GetBytes());
+                }
+
+
                 //put the time above the message, can later also have the sender
                 lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8) + " - You"));
 
@@ -206,11 +220,6 @@ namespace DoctorApllication
                 //reset the chat input
                 txtChatInput.Text = "";
             }
-
-            string message = txtChatInput.Text;
-            MessageWriter writer = new MessageWriter(0x30);
-            writer.WritePacket(Encoding.UTF8.GetBytes(message));
-            DoctorClient.Send(writer.GetBytes());
         }
 
         private void lstChatBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -225,7 +234,15 @@ namespace DoctorApllication
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-
+            Console.WriteLine("Loading");
+            string selectedUser = lstClients.SelectedItem.ToString();
+            selectedUser = selectedUser.Replace('i', ' ');
+            selectedUser = selectedUser.Replace('d', ' ');
+            selectedUser = selectedUser.Replace(':', ' ');
+            selectedUser = selectedUser.Trim();
+            string[] data = selectedUser.Split(',');
+            byte id = byte.Parse(data[0]);
+            _selectedUser = id;
         }
     }
 }

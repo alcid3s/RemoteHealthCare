@@ -80,14 +80,21 @@ namespace DoctorApllication
                     {
                         // Doctor receives all registered accounts;
                         case 0x51:
-                            Console.WriteLine("Received ID");
+                            Console.WriteLine("Received 0x51");
                             string name = Encoding.UTF8.GetString(reader.ReadPacket());
                             LoadDataScreen.FillIndex(name);
                             break;
+                        case 0x53:
+                            Console.WriteLine("Received 0x53");
+                            string sessionName = Encoding.UTF8.GetString(reader.ReadPacket());
+                            int size = reader.ReadByte();
+                            LoadDataScreen.FillSessions(sessionName, size);
+                            break;
+
                     }
 
                     // Used only for login now.
-                    if(id == 0x80 || id == 0x81)
+                    if (id == 0x80 || id == 0x81)
                     {
                         // Request sent by the doctor client.
                         byte originalRequest = reader.ReadByte();
@@ -97,12 +104,13 @@ namespace DoctorApllication
                         {
                             // Server replies with 0x14 if doctor wants to create account.
                             case 0x14:
+                                
                                 DoctorLoginCreation.Succes = id;
                                 break;
 
                             // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.
                             case 0x15:
-                                DoctorLogin.CanLogin = id;
+                                Program.doctor.login(id);
                                 break;
                         }
                     }
@@ -165,6 +173,7 @@ namespace DoctorApllication
             int received = _socket.Send(message);
         }
 
+        //wait until a new server message has been received
         public static bool waitForReply()
         {
             int counter = 0;

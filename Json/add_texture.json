@@ -9,8 +9,8 @@
         "id" : "",
         "diffuse" : "data/NetworkEngine/textures/terrain/grass_green2y_d.jpg",
         "normal" : "data/NetworkEngine/textures/terrain/grass_green2y_d.jpg",
-        "minHeight" : 0,
-        "maxHeight" : 10,
+        "minHeight" : -256,
+        "maxHeight" : 256,
         "fadeDist" : 1
       }
     }

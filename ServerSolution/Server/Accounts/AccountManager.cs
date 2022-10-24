@@ -14,8 +14,7 @@ namespace Server.Accounts
     {
         public bool LoggedIn { get; set; } = false;
         public static string PathClient { get; } = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Data";
-
-        private string _suffix = ".txt";
+        public static string Suffix { get; } = ".txt";
         
         private string _pathDoctor = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString() + "/Accounts/Doctors";
         private string _username;
@@ -60,7 +59,7 @@ namespace Server.Accounts
             {
                 if (Directory.Exists(pathClient))
                 {
-                    var sr = new StreamReader(File.OpenRead(pathClient + "/credentials" + _suffix));
+                    var sr = new StreamReader(File.OpenRead(pathClient + "/credentials" + Suffix));
                     string? credentials = sr.ReadLine();
                     if (CheckCredentials(credentials, AccountState.Client))
                     {
@@ -89,7 +88,7 @@ namespace Server.Accounts
                     Directory.CreateDirectory(pathClient);
 
                 Thread.Sleep(10);
-                FileStream fs = File.Create(pathClient + "/credentials" + _suffix);
+                FileStream fs = File.Create(pathClient + "/credentials" + Suffix);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
                 sr.Close();
@@ -97,12 +96,14 @@ namespace Server.Accounts
 
             else if (_state == AccountState.LoginDoctor)
             {
+                //check if the requested the account exist
                 if (Directory.Exists(pathDoctor))
                 {
-                    var sr = new StreamReader(File.OpenRead(pathDoctor + "/credentials" + _suffix));
+                    var sr = new StreamReader(File.OpenRead(pathDoctor + "/credentials" + Suffix));
                     string? credentials = sr.ReadLine();
                     if (CheckCredentials(credentials, AccountState.Doctor))
                     {
+                        //send login is ok back
                         LoggedIn = true;
                         MessageWriter writer = new MessageWriter(0x81);
                         writer.WriteByte(0x15);
@@ -110,10 +111,18 @@ namespace Server.Accounts
                     }
                     else
                     {
+                        //send cannot log in back as password is incorrect
                         MessageWriter writer = new MessageWriter(0x80);
                         writer.WriteByte(0x15);
                         _socket.Send(writer.GetBytes());
                     }
+                }
+                else
+                {
+                    //send cannot log in back as username is unused
+                    MessageWriter writer = new MessageWriter(0x80);
+                    writer.WriteByte(0x15);
+                    _socket.Send(writer.GetBytes());
                 }
             }
 
@@ -129,7 +138,7 @@ namespace Server.Accounts
                     Directory.CreateDirectory(pathDoctor);
 
                 Thread.Sleep(10);
-                FileStream fs = File.Create(pathDoctor + "/credentials" + _suffix);
+                FileStream fs = File.Create(pathDoctor + "/credentials" + Suffix);
                 var sr = new StreamWriter(fs);
                 sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
                 sr.Close();
@@ -195,7 +204,7 @@ namespace Server.Accounts
                     $"_{DateTime.Now.Hour}" +
                     $"-{DateTime.Now.Minute}" +
                     $"-{DateTime.Now.Second}" +
-                    _suffix);
+                    Suffix);
         }
     }
 }

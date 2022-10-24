@@ -41,6 +41,8 @@ namespace DoctorApllication
 
         public void refreshAvailableClients()
         {
+            clientList.Clear();
+            lstClients.Items.Clear();
             DoctorClient.Send(new MessageWriter(0x42).GetBytes());
         }
 
@@ -79,7 +81,15 @@ namespace DoctorApllication
             //send a message to the server, with the code for the switch case
             if (lstClients.SelectedItems != null)
             {
-                txtInfo.Text = "connecting to ";
+
+
+
+
+
+
+
+
+/*                txtInfo.Text = "connecting to ";
                 foreach(object s in lstClients.SelectedItems)
                 {
                     txtInfo.Text += s.ToString();
@@ -93,7 +103,7 @@ namespace DoctorApllication
                 if (lstClients.SelectedItems.ToString() == "Simulation Bike")
                 {
                   
-                }
+                }*/
             } else if (lstClients.SelectedItems == null)
             {
                 txtInfo.Text = "no client selected";

@@ -16,5 +16,15 @@ namespace DoctorApplication
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnDataBack_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

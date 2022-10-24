@@ -45,6 +45,7 @@
             this.txtChatInput = new System.Windows.Forms.TextBox();
             this.lstChatView = new System.Windows.Forms.ListView();
             this.ChatCollomn = new System.Windows.Forms.ColumnHeader();
+            this.btnLoad = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox5
@@ -104,7 +105,7 @@
             // 
             this.btnConnectClient.BackColor = System.Drawing.Color.Red;
             this.btnConnectClient.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnConnectClient.Location = new System.Drawing.Point(683, 281);
+            this.btnConnectClient.Location = new System.Drawing.Point(683, 311);
             this.btnConnectClient.Name = "btnConnectClient";
             this.btnConnectClient.Size = new System.Drawing.Size(75, 23);
             this.btnConnectClient.TabIndex = 3;
@@ -225,11 +226,24 @@
             this.ChatCollomn.Text = "Messages";
             this.ChatCollomn.Width = 338;
             // 
+            // btnLoad
+            // 
+            this.btnLoad.BackColor = System.Drawing.Color.Lime;
+            this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnLoad.Location = new System.Drawing.Point(683, 281);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(75, 23);
+            this.btnLoad.TabIndex = 21;
+            this.btnLoad.Text = "Load data";
+            this.btnLoad.UseVisualStyleBackColor = false;
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.txtChatInput);
             this.Controls.Add(this.btnLoadData);
@@ -274,5 +288,6 @@
         private TextBox txtChatInput;
         private ListView lstChatView;
         private ColumnHeader ChatCollomn;
+        private Button btnLoad;
     }
 }

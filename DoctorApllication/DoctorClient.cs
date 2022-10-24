@@ -90,6 +90,11 @@ namespace DoctorApllication
                             int size = reader.ReadByte();
                             LoadDataScreen.FillSessions(sessionName, size);
                             break;
+                        case 0x43:
+                            Console.WriteLine("received 0x43");
+                            ClientDataList.Add(reader.ReadByte(), new List<ClientData>());
+                            Console.WriteLine(reader.ReadByte().ToString());
+                            break;
 
                     }
 

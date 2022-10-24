@@ -126,6 +126,10 @@ namespace Server
                             string passwordLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
                             account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
+                            if (account.LoggedIn) 
+                            { 
+                            
+                            }
                             break;
 
                         // Client wants to edit account information
@@ -148,7 +152,7 @@ namespace Server
                         case 0x15:
                             string usernameCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
-                            Console.WriteLine($"Trying to make Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
+                            Console.WriteLine($"Trying to make doctor Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
                             account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor,
                                 client.Socket, AccountManager.AccountState.LoginDoctor);
                             break;

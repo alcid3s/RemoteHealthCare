@@ -96,12 +96,14 @@ namespace Server.Accounts
 
             else if (_state == AccountState.LoginDoctor)
             {
+                //check if the requested the account exist
                 if (Directory.Exists(pathDoctor))
                 {
                     var sr = new StreamReader(File.OpenRead(pathDoctor + "/credentials" + Suffix));
                     string? credentials = sr.ReadLine();
                     if (CheckCredentials(credentials, AccountState.Doctor))
                     {
+                        //send login is ok back
                         LoggedIn = true;
                         MessageWriter writer = new MessageWriter(0x81);
                         writer.WriteByte(0x15);
@@ -109,10 +111,18 @@ namespace Server.Accounts
                     }
                     else
                     {
+                        //send cannot log in back as password is incorrect
                         MessageWriter writer = new MessageWriter(0x80);
                         writer.WriteByte(0x15);
                         _socket.Send(writer.GetBytes());
                     }
+                }
+                else
+                {
+                    //send cannot log in back as username is unused
+                    MessageWriter writer = new MessageWriter(0x80);
+                    writer.WriteByte(0x15);
+                    _socket.Send(writer.GetBytes());
                 }
             }
 

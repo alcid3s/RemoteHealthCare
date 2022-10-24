@@ -104,12 +104,13 @@ namespace DoctorApllication
                         {
                             // Server replies with 0x14 if doctor wants to create account.
                             case 0x14:
+                                
                                 DoctorLoginCreation.Succes = id;
                                 break;
 
                             // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.
                             case 0x15:
-                                DoctorLogin.CanLogin = id;
+                                Program.doctor.login(id);
                                 break;
                         }
                     }
@@ -172,6 +173,7 @@ namespace DoctorApllication
             int received = _socket.Send(message);
         }
 
+        //wait until a new server message has been received
         public static bool waitForReply()
         {
             int counter = 0;

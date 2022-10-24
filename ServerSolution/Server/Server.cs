@@ -17,12 +17,16 @@ namespace Server
         private StreamReader _streamReader0x54 = null;
         private struct Client
         {
+            public string? Name { get; set; }
             public Socket? Socket { get; }
             public byte Id { get; }
-            public Client(Socket? socket, byte id)
+            public bool IsDoctor { get; set; }
+            public Client(string? name, Socket? socket, byte id, bool isDoctor)
             {
+                Name = name;
                 Socket = socket;
                 Id = id;
+                IsDoctor = isDoctor;
             }
         }
 
@@ -72,8 +76,7 @@ namespace Server
                         socket = ServerSocket.Accept();
 
                     // saving client to list.
-                    Client client = new(socket, (byte)(clientList.Count + 1));
-                    clientList.Add(client);
+                    Client client = new(null, socket, (byte)(clientList.Count + 1), false);
 
                     // Every client gets its own thread.
                     new Thread(() =>
@@ -133,7 +136,9 @@ namespace Server
                             account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
                             if (account.LoggedIn)
                             {
-
+                                client.Name = usernameLogin;
+                                clientList.Add(client);
+                                Console.WriteLine($"Client: {usernameLogin}, logged in");
                             }
                             break;
 
@@ -159,7 +164,14 @@ namespace Server
                             string passwordCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make doctor Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
                             account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor,
-                                client.Socket, AccountManager.AccountState.LoginDoctor);
+                            client.Socket, AccountManager.AccountState.LoginDoctor);
+
+                            if (account.LoggedIn)
+                            {
+                                client.Name = usernameCreateDoctor;
+                                client.IsDoctor = true;
+                                clientList.Add(client);
+                            }
                             break;
 
                         // Bike information from client to server
@@ -176,6 +188,22 @@ namespace Server
 
                                 if (sr != null)
                                     account.SaveData(message, sr);
+                            }
+                            break;
+
+                        case 0x42:
+                            Console.WriteLine("Received 0x42");
+                            foreach (var connectedClient in clientList)
+                            {
+                                Console.WriteLine($"has client: {connectedClient.Name}");
+
+                                if (connectedClient.IsDoctor == false)
+                                {
+                                    ExtendedMessageWriter messageWriter = new ExtendedMessageWriter(0x43);
+                                    messageWriter.WriteByte(connectedClient.Id);
+                                    messageWriter.WriteString(connectedClient.Name);
+                                    client.Socket.Send(messageWriter.GetBytes());
+                                }
                             }
                             break;
 
@@ -268,7 +296,7 @@ namespace Server
                                 path54 += $"/{sessionName}{AccountManager.Suffix}";
                                 if (File.Exists(path54))
                                 {
-                                    
+
                                     if (!firstTime0x54)
                                     {
                                         firstTime0x54 = true;
@@ -324,7 +352,7 @@ namespace Server
             {
                 Console.WriteLine(d);
             }
-            
+
             bikeData.ElapsedTime = Decimal.Parse(data[0]);
             bikeData.DistanceTravelled = int.Parse(data[1]);
             bikeData.Speed = Decimal.Parse(data[2]);

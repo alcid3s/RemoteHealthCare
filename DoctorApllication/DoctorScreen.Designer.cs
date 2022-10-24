@@ -51,10 +51,11 @@
             // textBox5
             // 
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox5.Location = new System.Drawing.Point(244, 300);
+            this.textBox5.Location = new System.Drawing.Point(279, 400);
+            this.textBox5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(100, 16);
+            this.textBox5.Size = new System.Drawing.Size(114, 20);
             this.textBox5.TabIndex = 12;
             this.textBox5.Text = "BPM";
             this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
@@ -62,20 +63,22 @@
             // textBox4
             // 
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox4.Location = new System.Drawing.Point(88, 300);
+            this.textBox4.Location = new System.Drawing.Point(101, 400);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(100, 16);
+            this.textBox4.Size = new System.Drawing.Size(114, 20);
             this.textBox4.TabIndex = 11;
             this.textBox4.Text = "Meter";
             // 
             // textBox3
             // 
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox3.Location = new System.Drawing.Point(234, 158);
+            this.textBox3.Location = new System.Drawing.Point(267, 211);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(100, 16);
+            this.textBox3.Size = new System.Drawing.Size(114, 20);
             this.textBox3.TabIndex = 10;
             this.textBox3.Text = "Seconds";
             this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
@@ -83,20 +86,22 @@
             // textBox2
             // 
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox2.Location = new System.Drawing.Point(88, 158);
+            this.textBox2.Location = new System.Drawing.Point(101, 211);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(100, 16);
+            this.textBox2.Size = new System.Drawing.Size(114, 20);
             this.textBox2.TabIndex = 9;
             this.textBox2.Text = "M/S";
             // 
             // textBox1
             // 
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(638, 24);
+            this.textBox1.Location = new System.Drawing.Point(729, 32);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(100, 16);
+            this.textBox1.Size = new System.Drawing.Size(114, 20);
             this.textBox1.TabIndex = 20;
             this.textBox1.Text = "clients:";
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -105,21 +110,23 @@
             // 
             this.btnConnectClient.BackColor = System.Drawing.Color.Red;
             this.btnConnectClient.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnConnectClient.Location = new System.Drawing.Point(683, 311);
+            this.btnConnectClient.Location = new System.Drawing.Point(781, 415);
+            this.btnConnectClient.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnConnectClient.Name = "btnConnectClient";
-            this.btnConnectClient.Size = new System.Drawing.Size(75, 23);
+            this.btnConnectClient.Size = new System.Drawing.Size(86, 31);
             this.btnConnectClient.TabIndex = 3;
-            this.btnConnectClient.Text = "Connect";
+            this.btnConnectClient.Text = "Refresh\r\n";
             this.btnConnectClient.UseVisualStyleBackColor = false;
             this.btnConnectClient.Click += new System.EventHandler(this.btnConnectClient_Click);
             // 
             // lstClients
             // 
             this.lstClients.FormattingEnabled = true;
-            this.lstClients.ItemHeight = 15;
-            this.lstClients.Location = new System.Drawing.Point(638, 46);
+            this.lstClients.ItemHeight = 20;
+            this.lstClients.Location = new System.Drawing.Point(729, 61);
+            this.lstClients.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstClients.Name = "lstClients";
-            this.lstClients.Size = new System.Drawing.Size(120, 229);
+            this.lstClients.Size = new System.Drawing.Size(137, 304);
             this.lstClients.TabIndex = 2;
             this.lstClients.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
@@ -127,10 +134,11 @@
             // 
             this.txtET.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtET.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtET.Location = new System.Drawing.Point(207, 81);
+            this.txtET.Location = new System.Drawing.Point(237, 108);
+            this.txtET.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtET.Name = "txtET";
             this.txtET.ReadOnly = true;
-            this.txtET.Size = new System.Drawing.Size(137, 71);
+            this.txtET.Size = new System.Drawing.Size(157, 89);
             this.txtET.TabIndex = 6;
             this.txtET.TextChanged += new System.EventHandler(this.txtET_TextChanged);
             // 
@@ -138,10 +146,11 @@
             // 
             this.txtDT.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDT.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtDT.Location = new System.Drawing.Point(27, 223);
+            this.txtDT.Location = new System.Drawing.Point(31, 297);
+            this.txtDT.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtDT.Name = "txtDT";
             this.txtDT.ReadOnly = true;
-            this.txtDT.Size = new System.Drawing.Size(141, 71);
+            this.txtDT.Size = new System.Drawing.Size(161, 89);
             this.txtDT.TabIndex = 7;
             this.txtDT.TextChanged += new System.EventHandler(this.txtDT_TextChanged);
             // 
@@ -149,10 +158,11 @@
             // 
             this.txtHR.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtHR.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtHR.Location = new System.Drawing.Point(207, 223);
+            this.txtHR.Location = new System.Drawing.Point(237, 297);
+            this.txtHR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtHR.Name = "txtHR";
             this.txtHR.ReadOnly = true;
-            this.txtHR.Size = new System.Drawing.Size(97, 71);
+            this.txtHR.Size = new System.Drawing.Size(111, 89);
             this.txtHR.TabIndex = 8;
             this.txtHR.TextChanged += new System.EventHandler(this.txtHR_TextChanged);
             // 
@@ -160,37 +170,41 @@
             // 
             this.txtSpeed.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSpeed.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtSpeed.Location = new System.Drawing.Point(53, 81);
+            this.txtSpeed.Location = new System.Drawing.Point(61, 108);
+            this.txtSpeed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSpeed.Name = "txtSpeed";
             this.txtSpeed.ReadOnly = true;
-            this.txtSpeed.Size = new System.Drawing.Size(115, 71);
+            this.txtSpeed.Size = new System.Drawing.Size(131, 89);
             this.txtSpeed.TabIndex = 5;
             this.txtSpeed.TextChanged += new System.EventHandler(this.txtSpeed_TextChanged);
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(1, 17);
+            this.textBox6.Location = new System.Drawing.Point(1, 23);
+            this.textBox6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(100, 23);
+            this.textBox6.Size = new System.Drawing.Size(114, 27);
             this.textBox6.TabIndex = 13;
             this.textBox6.Text = "important info:";
             // 
             // txtInfo
             // 
-            this.txtInfo.Location = new System.Drawing.Point(111, 17);
+            this.txtInfo.Location = new System.Drawing.Point(127, 23);
+            this.txtInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
-            this.txtInfo.Size = new System.Drawing.Size(451, 23);
+            this.txtInfo.Size = new System.Drawing.Size(515, 27);
             this.txtInfo.TabIndex = 14;
             // 
             // btnLoadData
             // 
             this.btnLoadData.BackColor = System.Drawing.Color.Red;
             this.btnLoadData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoadData.Location = new System.Drawing.Point(713, 415);
+            this.btnLoadData.Location = new System.Drawing.Point(815, 553);
+            this.btnLoadData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnLoadData.Name = "btnLoadData";
-            this.btnLoadData.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadData.Size = new System.Drawing.Size(86, 31);
             this.btnLoadData.TabIndex = 4;
             this.btnLoadData.Text = "Load data";
             this.btnLoadData.UseVisualStyleBackColor = false;
@@ -198,10 +212,11 @@
             // 
             // txtChatInput
             // 
-            this.txtChatInput.Location = new System.Drawing.Point(394, 282);
+            this.txtChatInput.Location = new System.Drawing.Point(450, 376);
+            this.txtChatInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtChatInput.Name = "txtChatInput";
             this.txtChatInput.PlaceholderText = "Message.";
-            this.txtChatInput.Size = new System.Drawing.Size(168, 23);
+            this.txtChatInput.Size = new System.Drawing.Size(191, 27);
             this.txtChatInput.TabIndex = 1;
             this.txtChatInput.TextChanged += new System.EventHandler(this.txtChatInput_TextChanged);
             // 
@@ -212,9 +227,10 @@
             this.ChatCollomn});
             this.lstChatView.FullRowSelect = true;
             this.lstChatView.GridLines = true;
-            this.lstChatView.Location = new System.Drawing.Point(394, 46);
+            this.lstChatView.Location = new System.Drawing.Point(450, 61);
+            this.lstChatView.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstChatView.Name = "lstChatView";
-            this.lstChatView.Size = new System.Drawing.Size(238, 230);
+            this.lstChatView.Size = new System.Drawing.Size(272, 307);
             this.lstChatView.TabIndex = 0;
             this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
             this.lstChatView.UseCompatibleStateImageBehavior = false;
@@ -230,9 +246,10 @@
             // 
             this.btnLoad.BackColor = System.Drawing.Color.Lime;
             this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoad.Location = new System.Drawing.Point(683, 281);
+            this.btnLoad.Location = new System.Drawing.Point(781, 375);
+            this.btnLoad.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(75, 23);
+            this.btnLoad.Size = new System.Drawing.Size(86, 31);
             this.btnLoad.TabIndex = 21;
             this.btnLoad.Text = "Load data";
             this.btnLoad.UseVisualStyleBackColor = false;
@@ -240,9 +257,9 @@
             // 
             // DoctorScreen
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(914, 600);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.txtChatInput);
@@ -260,6 +277,7 @@
             this.Controls.Add(this.txtDT);
             this.Controls.Add(this.txtHR);
             this.Controls.Add(this.txtSpeed);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "DoctorScreen";
             this.Text = "DoctorScreen";
             this.Load += new System.EventHandler(this.DoctorScreen_Load);

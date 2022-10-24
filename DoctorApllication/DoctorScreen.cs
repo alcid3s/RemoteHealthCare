@@ -12,25 +12,29 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static DoctorApllication.DoctorClient;
+using System.Transactions;
 
 namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
-
+        public static List<(byte, string)> ClientList = new List<(byte, string)>();
+        private int _index = 0;
 
         private LoadDataScreen _loadDataScreen;
-        private Dictionary<byte, List<ClientData>> data = new Dictionary<byte, List<ClientData>>();
-        List<byte> clients = new List<byte>();
         public DoctorScreen()
         {
             _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
             DoctorClient.Send(new MessageWriter(0x50).GetBytes());
-            
         }
-        
+
+        public static void FillClientList(byte id, string name)
+        {
+            ClientList.Add((id, name));
+            Console.WriteLine($"Added {id}, {name}, size now: {ClientList.Count}");
+        }
 
         public void setTXTSpeed(string s)
         {
@@ -53,33 +57,28 @@ namespace DoctorApllication
         {
             lstClients.Items.Add(s);
         }
-        private void btnConnectClient_Click(object sender, EventArgs e)
+        public void btnConnectClient_Click(object sender, EventArgs e)
         {
-            //create code that checks if the selected item is actually a bike and use Send() to
-            //send a message to the server, with the code for the switch case
-            if (lstClients.SelectedItems != null)
+            DoctorClient.Send(new MessageWriter(0x42).GetBytes());
+            for(int i = 0; i < 2; i++)
             {
-                txtInfo.Text = "connecting to ";
-                foreach(object s in lstClients.SelectedItems)
+                Thread.Sleep(10);
+                if(_index < ClientList.Count - 1)
                 {
-                   
-                    txtInfo.Text += s.ToString();
-                    if (s.ToString().Equals("Simulation Bike"))
+                    ClientList.ForEach(client =>
                     {
-                        txtInfo.Text += " 1"; 
-                        //DoctorClient.Send(1);
-                    }
-                //continue like this for all existing bikes, its only five(better if done with switch case)
+                        lstClients.Items.Add($"id: {client.Item1}, name: {client.Item2}");
+                    });
+                    break;
                 }
-                if (lstClients.SelectedItems.ToString() == "Simulation Bike")
-                {
-                  
-                }
-            } else if (lstClients.SelectedItems == null)
-            {
-                txtInfo.Text = "no client selected";
             }
         }
+
+        public void UpdateClientList()
+        {
+
+        }
+
 
         
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -124,15 +123,6 @@ namespace DoctorApllication
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
-            MessageWriter writer = new MessageWriter(0x42);
-            DoctorClient.Send(writer.GetBytes());
-            Console.WriteLine("sending ox42");
-            
-            foreach(var key in ClientDataList.Keys)
-            {
-                clients.Add(key);
-            }
-            
             
         }
 
@@ -239,10 +229,7 @@ namespace DoctorApllication
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            foreach (var key in clients)
-            {
-                lstClients.Items.Add(key);
-            }
+
         }
     }
 }

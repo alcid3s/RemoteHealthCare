@@ -81,8 +81,10 @@ namespace DoctorApllication
                     {
                         case 0x43:
                             Console.WriteLine("received 0x43");
-                            ClientDataList.Add(reader.ReadByte(), new List<ClientData>());
-                            Console.WriteLine(reader.ReadByte().ToString());
+                            byte id43 = reader.ReadByte();
+                            string name43 = reader.ReadString();
+                            Console.WriteLine($"id: {id43}, name: {name43}");
+                            DoctorScreen.FillClientList(id43, name43);
                             break;
 
                         // Doctor receives all registered accounts;

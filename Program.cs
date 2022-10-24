@@ -28,7 +28,7 @@ namespace RemoteHealthCare
 
             Thread.Sleep(1000);
 
-            NetworkEngine();
+            //NetworkEngine();
 
             Application.Run(loginScreen);
             for (; ; );

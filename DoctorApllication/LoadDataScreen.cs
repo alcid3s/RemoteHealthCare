@@ -50,8 +50,6 @@ namespace DoctorApllication
                 SessionNameList.Clear();
                 _sizeOfSessionList = size;
             }
-
-
             SessionNameList.Add(session);
         }
 
@@ -77,12 +75,11 @@ namespace DoctorApllication
         }
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            lstSessions.Items.Clear();
-
-            string selectedItem = (string)lstAccounts.SelectedItem;
+            string selectedItem = lstAccounts.SelectedItem.ToString();
 
             if (ClientNameList.Contains(selectedItem) && !_selectedUser.Equals(selectedItem))
             {
+                lstSessions.Items.Clear();
                 _selectedUser = selectedItem;
                 MessageWriter writer = new MessageWriter(0x52);
                 writer.WritePacket(Encoding.UTF8.GetBytes(selectedItem));
@@ -117,9 +114,9 @@ namespace DoctorApllication
                 }
             }
 
-            // NOT WORKING YET
-            selectedItem = (string)lstSessions.SelectedItem;
-            Console.WriteLine($"Checking if {selectedItem} is in SessionsList: {SessionNameList.Count}");
+            if(lstSessions.SelectedItem != null)
+                selectedItem = lstSessions.SelectedItem.ToString();
+
             if (SessionNameList.Contains(selectedItem))
             {
                 Console.WriteLine($"Selected SESSION: {selectedItem}");
@@ -127,6 +124,10 @@ namespace DoctorApllication
                 writer.WritePacket(Encoding.UTF8.GetBytes(_selectedUser));
                 writer.WritePacket(Encoding.UTF8.GetBytes(selectedItem));
                 DoctorClient.Send(writer.GetBytes());
+
+                DoctorScreen.clientUsername = _selectedUser;
+                DoctorScreen.clientSession = selectedItem;
+                Close();
             }
         }
 

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using MessageStream;
+using System.Numerics;
 
 namespace Server
 {
@@ -12,6 +13,8 @@ namespace Server
         private static List<Client> clientList = new List<Client>();
 
         private int _port;
+
+        private StreamReader _streamReader0x54 = null;
         private struct Client
         {
             public Socket? Socket { get; }
@@ -91,6 +94,8 @@ namespace Server
 
             bool firstRun = true;
 
+            bool firstTime0x54 = false;
+
             // While the client is connected.
             while (client.Socket.Connected)
             {
@@ -126,9 +131,9 @@ namespace Server
                             string passwordLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
                             account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
-                            if (account.LoggedIn) 
-                            { 
-                            
+                            if (account.LoggedIn)
+                            {
+
                             }
                             break;
 
@@ -217,7 +222,7 @@ namespace Server
                                     string[] dirs = Directory.GetFiles(path);
 
                                     // if credentials is the only thing in the dirs array.
-                                    if(dirs.Length == 1)
+                                    if (dirs.Length == 1)
                                     {
                                         MessageWriter writer = new MessageWriter(0x53);
                                         writer.WritePacket(Encoding.UTF8.GetBytes("No sessions found"));
@@ -252,22 +257,43 @@ namespace Server
                             string accountUser = Encoding.UTF8.GetString(reader.ReadPacket());
                             string sessionName = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"user: {accountUser}, session: {sessionName}");
-                            break;
 
+                            string path54 = AccountManager.PathClient + $"/{accountUser}";
+                            Console.WriteLine($"path: {path54}");
 
+                            ExtendedMessageWriter eWriter = new ExtendedMessageWriter(0x55);
 
-                            //Console.WriteLine("Sending data to Doctor");
-                            //byte[] packet = new byte[clientList.Count];
+                            if (Directory.Exists(path54))
+                            {
+                                path54 += $"/{sessionName}{AccountManager.Suffix}";
+                                if (File.Exists(path54))
+                                {
+                                    
+                                    if (!firstTime0x54)
+                                    {
+                                        firstTime0x54 = true;
+                                        _streamReader0x54 = new StreamReader(File.OpenRead(path54));
+                                    }
 
-                            //for (int i = 0; i < packet.Length; i++)
-                            //{
-                            //    packet[i] = clientList.ElementAt(i).Id;
-                            //}
-
-                            //MessageWriter writer = new MessageWriter(0x53);
-                            //writer.WritePacket(packet);
-
-                            //client.Socket.Send(writer.GetBytes());
+                                    if (_streamReader0x54 != null)
+                                    {
+                                        string data = _streamReader0x54.ReadLine();
+                                        if (data != null)
+                                        {
+                                            BikeData bikeData = ParseBikeData(data);
+                                            eWriter.WriteBikeData(bikeData.ElapsedTime,
+                                                bikeData.DistanceTravelled,
+                                                bikeData.Speed,
+                                                bikeData.HeartRate);
+                                            client.Socket.Send(eWriter.GetBytes());
+                                        }
+                                    }
+                                }
+                                else
+                                    Console.WriteLine($"User has no session: {sessionName}");
+                            }
+                            else
+                                Console.WriteLine($"User: {accountUser} does not exist.");
                             break;
                         case 0x60:
                             Logout(client);
@@ -286,21 +312,29 @@ namespace Server
 
             client.Socket.Close();
         }
+        private BikeData ParseBikeData(string line)
+        {
+            line = line.Replace('[', ' ');
+            line = line.Replace(']', ' ');
+            line = line.Trim();
+
+            string[] data = line.Split('-');
+            BikeData bikeData = new BikeData();
+            foreach (string d in data)
+            {
+                Console.WriteLine(d);
+            }
+            
+            bikeData.ElapsedTime = Decimal.Parse(data[0]);
+            bikeData.DistanceTravelled = int.Parse(data[1]);
+            bikeData.Speed = Decimal.Parse(data[2]);
+            bikeData.HeartRate = int.Parse(data[3]);
+            return bikeData;
+        }
         private void Logout(Client client)
         {
             client.Socket.Send(new MessageWriter(0x61).GetBytes());
             Console.WriteLine($"Client: {client.Id} has logged out");
-        }
-        private BikeData GetBikeData(byte[] message)
-        {
-            MessageReader reader = new MessageReader(message);
-            byte identifier = reader.Id;
-            decimal elapsedTime = reader.ReadInt(2) / 4m;
-            int distanceTravelled = reader.ReadInt(2);
-            decimal speed = reader.ReadInt(2) / 1000m;
-            int heartRate = reader.ReadByte();
-
-            return new BikeData(identifier, elapsedTime, distanceTravelled, speed, heartRate);
         }
         private void PrintBikeInformation(BikeData data, Client client)
         {

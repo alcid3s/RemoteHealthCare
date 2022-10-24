@@ -34,7 +34,6 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnConnectClient = new System.Windows.Forms.Button();
-            this.lstClients = new System.Windows.Forms.ListBox();
             this.txtET = new System.Windows.Forms.TextBox();
             this.txtDT = new System.Windows.Forms.TextBox();
             this.txtHR = new System.Windows.Forms.TextBox();
@@ -47,6 +46,7 @@
             this.ChatCollomn = new System.Windows.Forms.ColumnHeader();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
+            this.lstClients2 = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // textBox5
@@ -114,16 +114,6 @@
             this.btnConnectClient.UseVisualStyleBackColor = false;
             this.btnConnectClient.Click += new System.EventHandler(this.btnConnectClient_Click);
             // 
-            // lstClients
-            // 
-            this.lstClients.FormattingEnabled = true;
-            this.lstClients.ItemHeight = 15;
-            this.lstClients.Location = new System.Drawing.Point(638, 46);
-            this.lstClients.Name = "lstClients";
-            this.lstClients.Size = new System.Drawing.Size(120, 229);
-            this.lstClients.TabIndex = 2;
-            this.lstClients.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
-            // 
             // txtET
             // 
             this.txtET.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -184,6 +174,7 @@
             this.txtInfo.ReadOnly = true;
             this.txtInfo.Size = new System.Drawing.Size(451, 23);
             this.txtInfo.TabIndex = 14;
+            this.txtInfo.TextChanged += new System.EventHandler(this.txtInfo_TextChanged);
             // 
             // btnLoadData
             // 
@@ -251,11 +242,21 @@
             this.btnLoad.UseVisualStyleBackColor = false;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
+            // lstClients2
+            // 
+            this.lstClients2.FormattingEnabled = true;
+            this.lstClients2.ItemHeight = 15;
+            this.lstClients2.Location = new System.Drawing.Point(644, 48);
+            this.lstClients2.Name = "lstClients2";
+            this.lstClients2.Size = new System.Drawing.Size(114, 229);
+            this.lstClients2.TabIndex = 22;
+            // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lstClients2);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.lstChatView);
@@ -269,7 +270,6 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnConnectClient);
-            this.Controls.Add(this.lstClients);
             this.Controls.Add(this.txtET);
             this.Controls.Add(this.txtDT);
             this.Controls.Add(this.txtHR);
@@ -304,5 +304,6 @@
         private ColumnHeader ChatCollomn;
         private Button btnRefresh;
         private Button btnLoad;
+        private ListBox lstClients2;
     }
 }

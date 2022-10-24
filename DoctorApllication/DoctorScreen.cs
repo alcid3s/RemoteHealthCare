@@ -52,11 +52,6 @@ namespace DoctorApllication
         {
             txtHR.Text = s;
         }
-
-        public void addListItems(string s)
-        {
-            lstClients.Items.Add(s);
-        }
         public void btnConnectClient_Click(object sender, EventArgs e)
         {
             DoctorClient.Send(new MessageWriter(0x42).GetBytes());
@@ -71,19 +66,11 @@ namespace DoctorApllication
                         {
                             lstClients.Items.Add($"id: {client.Item1}, name: {client.Item2}");
                         }
-
                     });
                     break;
                 }
             }
         }
-
-        public void UpdateClientList()
-        {
-
-        }
-
-
         
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
@@ -219,6 +206,11 @@ namespace DoctorApllication
                 //reset the chat input
                 txtChatInput.Text = "";
             }
+
+            string message = txtChatInput.Text;
+            MessageWriter writer = new MessageWriter(0x30);
+            writer.WritePacket(Encoding.UTF8.GetBytes(message));
+            DoctorClient.Send(writer.GetBytes());
         }
 
         private void lstChatBox_SelectedIndexChanged(object sender, EventArgs e)

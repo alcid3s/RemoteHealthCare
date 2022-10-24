@@ -191,6 +191,10 @@ namespace Server
                             }
                             break;
 
+                        case 0x30:
+                            Console.WriteLine("Received 0x30");
+                            break;
+
                         case 0x42:
                             Console.WriteLine("Received 0x42");
                             foreach (var connectedClient in clientList)

@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DoctorApllication
 {
@@ -104,6 +105,17 @@ namespace DoctorApllication
                             (decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate) data = reader.ReadBikeData();
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
                             break;
+                        case 0x43:
+                            Console.WriteLine("Received 0x43");
+                            byte b = reader.ReadByte();
+                            string c = reader.ReadString();
+                            Console.WriteLine($"Byte: {b}, name: {c}");
+                            DoctorLogin.doctorScreen.AddClient(b, c);
+                            break;
+                        case 0x21:
+                            //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
+                            break;
+
                     }
 
                     // Used only for login now.

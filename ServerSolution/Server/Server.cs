@@ -19,6 +19,7 @@ namespace Server
         {
             public string? Name { get; set; }
             public Socket? Socket { get; }
+            public bool IsDoctor { get; set; }
             public byte Id { get; }
             public bool IsDoctor { get; set; }
             public Client(string? name, Socket? socket, byte id, bool isDoctor)
@@ -134,7 +135,7 @@ namespace Server
                             string passwordLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
                             account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
-                            if (account.LoggedIn)
+                            if (account.LoggedIn) 
                             {
                                 client.Name = usernameLogin;
                                 clientList.Add(client);
@@ -155,7 +156,7 @@ namespace Server
                             string user = Encoding.UTF8.GetString(reader.ReadPacket());
                             string pass = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Doctor Account, data received: {user}, {pass}");
-                            new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
+                            account = new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
                             break;
 
                         // Doctor wants to login
@@ -174,7 +175,7 @@ namespace Server
                             }
                             break;
 
-                        // Bike information from client to server
+                        // Bike information from client to server and then send it to the docters
                         case 0x20:
                             if (account != null && account.LoggedIn)
                             {
@@ -188,6 +189,23 @@ namespace Server
 
                                 if (sr != null)
                                     account.SaveData(message, sr);
+
+                                foreach (Client connectedClient in clientList)
+                                {
+                                    if (connectedClient.Name != null && connectedClient.IsDoctor == true) {
+                                        //Console.WriteLine("sending data to " + connectedClient.Name);
+
+                                        MessageWriter writer = new MessageWriter(0x21);
+                                        writer.WriteByte(client.Id);
+                                        writer.WriteInt(reader.ReadInt(2), 2);
+                                        writer.WriteInt(reader.ReadInt(2), 2);
+                                        writer.WriteInt(reader.ReadInt(2), 2);
+                                        writer.WriteInt(reader.ReadInt(1), 1);
+
+                                        connectedClient.Socket.Send(writer.GetBytes());
+                                    }
+                                }
+
                             }
                             break;
 
@@ -258,7 +276,7 @@ namespace Server
                             }
                             break;
 
-                        // Send all patient ids connected with the server.
+                        // Send all given patient history
                         case 0x52:
                             Console.WriteLine("Received 0x52");
                             string accountName = Encoding.UTF8.GetString(reader.ReadPacket());
@@ -322,7 +340,6 @@ namespace Server
                                         firstTime0x54 = true;
                                         _streamReader0x54 = new StreamReader(File.OpenRead(path54));
                                     }
-
                                     if (_streamReader0x54 != null)
                                     {
                                         string data = _streamReader0x54.ReadLine();
@@ -342,6 +359,22 @@ namespace Server
                             }
                             else
                                 Console.WriteLine($"User: {accountUser} does not exist.");
+                            break;
+                        case 0x42:
+                            Console.WriteLine("received client request");
+                            foreach (Client connectedClient in Server.clientList)
+                            {
+                                Console.WriteLine("has client: " + connectedClient.Name);
+
+                                if (connectedClient.Name != null && connectedClient.IsDoctor == false)
+                                {
+                                    ExtendedMessageWriter messageWriter = new ExtendedMessageWriter(0x43);
+                                    messageWriter.WriteByte(connectedClient.Id);
+                                    messageWriter.WriteString(connectedClient.Name);
+                                    //Console.WriteLine("sending: " + connectedClient.Name);
+                                    client.Socket.Send(messageWriter.GetBytes());
+                                }
+                            }
                             break;
                         case 0x60:
                             Logout(client);

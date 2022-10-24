@@ -17,8 +17,8 @@ namespace RemoteHealthCare.GUI
 {
     public partial class AccountLogin : Form
     {
-        internal static ClientScreen ClientScreen;
-        internal static bool IsLoggedIn = false;
+        internal static ClientScreen clientScreen;
+        internal static bool isloggedIn = false;
         AccountTypeSelector accountTypeSelector;
         public AccountLogin()
         {
@@ -39,38 +39,7 @@ namespace RemoteHealthCare.GUI
             writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
             ServerClient.Send(writer.GetBytes());
 
-            int counter = 0;
-            ServerClient.Reply = 0x00;
-            while (ServerClient.Reply == 0x00)
-            {
-                Thread.Sleep(100);
-                counter++;
-                if (counter == 50)
-                {
-                    throw new Exception("Reply from server takes too long");
-                }
-            }
-
-            Console.WriteLine($"Checking serverClient.Reply = {ServerClient.Reply}");
-            if (ServerClient.Reply == 0x80)
-            {
-                Console.WriteLine("Error");
-            }
-            else if (ServerClient.Reply == 0x81)
-            {
-                if (!IsLoggedIn)
-                {
-                    ClientScreen = new ClientScreen();
-                    IsLoggedIn = true;
-
-                    if (Program.NetworkEngineRunning)
-                    {
-                        ClientScreen.LocalNetworkEngineRunning = true;
-                    }
-                    Hide();
-                    ClientScreen.Show();
-                }
-            }
+            
         }
 
         private void btnCreateAccount_Click(object sender, EventArgs e)
@@ -103,6 +72,29 @@ namespace RemoteHealthCare.GUI
         private void AccountLogin_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void login(byte CanLogin)
+        {
+
+            if (CanLogin == 0x81 && this.InvokeRequired)
+            {
+                if (!isloggedIn)
+                {
+                    this.Invoke(new Action(new Action(() => {
+                        clientScreen = new ClientScreen();
+                        isloggedIn = true;
+                        clientScreen.Show();
+                        Hide();
+                    })));
+
+                }
+
+            }
+            else if (CanLogin == 0x80 && this.InvokeRequired)
+            {
+                Console.WriteLine("Faulty credentials");
+            }
         }
     }
 }

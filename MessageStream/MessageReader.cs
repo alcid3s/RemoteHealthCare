@@ -20,17 +20,22 @@ namespace MessageStream
         {
             MessageEncryption encryption = EncryptionManager.Manager.GetEncryption(address);
 
-            if (data.Length == 0)
+            if (data.Length == 0 || data[0] < 2)
                 throw new ArgumentException();
 
             byte length = data[0];
             if (length + 1 > data.Length)
                 throw new ArgumentException();
 
-            _data = new byte[] { data[0] }.Concat(encryption.Decrypt(data.Skip(1).Take(length).ToArray())).ToArray();
-            _index = 1;
+            _id = data[1];
 
-            _id = ReadByte();
+            if (_id == 0x91)
+                _data = data.Take(2).Concat(RsaCipher.Decrypt(data.Skip(2).Take(length).ToArray())).ToArray();
+            else if (_id == 0x90)
+                _data = data;
+            else
+                _data = data.Take(2).Concat(encryption.Decrypt(data.Skip(2).Take(length).ToArray())).ToArray();
+            _index = 2;
         }
 
         
@@ -115,7 +120,7 @@ namespace MessageStream
             {
                 checksum ^= value;
             }
-            return checksum == 0;
+            return checksum == _data[0];
         }
 
         private byte GetId()

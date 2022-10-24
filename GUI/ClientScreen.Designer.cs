@@ -144,6 +144,7 @@
             this.lstBikes.Name = "lstBikes";
             this.lstBikes.Size = new System.Drawing.Size(120, 169);
             this.lstBikes.TabIndex = 8;
+            this.lstBikes.SelectedIndexChanged += new System.EventHandler(this.lstBikes_SelectedIndexChanged);
             // 
             // button1
             // 

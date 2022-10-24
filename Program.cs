@@ -15,9 +15,10 @@ namespace RemoteHealthCare
     {
         public static bool NetworkEngineRunning = false;
         public static BikeClient BikeClient;
+        public static AccountLogin loginScreen;
         static void Main(string[] args)
         {
-            AccountLogin loginScreen = new AccountLogin();
+            loginScreen = new AccountLogin();
 
             ServerClient serverClient = new ServerClient("127.0.0.1", 1337);
             serverClient.Connect();

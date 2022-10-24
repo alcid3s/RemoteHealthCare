@@ -45,6 +45,7 @@
             this.txtChatInput = new System.Windows.Forms.TextBox();
             this.lstChatView = new System.Windows.Forms.ListView();
             this.ChatCollomn = new System.Windows.Forms.ColumnHeader();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -226,6 +227,18 @@
             this.ChatCollomn.Text = "Messages";
             this.ChatCollomn.Width = 338;
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackColor = System.Drawing.Color.Red;
+            this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnRefresh.Location = new System.Drawing.Point(683, 310);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 21;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = false;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // btnLoad
             // 
             this.btnLoad.BackColor = System.Drawing.Color.Lime;
@@ -243,6 +256,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.txtChatInput);
@@ -288,6 +302,7 @@
         private TextBox txtChatInput;
         private ListView lstChatView;
         private ColumnHeader ChatCollomn;
+        private Button btnRefresh;
         private Button btnLoad;
     }
 }

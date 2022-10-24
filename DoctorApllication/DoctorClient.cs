@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DoctorApllication
 {
@@ -72,6 +73,7 @@ namespace DoctorApllication
             {
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
+                Console.WriteLine("received message");
                 try
                 {
                     ExtendedMessageReader reader = new ExtendedMessageReader(message);
@@ -79,11 +81,6 @@ namespace DoctorApllication
 
                     switch (id)
                     {
-                        case 0x43:
-                            Console.WriteLine("received 0x43");
-                            ClientDataList.Add(reader.ReadByte(), new List<ClientData>());
-                            Console.WriteLine(reader.ReadByte().ToString());
-                            break;
 
                         // Doctor receives all registered accounts;
                         case 0x51:
@@ -102,6 +99,14 @@ namespace DoctorApllication
                             (decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate) data = reader.ReadBikeData();
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
                             break;
+                        case 0x43:
+                            DoctorLogin.doctorScreen.addClient(reader.ReadByte(), reader.ReadString());
+                            break;
+                        case 0x21:
+                            Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
+
+                            break;
+
                     }
 
                     // Used only for login now.

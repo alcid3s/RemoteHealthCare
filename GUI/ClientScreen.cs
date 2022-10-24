@@ -113,7 +113,7 @@ namespace RemoteHealthCare.GUI
         {
             if (accountLogin == null)
             {
-                AccountLogin.IsLoggedIn = false;
+                AccountLogin.isloggedIn = false;
 
                 ServerClient.Send(new MessageWriter(0x60).GetBytes());
 
@@ -159,13 +159,13 @@ namespace RemoteHealthCare.GUI
             short errorcounter = 0;
             _bike.OnUpdate += delegate
             {
-                if (AccountLogin.IsLoggedIn && ServerClient.IsRunning)
+                if (AccountLogin.isloggedIn && ServerClient.IsRunning)
                 {
                     //ClientScreen clientScreen = new ClientScreen();
-                    AccountLogin.ClientScreen.setTxtSpeed(_bike.Speed);
-                    AccountLogin.ClientScreen.setTxtDistanceTravelled(_bike.DistanceTravelled);
-                    AccountLogin.ClientScreen.setTxtElapsedTime(_bike.ElapsedTime);
-                    AccountLogin.ClientScreen.setTxtHeartRate(_bike.HeartRate);
+                    AccountLogin.clientScreen.setTxtSpeed(_bike.Speed);
+                    AccountLogin.clientScreen.setTxtDistanceTravelled(_bike.DistanceTravelled);
+                    AccountLogin.clientScreen.setTxtElapsedTime(_bike.ElapsedTime);
+                    AccountLogin.clientScreen.setTxtHeartRate(_bike.HeartRate);
                     ServerClient.Send(0x20, _bike.ElapsedTime, _bike.DistanceTravelled, _bike.Speed, _bike.HeartRate);
                 }
 
@@ -209,6 +209,11 @@ namespace RemoteHealthCare.GUI
                 }
                     
             };
+        }
+
+        private void lstBikes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

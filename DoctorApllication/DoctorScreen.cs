@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static DoctorApllication.DoctorClient;
+using System.Net.Sockets;
 
 namespace DoctorApllication
 {
@@ -20,15 +21,42 @@ namespace DoctorApllication
 
 
         private LoadDataScreen _loadDataScreen;
-        private Dictionary<byte, List<ClientData>> data = new Dictionary<byte, List<ClientData>>();
-        List<byte> clients = new List<byte>();
+        private static List<Client> clientList = new List<Client>();
         public DoctorScreen()
         {
             _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
             
+            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
+            refreshAvailableClients();
+        }
+
+        private struct Client
+        {
+            public string Name { get; set; }
+            public byte Id { get; }
+            public bool Selected { get; set; }
+            public Client(byte id, string name, bool selected)
+            {
+                Id = id;
+                Name = name;
+                Selected = selected;
+            }
+        }
+
+        public void refreshAvailableClients()
+        {
+            clientList.Clear();
+            lstClients.Items.Clear();
+            DoctorClient.Send(new MessageWriter(0x42).GetBytes());
+        }
+
+        public void addClient(byte clientId, string clientName)
+        {
+            Console.WriteLine("got client: " + clientName);
+            clientList.Add(new Client(clientId, clientName, false));
+            lstClients.Items.Add(clientName + " id: " + clientId);
         }
         
 
@@ -59,7 +87,26 @@ namespace DoctorApllication
             //send a message to the server, with the code for the switch case
             if (lstClients.SelectedItems != null)
             {
-                txtInfo.Text = "connecting to ";
+                foreach (var x in lstClients.SelectedItems)
+                {
+/*                    byte ids = (byte)x.ToString().Split(" ")[x.ToString().Split(" ").Length-1];
+                    foreach (Client client in clientList)
+                    {
+                        if ()
+                        {
+
+                        }
+                    }*/
+                }
+
+
+
+
+
+
+
+
+/*                txtInfo.Text = "connecting to ";
                 foreach(object s in lstClients.SelectedItems)
                 {
                    
@@ -74,7 +121,7 @@ namespace DoctorApllication
                 if (lstClients.SelectedItems.ToString() == "Simulation Bike")
                 {
                   
-                }
+                }*/
             } else if (lstClients.SelectedItems == null)
             {
                 txtInfo.Text = "no client selected";
@@ -235,6 +282,11 @@ namespace DoctorApllication
         private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            refreshAvailableClients();
         }
 
         private void btnLoad_Click(object sender, EventArgs e)

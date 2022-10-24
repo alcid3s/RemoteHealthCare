@@ -57,11 +57,25 @@ namespace RemoteHealthCare.Network
                 {
                     MessageReader reader = new MessageReader(message);
                     Reply = reader.Id;
+                    Console.WriteLine("reply id: " + Reply + " " + 0x15);
+
+                    switch (Reply)
+                    {
+
+                        case 0x81:
+                            Console.WriteLine("can log in");
+                            Program.loginScreen.login(Reply);
+                            break;
+                        case 0x80:
+                            Program.loginScreen.login(Reply);
+                            break;
+                    }
                 }
                 catch (Exception e)
                 {
                     continue;
                 }
+                
             }
         }
 

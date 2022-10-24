@@ -127,8 +127,8 @@ namespace Server
                             Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
                             account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
                             if (account.LoggedIn) 
-                            { 
-                            
+                            {
+                                Console.WriteLine("logged in");
                             }
                             break;
 

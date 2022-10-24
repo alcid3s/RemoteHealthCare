@@ -73,7 +73,7 @@ namespace DoctorApllication
         }
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            lstSessions.Items.Clear();
+            //lstSessions.Items.Clear();
 
             string account = (string)lstAccounts.SelectedItem;
 

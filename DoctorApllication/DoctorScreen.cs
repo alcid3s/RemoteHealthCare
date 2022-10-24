@@ -27,9 +27,8 @@ namespace DoctorApllication
             _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-            
             DoctorClient.Send(new MessageWriter(0x50).GetBytes());
-            refreshAvailableClients();
+            RefreshAvailableClients();
         }
 
         private struct Client
@@ -45,14 +44,14 @@ namespace DoctorApllication
             }
         }
 
-        public void refreshAvailableClients()
+        public void RefreshAvailableClients()
         {
             clientList.Clear();
             lstClients.Items.Clear();
             DoctorClient.Send(new MessageWriter(0x42).GetBytes());
         }
 
-        public void addClient(byte clientId, string clientName)
+        public void AddClient(byte clientId, string clientName)
         {
             Console.WriteLine("got client: " + clientName);
             clientList.Add(new Client(clientId, clientName, false));
@@ -171,16 +170,6 @@ namespace DoctorApllication
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
-            MessageWriter writer = new MessageWriter(0x42);
-            DoctorClient.Send(writer.GetBytes());
-            Console.WriteLine("sending ox42");
-            
-            foreach(var key in ClientDataList.Keys)
-            {
-                clients.Add(key);
-            }
-            
-            
         }
 
         private void btnLoadData_Click(object sender, EventArgs e)
@@ -286,15 +275,13 @@ namespace DoctorApllication
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            refreshAvailableClients();
+            RefreshAvailableClients();
+            Console.WriteLine("Refreshing list");
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            foreach (var key in clients)
-            {
-                lstClients.Items.Add(key);
-            }
+
         }
     }
 }

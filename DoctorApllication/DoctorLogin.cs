@@ -19,7 +19,6 @@ namespace DoctorApllication
 
         DoctorLoginCreation doctorLoginCreation;
 
-
         public DoctorLogin()
         {
             InitializeComponent();

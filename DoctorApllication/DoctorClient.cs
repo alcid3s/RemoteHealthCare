@@ -73,7 +73,6 @@ namespace DoctorApllication
             {
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
-                Console.WriteLine("received message");
                 try
                 {
                     ExtendedMessageReader reader = new ExtendedMessageReader(message);
@@ -100,11 +99,14 @@ namespace DoctorApllication
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
                             break;
                         case 0x43:
-                            DoctorLogin.doctorScreen.addClient(reader.ReadByte(), reader.ReadString());
+                            Console.WriteLine("Received 0x43");
+                            byte b = reader.ReadByte();
+                            string c = reader.ReadString();
+                            Console.WriteLine($"Byte: {b}, name: {c}");
+                            DoctorLogin.doctorScreen.AddClient(b, c);
                             break;
                         case 0x21:
-                            Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
-
+                            //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
                             break;
 
                     }

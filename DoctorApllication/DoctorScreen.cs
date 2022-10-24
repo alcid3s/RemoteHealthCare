@@ -67,7 +67,11 @@ namespace DoctorApllication
                 {
                     ClientList.ForEach(client =>
                     {
-                        lstClients.Items.Add($"id: {client.Item1}, name: {client.Item2}");
+                        if (!lstClients.Items.Contains($"id: {client.Item1}, name: {client.Item2}"))
+                        {
+                            lstClients.Items.Add($"id: {client.Item1}, name: {client.Item2}");
+                        }
+
                     });
                     break;
                 }

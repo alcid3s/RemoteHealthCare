@@ -52,9 +52,7 @@ namespace DoctorApllication
             {
                 if (!isloggedIn)
                 {
-
-
-                    this.Invoke(new Action(new Action(() => { 
+                    Invoke(new Action(new Action(() => { 
                         doctorScreen = new DoctorScreen();
                         isloggedIn = true;
                         doctorScreen.Show();

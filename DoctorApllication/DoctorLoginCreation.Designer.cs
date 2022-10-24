@@ -139,6 +139,7 @@
             this.Controls.Add(this.btnCreate);
             this.Name = "DoctorLoginCreation";
             this.Text = "DoctorLoginCreation";
+            this.Load += new System.EventHandler(this.DoctorLoginCreation_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

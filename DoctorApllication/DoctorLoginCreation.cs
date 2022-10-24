@@ -14,6 +14,7 @@ namespace DoctorApllication
 {
     public partial class DoctorLoginCreation : Form
     {
+        internal static byte Succes { get; set; } = 0x00;
         public DoctorLoginCreation()
         {
             InitializeComponent();
@@ -27,6 +28,7 @@ namespace DoctorApllication
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
+            txtErrorMessage.ForeColor = Color.Red;
             if (txtAccountName.Text.Length < 41 && txtAccountName.Text.Length > 3)
             {
                 if (txtPassword.Text.Length > 7 && txtPassword.Text.Length < 32)
@@ -36,24 +38,34 @@ namespace DoctorApllication
                         MessageWriter writer = new MessageWriter(0x14);
                         writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountName.Text));
                         writer.WritePacket(Encoding.UTF8.GetBytes(txtPassword.Text));
+
+                        txtErrorMessage.Text = "Waiting for server";
+
                         DoctorClient.Send(writer.GetBytes());
 
-                        bool response = DoctorClient.waitForReply();
-                        if (!response)
-                            return;
-                        if (DoctorClient.Reply == 0x80)
+                        int counter = 0;
+                        while (Succes == 0x00)
                         {
-                            txtErrorMessage.Text = "Error with server";
-                        }
-                        else if (DoctorClient.Reply == 0x81)
-                        {
-                            //txtErrorMessage.ForeColor = Color.Green;
-                            //txtErrorMessage.ForeColorChanged;
-                            txtErrorMessage.Text = "Account created";
+                            Thread.Sleep(100);
+                            counter++;
+                            if(counter > 50)
+                            {
+                                txtErrorMessage.Text = "Error with server, please try again.";
+                                return;
+                            }
                         }
 
+                        if(Succes == 0x81)
+                        {
+                            DoctorLogin login = new DoctorLogin();
+                            login.Show();
+                            Close();
+                        }else if(Succes == 0x80)
+                        {
+                            Console.WriteLine("UnSuccessfull");
+                        }
                     }
-                    else 
+                    else
                     {
                         txtErrorMessage.Text = "Wrong password confirmation";
                     }
@@ -80,6 +92,11 @@ namespace DoctorApllication
         }
 
         private void txtResponse_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DoctorLoginCreation_Load(object sender, EventArgs e)
         {
 
         }

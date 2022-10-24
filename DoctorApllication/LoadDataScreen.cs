@@ -140,5 +140,11 @@ namespace DoctorApllication
         {
 
         }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            DoctorScreen doctorScreen = new DoctorScreen();
+            Close();
+        }
     }
 }

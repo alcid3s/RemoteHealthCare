@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static DoctorApllication.DoctorClient;
 
 namespace DoctorApllication
 {
@@ -20,12 +21,15 @@ namespace DoctorApllication
         public static string clientSession { private get; set; } = "";
 
         private LoadDataScreen _loadDataScreen;
+        private Dictionary<byte, List<ClientData>> data = new Dictionary<byte, List<ClientData>>();
+        List<byte> clients = new List<byte>();
         public DoctorScreen()
         {
             _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
             this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
             DoctorClient.Send(new MessageWriter(0x50).GetBytes());
+            
         }
         
 
@@ -59,6 +63,7 @@ namespace DoctorApllication
                 txtInfo.Text = "connecting to ";
                 foreach(object s in lstClients.SelectedItems)
                 {
+                   
                     txtInfo.Text += s.ToString();
                     if (s.ToString().Equals("Simulation Bike"))
                     {
@@ -77,7 +82,7 @@ namespace DoctorApllication
             }
         }
 
-
+        
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
 
@@ -120,7 +125,16 @@ namespace DoctorApllication
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
-           
+            MessageWriter writer = new MessageWriter(0x42);
+            DoctorClient.Send(writer.GetBytes());
+            Console.WriteLine("sending ox42");
+            
+            foreach(var key in ClientDataList.Keys)
+            {
+                clients.Add(key);
+            }
+            
+            
         }
 
         private void btnLoadData_Click(object sender, EventArgs e)
@@ -222,6 +236,14 @@ namespace DoctorApllication
         private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            foreach (var key in clients)
+            {
+                lstClients.Items.Add(key);
+            }
         }
     }
 }

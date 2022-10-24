@@ -96,53 +96,6 @@ namespace DoctorApllication
             
             
         }
-        private void btnConnectClient_Click(object sender, EventArgs e)
-        {
-            //create code that checks if the selected item is actually a bike and use Send() to
-            //send a message to the server, with the code for the switch case
-            //            if (lstClients.SelectedItems != null)
-            //            {
-            //                foreach (var x in lstClients.SelectedItems)
-            //                {
-            ///*                    byte ids = (byte)x.ToString().Split(" ")[x.ToString().Split(" ").Length-1];
-            //                    foreach (Client client in clientList)
-            //                    {
-            //                        if ()
-            //                        {
-
-            //                        }
-            //                    }*/
-            //                }
-
-
-
-
-
-
-
-
-            /*                txtInfo.Text = "connecting to ";
-                            foreach(object s in lstClients.SelectedItems)
-                            {
-
-                                txtInfo.Text += s.ToString();
-                                if (s.ToString().Equals("Simulation Bike"))
-                                {
-                                    txtInfo.Text += " 1"; 
-                                    //DoctorClient.Send(1);
-                                }
-                            //continue like this for all existing bikes, its only five(better if done with switch case)
-                            }
-                            if (lstClients.SelectedItems.ToString() == "Simulation Bike")
-                            {
-
-                            }*/
-            //} else if (lstClients.SelectedItems == null)
-            //{
-            //    txtInfo.Text = "no client selected";
-           
-       
-        }
         
         private void textBox3_TextChanged(object sender, EventArgs e)
         {

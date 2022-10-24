@@ -19,7 +19,6 @@ namespace Server
         {
             public string? Name { get; set; }
             public Socket? Socket { get; }
-            public bool IsDoctor { get; set; }
             public byte Id { get; }
             public bool IsDoctor { get; set; }
             public Client(string? name, Socket? socket, byte id, bool isDoctor)
@@ -359,22 +358,6 @@ namespace Server
                             }
                             else
                                 Console.WriteLine($"User: {accountUser} does not exist.");
-                            break;
-                        case 0x42:
-                            Console.WriteLine("received client request");
-                            foreach (Client connectedClient in Server.clientList)
-                            {
-                                Console.WriteLine("has client: " + connectedClient.Name);
-
-                                if (connectedClient.Name != null && connectedClient.IsDoctor == false)
-                                {
-                                    ExtendedMessageWriter messageWriter = new ExtendedMessageWriter(0x43);
-                                    messageWriter.WriteByte(connectedClient.Id);
-                                    messageWriter.WriteString(connectedClient.Name);
-                                    //Console.WriteLine("sending: " + connectedClient.Name);
-                                    client.Socket.Send(messageWriter.GetBytes());
-                                }
-                            }
                             break;
                         case 0x60:
                             Logout(client);

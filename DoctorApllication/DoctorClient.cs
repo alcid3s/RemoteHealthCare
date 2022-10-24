@@ -85,7 +85,7 @@ namespace DoctorApllication
                             byte id43 = reader.ReadByte();
                             string name43 = reader.ReadString();
                             Console.WriteLine($"id: {id43}, name: {name43}");
-                            DoctorScreen.FillClientList(id43, name43);
+                            DoctorLogin.doctorScreen.AddClient(id43, name43);
                             break;
 
                         // Doctor receives all registered accounts;
@@ -104,13 +104,6 @@ namespace DoctorApllication
                             Console.WriteLine("Received 0x55");
                             (decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate) data = reader.ReadBikeData();
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
-                            break;
-                        case 0x43:
-                            Console.WriteLine("Received 0x43");
-                            byte b = reader.ReadByte();
-                            string c = reader.ReadString();
-                            Console.WriteLine($"Byte: {b}, name: {c}");
-                            DoctorLogin.doctorScreen.AddClient(b, c);
                             break;
                         case 0x21:
                             //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));

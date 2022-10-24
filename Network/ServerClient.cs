@@ -67,13 +67,20 @@ namespace RemoteHealthCare.Network
                             string message31 = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"A doctor send you this message: {message31}");
                             break;
-                        //reply wether login was allowed or not
-                        case 0x81:
-                            Program.loginScreen.login(Reply);
-                            break;
-                        case 0x80:
-                            Program.loginScreen.login(Reply);
-                            break;
+                        //reply wether login was allowed or not
+
+                        case 0x81:
+
+                            Program.loginScreen.login(Reply);
+
+                            break;
+
+                        case 0x80:
+
+                            Program.loginScreen.login(Reply);
+
+                            break;
+
                     }
                 }
                 catch (Exception e)

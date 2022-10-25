@@ -167,7 +167,7 @@
             // 
             this.btnLoadData.BackColor = System.Drawing.Color.Red;
             this.btnLoadData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoadData.Location = new System.Drawing.Point(713, 415);
+            this.btnLoadData.Location = new System.Drawing.Point(630, 300);
             this.btnLoadData.Name = "btnLoadData";
             this.btnLoadData.Size = new System.Drawing.Size(75, 23);
             this.btnLoadData.TabIndex = 4;
@@ -209,7 +209,7 @@
             // 
             this.btnRefresh.BackColor = System.Drawing.Color.Red;
             this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnRefresh.Location = new System.Drawing.Point(568, 223);
+            this.btnRefresh.Location = new System.Drawing.Point(579, 251);
             this.btnRefresh.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 25);
@@ -222,7 +222,7 @@
             // 
             this.btnLoad.BackColor = System.Drawing.Color.Lime;
             this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoad.Location = new System.Drawing.Point(613, 303);
+            this.btnLoad.Location = new System.Drawing.Point(579, 223);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 21;
@@ -244,7 +244,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 338);
+            this.ClientSize = new System.Drawing.Size(735, 338);
             this.Controls.Add(this.lstClients2);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnLoad);

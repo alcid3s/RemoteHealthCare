@@ -65,6 +65,8 @@ namespace RemoteHealthCare.Network
                         case 0x31:
                             byte id31 = reader.ReadByte();
                             string message31 = Encoding.UTF8.GetString(reader.ReadPacket());
+
+                            //TODO 25-10-2022: Get this string into the ClientScreen GUI.
                             Console.WriteLine($"A doctor send you this message: {message31}");
                             break;
                         //reply wether login was allowed or not

@@ -84,6 +84,16 @@ namespace RemoteHealthCare.Network
 
                             break;
 
+                        //start a session
+                        case 0xA0:
+                            AccountLogin.clientScreen.StartSession();
+                            break;
+
+                        //stop a session
+                        case 0xA1:
+                            AccountLogin.clientScreen.StopSession();
+                            break;
+
                     }
                 }
                 catch (Exception e)

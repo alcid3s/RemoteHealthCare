@@ -14,15 +14,34 @@ namespace RemoteHealthCare.GUI
     {
         public bool LocalNetworkEngineRunning { get; set; } = false;
         private IBike _bike;
+        private Thread _bikeRunner;
         public ClientScreen()
         {
             InitializeComponent();
             txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-            new Thread(() =>
+
+            _bikeRunner = new Thread(() =>
             {
                 StartBike(false);
-            }).Start();
-            
+            });
+
+        }
+
+        public void StartSession()
+        {
+            if (!_bikeRunner.IsAlive)
+            {
+                _bikeRunner.Start();
+            }
+            else
+            {
+                _bike.Init();
+            }
+        }
+
+        public void StopSession()
+        {
+            _bike.Stop();
         }
 
         AccountLogin accountLogin;
@@ -56,7 +75,7 @@ namespace RemoteHealthCare.GUI
                 writer.WriteString(message);
                 ServerClient.Send(writer.GetBytes());
 
-                AddChatMessage(txtChatInput.Text, "You", DateTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                AddChatMessage("You", txtChatInput.Text, DateTime.Now.TimeOfDay.ToString().Substring(0, 8));
             }
         }
 
@@ -221,14 +240,13 @@ namespace RemoteHealthCare.GUI
             else
                 _bike = new SimulationBike();
 
-            if(!BikeClient.Connected)
+            /*if(!BikeClient.Connected)
                 Program.BikeClient.Connect();
 
-            Thread.Sleep(1000);
+            Thread.Sleep(1000);*/
 
             _bike.Init();
 
-            short errorcounter = 0;
             _bike.OnUpdate += delegate
             {
                 if (AccountLogin.isloggedIn && ServerClient.IsRunning)
@@ -240,17 +258,10 @@ namespace RemoteHealthCare.GUI
                     AccountLogin.clientScreen.setTxtHeartRate(_bike.HeartRate);
                     ServerClient.Send(0x20, _bike.ElapsedTime, _bike.DistanceTravelled, _bike.Speed, _bike.HeartRate);
                 }
-
-                Console.WriteLine("call");
                 if (BikeClient.hasTunnel)
                 {
-                    Console.WriteLine("if");
                     try
                     {
-                        Console.WriteLine("try");
-
-
-                        errorcounter = 0;
                         Program.BikeClient.UpdateSpeed(_bike.Speed);
 
                         Program.BikeClient.ClearPanel("panel1");
@@ -275,13 +286,7 @@ namespace RemoteHealthCare.GUI
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("as expected " + e.ToString());
-                        errorcounter++;
-                    }
-
-                    if(errorcounter > 30)
-                    {
-                        LocalNetworkEngineRunning = false;
+                        Console.WriteLine("BikeCLient has no tunnel or isnt finished loading " + e.ToString());
                     }
                 }
                     

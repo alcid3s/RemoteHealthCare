@@ -52,7 +52,7 @@ namespace RemoteHealthCare
             BikeClient.GetScene();
 
             //wait for the getscene response
-            while (!BikeClient.IdReceived("GroundPlane") || !BikeClient.IdReceived("LeftHand") || !BikeClient.IdReceived("RightHand") || !BikeClient.IdReceived("Camera"))
+            while (!BikeClient.IdReceived("GroundPlane") || !BikeClient.IdReceived("LeftHand") || !BikeClient.IdReceived("RightHand") || !BikeClient.IdReceived("Camera") || !BikeClient.IdReceived("Head"))
                 Thread.Sleep(1);
             //head cant be removed for some reason
             //bikeClient.DeleteNode("Head");

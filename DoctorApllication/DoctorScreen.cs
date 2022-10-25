@@ -47,10 +47,10 @@ namespace DoctorApllication
 
             lstClients2.Enabled = false;
             btnRefresh.Enabled = false;
-            btnLoad.Enabled = false;
+            btnConnect.Enabled = false;
             lstClients2.Visible = false;
             btnRefresh.Visible = false;
-            btnLoad.Visible = false;
+            btnConnect.Visible = false;
 
             Text = "Secondary screen, Connected with: " + selectedUserName;
 
@@ -370,6 +370,56 @@ namespace DoctorApllication
                 }
 
                 DoctorScreen.UpdateBikeData(_selectedUserId, 0, 0, 0, 0);
+            }
+        }
+        /// <summary>
+        /// Send message to all selected clients
+        /// </summary>
+        private void btnToAll_Click(object sender, EventArgs e)
+        {
+            if (txtChatInput.Text != "") {
+                clientList.ForEach(client =>
+                {
+                    ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
+                    writer.WriteByte(client.Id);
+                    writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    writer.WriteString(txtChatInput.Text);
+                    DoctorClient.Send(writer.GetBytes());
+                });
+
+                AddChatMessage(txtChatInput.Text, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+            }
+            else
+            {
+                txtInfo.Text = "No text input";
+            }
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                MessageWriter writer = new MessageWriter(0xA0);
+                writer.WriteByte(_selectedUserId);
+                Send(writer.GetBytes());
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                MessageWriter writer = new MessageWriter(0xA1);
+                writer.WriteByte(_selectedUserId);
+                Send(writer.GetBytes());
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
             }
         }
     }

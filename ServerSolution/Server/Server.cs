@@ -389,6 +389,38 @@ namespace Server
                             if (sr != null)
                                 sr.Close();
                             break;
+
+                        //send a start session message to a given client
+                        case 0xA0:
+                            Console.WriteLine("Received 0xA0");
+                            byte idA0 = reader.ReadByte();
+
+                            ExtendedMessageWriter writerA0 = new ExtendedMessageWriter(0xA0);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == idA0)
+                                {
+                                    clientTarget.Socket.Send(writerA0.GetBytes());
+                                }
+                            });
+                            break;
+
+                        //send a stop session message to a given client
+                        case 0xA1:
+                            Console.WriteLine("Received 0xA01");
+                            byte idA1 = reader.ReadByte();
+
+                            ExtendedMessageWriter writerA1 = new ExtendedMessageWriter(0xA0);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == idA1)
+                                {
+                                    clientTarget.Socket.Send(writerA1.GetBytes());
+                                }
+                            });
+                            break;
                     }
                     Thread.Sleep(100);
                 }

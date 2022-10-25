@@ -14,11 +14,10 @@ namespace DoctorApllication
 {
     public partial class DoctorLogin : Form
     {
-        internal static DoctorScreen doctorScreen;
+        public static DoctorScreen doctorScreen;
         internal static bool isloggedIn = false;
 
         DoctorLoginCreation doctorLoginCreation;
-
 
         public DoctorLogin()
         {
@@ -51,9 +50,7 @@ namespace DoctorApllication
             if (CanLogin == 0x81 && this.InvokeRequired)
             {
                 if (!isloggedIn)
-                {
-
-
+                { 
                     this.Invoke(new Action(new Action(() => { 
                         doctorScreen = new DoctorScreen();
                         isloggedIn = true;
@@ -70,4 +67,5 @@ namespace DoctorApllication
             }
         }
     }
-    }
+    
+}

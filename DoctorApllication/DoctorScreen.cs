@@ -11,20 +11,79 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static DoctorApllication.DoctorClient;
+using System.Net.Sockets;
+using System.Transactions;
+using System.Text.RegularExpressions;
 
 namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
-        private LoadDataScreen _loadDataScreen;
+        public static List<(byte, string)> ClientList = new List<(byte, string)>();
+        private int _index = 0;
+
+        private byte _selectedUserId = 0;
+        private string _selectedUserName = string.Empty;
+
+        private LoadDataScreen _loadDataScreen = new LoadDataScreen();
+        private static List<Client> clientList = new List<Client>();
         public DoctorScreen()
         {
-            _loadDataScreen = new LoadDataScreen();
             InitializeComponent();
-            this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
+            txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+
+            Send(new MessageWriter(0x50).GetBytes());
+            RefreshAvailableClients();
         }
-        
+
+        private struct Client
+        {
+            public string Name { get; set; }
+            public byte Id { get; }
+            public bool Selected { get; set; }
+            public Client(byte id, string name, bool selected)
+            {
+                Id = id;
+                Name = name;
+                Selected = selected;
+            }
+        }
+
+        public void RefreshAvailableClients()
+        {
+            clientList.Clear();
+            lstClients2.Items.Clear();
+            Send(new MessageWriter(0x42).GetBytes());
+        }
+
+        public void AddClient(byte clientId, string clientName)
+        {
+            //txtInfo.Text = clientName; 
+            Console.WriteLine("got client: " + clientName + " " + clientId);
+            clientList.Add(new Client(clientId, clientName, false));
+            Invoke(new Action(new Action(() => {
+
+                // Do not change this string, the btnLoad_Click method is dependend on this format.
+                lstClients2.Items.Add($"id: {clientId}, name: {clientName}");
+            })));
+        }
+
+        public void UpdateBikeData(decimal elapsedTime, int meter, decimal speed, int heartRate)
+        {
+            // If a user is selected.
+            if(_selectedUserId != 0)
+            {
+                Invoke(new Action(new Action(() => {
+                    txtSpeed.Text = speed.ToString();
+                    txtDT.Text = meter.ToString();
+                    txtET.Text = elapsedTime.ToString();
+                    txtHR.Text = heartRate.ToString();
+
+                    txtInfo.Text = $"Connected with: {_selectedUserName}";
+                })));
+            }
+        }
 
         public void setTXTSpeed(string s)
         {
@@ -42,39 +101,11 @@ namespace DoctorApllication
         {
             txtHR.Text = s;
         }
-
-        public void addListItems(string s)
+        public void btnConnectClient_Click(object sender, EventArgs e)
         {
-            lstClients.Items.Add(s);
+            
         }
-        private void btnConnectClient_Click(object sender, EventArgs e)
-        {
-            //create code that checks if the selected item is actually a bike and use Send() to
-            //send a message to the server, with the code for the switch case
-            if (lstClients.SelectedItems != null)
-            {
-                txtInfo.Text = "connecting to ";
-                foreach(object s in lstClients.SelectedItems)
-                {
-                    txtInfo.Text += s.ToString();
-                    if (s.ToString().Equals("Simulation Bike"))
-                    {
-                        txtInfo.Text += " 1"; 
-                        //DoctorClient.Send(1);
-                    }
-                //continue like this for all existing bikes, its only five(better if done with switch case)
-                }
-                if (lstClients.SelectedItems.ToString() == "Simulation Bike")
-                {
-                  
-                }
-            } else if (lstClients.SelectedItems == null)
-            {
-                txtInfo.Text = "no client selected";
-            }
-        }
-
-
+        
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
 
@@ -117,12 +148,12 @@ namespace DoctorApllication
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
-           
         }
 
         private void btnLoadData_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Loading LoadDataScreen");
+            _loadDataScreen = new LoadDataScreen();
             _loadDataScreen.Show();
         }
 
@@ -145,6 +176,18 @@ namespace DoctorApllication
         {
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
             {
+                // Send text input to the server
+                string message = txtChatInput.Text;
+                if(message != "" && _selectedUserId != 0)
+                {
+                    // Sends a message to the server, server send it to the client.
+                    MessageWriter writer = new MessageWriter(0x30);
+                    writer.WriteByte(_selectedUserId);
+                    writer.WritePacket(Encoding.UTF8.GetBytes(message));
+                    DoctorClient.Send(writer.GetBytes());
+                }
+
+
                 //put the time above the message, can later also have the sender
                 lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8) + " - You"));
 
@@ -217,6 +260,37 @@ namespace DoctorApllication
         }
 
         private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            RefreshAvailableClients();
+            Console.WriteLine("Refreshing list");
+        }
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("Loading");
+            string? selectedUser = lstClients2.SelectedItem.ToString();
+
+            if(selectedUser != null)
+            {
+                Regex reg = new Regex("id: ");
+                selectedUser = reg.Replace(selectedUser, string.Empty);
+                string[] data = selectedUser.Split(',');
+
+                reg = new Regex("name: ");
+                string name = reg.Replace(data[1], string.Empty);
+
+                _selectedUserName = name;
+                _selectedUserId = byte.Parse(data[0]);
+                Console.WriteLine($"selectedUser = {_selectedUserId}, name: {_selectedUserName}");
+            }
+        }
+
+        private void txtInfo_TextChanged(object sender, EventArgs e)
         {
 
         }

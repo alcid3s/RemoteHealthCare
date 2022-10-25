@@ -33,8 +33,6 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.btnConnectClient = new System.Windows.Forms.Button();
-            this.lstClients = new System.Windows.Forms.ListBox();
             this.txtET = new System.Windows.Forms.TextBox();
             this.txtDT = new System.Windows.Forms.TextBox();
             this.txtHR = new System.Windows.Forms.TextBox();
@@ -45,6 +43,9 @@
             this.txtChatInput = new System.Windows.Forms.TextBox();
             this.lstChatView = new System.Windows.Forms.ListView();
             this.ChatCollomn = new System.Windows.Forms.ColumnHeader();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnLoad = new System.Windows.Forms.Button();
+            this.lstClients2 = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // textBox5
@@ -92,35 +93,13 @@
             // textBox1
             // 
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(638, 24);
+            this.textBox1.Location = new System.Drawing.Point(568, 25);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 16);
             this.textBox1.TabIndex = 20;
             this.textBox1.Text = "clients:";
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // btnConnectClient
-            // 
-            this.btnConnectClient.BackColor = System.Drawing.Color.Red;
-            this.btnConnectClient.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnConnectClient.Location = new System.Drawing.Point(683, 281);
-            this.btnConnectClient.Name = "btnConnectClient";
-            this.btnConnectClient.Size = new System.Drawing.Size(75, 23);
-            this.btnConnectClient.TabIndex = 3;
-            this.btnConnectClient.Text = "Connect";
-            this.btnConnectClient.UseVisualStyleBackColor = false;
-            this.btnConnectClient.Click += new System.EventHandler(this.btnConnectClient_Click);
-            // 
-            // lstClients
-            // 
-            this.lstClients.FormattingEnabled = true;
-            this.lstClients.ItemHeight = 15;
-            this.lstClients.Location = new System.Drawing.Point(638, 46);
-            this.lstClients.Name = "lstClients";
-            this.lstClients.Size = new System.Drawing.Size(120, 229);
-            this.lstClients.TabIndex = 2;
-            this.lstClients.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
             // txtET
             // 
@@ -182,12 +161,13 @@
             this.txtInfo.ReadOnly = true;
             this.txtInfo.Size = new System.Drawing.Size(451, 23);
             this.txtInfo.TabIndex = 14;
+            this.txtInfo.TextChanged += new System.EventHandler(this.txtInfo_TextChanged);
             // 
             // btnLoadData
             // 
             this.btnLoadData.BackColor = System.Drawing.Color.Red;
             this.btnLoadData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoadData.Location = new System.Drawing.Point(713, 415);
+            this.btnLoadData.Location = new System.Drawing.Point(630, 300);
             this.btnLoadData.Name = "btnLoadData";
             this.btnLoadData.Size = new System.Drawing.Size(75, 23);
             this.btnLoadData.TabIndex = 4;
@@ -213,7 +193,7 @@
             this.lstChatView.GridLines = true;
             this.lstChatView.Location = new System.Drawing.Point(394, 46);
             this.lstChatView.Name = "lstChatView";
-            this.lstChatView.Size = new System.Drawing.Size(238, 230);
+            this.lstChatView.Size = new System.Drawing.Size(168, 230);
             this.lstChatView.TabIndex = 0;
             this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
             this.lstChatView.UseCompatibleStateImageBehavior = false;
@@ -225,11 +205,49 @@
             this.ChatCollomn.Text = "Messages";
             this.ChatCollomn.Width = 338;
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackColor = System.Drawing.Color.Red;
+            this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnRefresh.Location = new System.Drawing.Point(579, 251);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 25);
+            this.btnRefresh.TabIndex = 21;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = false;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // btnLoad
+            // 
+            this.btnLoad.BackColor = System.Drawing.Color.Lime;
+            this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnLoad.Location = new System.Drawing.Point(579, 223);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(75, 23);
+            this.btnLoad.TabIndex = 21;
+            this.btnLoad.Text = "Load data";
+            this.btnLoad.UseVisualStyleBackColor = false;
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
+            // lstClients2
+            // 
+            this.lstClients2.FormattingEnabled = true;
+            this.lstClients2.ItemHeight = 15;
+            this.lstClients2.Location = new System.Drawing.Point(568, 46);
+            this.lstClients2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.lstClients2.Name = "lstClients2";
+            this.lstClients2.Size = new System.Drawing.Size(100, 169);
+            this.lstClients2.TabIndex = 22;
+            // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(735, 338);
+            this.Controls.Add(this.lstClients2);
+            this.Controls.Add(this.btnRefresh);
+            this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.txtChatInput);
             this.Controls.Add(this.btnLoadData);
@@ -240,8 +258,6 @@
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.btnConnectClient);
-            this.Controls.Add(this.lstClients);
             this.Controls.Add(this.txtET);
             this.Controls.Add(this.txtDT);
             this.Controls.Add(this.txtHR);
@@ -261,7 +277,6 @@
         private TextBox textBox3;
         private TextBox textBox2;
         private TextBox textBox1;
-        private Button btnConnectClient;
         private ListBox lstClients;
         private TextBox txtET;
         private TextBox txtDT;
@@ -274,5 +289,8 @@
         private TextBox txtChatInput;
         private ListView lstChatView;
         private ColumnHeader ChatCollomn;
+        private Button btnRefresh;
+        private Button btnLoad;
+        private ListBox lstClients2;
     }
 }

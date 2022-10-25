@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 
 namespace RemoteHealthCare.Network
@@ -57,11 +58,38 @@ namespace RemoteHealthCare.Network
                 {
                     MessageReader reader = new MessageReader(message);
                     Reply = reader.Id;
+
+                    switch (Reply)
+                    {
+                        // Receives a message from the doctor
+                        case 0x31:
+                            byte id31 = reader.ReadByte();
+                            string message31 = Encoding.UTF8.GetString(reader.ReadPacket());
+
+                            //TODO 25-10-2022: Get this string into the ClientScreen GUI.
+                            Console.WriteLine($"A doctor send you this message: {message31}");
+                            break;
+                        //reply wether login was allowed or not
+
+                        case 0x81:
+
+                            Program.loginScreen.login(Reply);
+
+                            break;
+
+                        case 0x80:
+
+                            Program.loginScreen.login(Reply);
+
+                            break;
+
+                    }
                 }
                 catch (Exception e)
                 {
                     continue;
                 }
+                
             }
         }
 

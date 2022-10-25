@@ -106,7 +106,9 @@ namespace DoctorApllication
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
                             break;
                         case 0x21:
-                            //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
+                            reader.ReadByte();
+                            DoctorLogin.doctorScreen.UpdateBikeData(reader.ReadInt(2) / 4m, reader.ReadInt(2), reader.ReadInt(2) / 1000m, reader.ReadInt(1));
+                            Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
                             break;
 
                     }

@@ -14,6 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static DoctorApllication.DoctorClient;
 using System.Net.Sockets;
 using System.Transactions;
+using System.Text.RegularExpressions;
 
 namespace DoctorApllication
 {
@@ -22,7 +23,8 @@ namespace DoctorApllication
         public static List<(byte, string)> ClientList = new List<(byte, string)>();
         private int _index = 0;
 
-        private byte _selectedUser = 0;
+        private byte _selectedUserId = 0;
+        private string _selectedUserName = string.Empty;
 
         private LoadDataScreen _loadDataScreen;
         private static List<Client> clientList = new List<Client>();
@@ -55,7 +57,6 @@ namespace DoctorApllication
             clientList.Clear();
             lstClients2.Items.Clear();
             DoctorClient.Send(new MessageWriter(0x42).GetBytes());
-            
         }
 
         public void AddClient(byte clientId, string clientName)
@@ -64,15 +65,26 @@ namespace DoctorApllication
             Console.WriteLine("got client: " + clientName + " " + clientId);
             clientList.Add(new Client(clientId, clientName, false));
             this.Invoke(new Action(new Action(() => {
+
+                // Do not change this string, the btnLoad_Click method is dependend on this format.
                 lstClients2.Items.Add($"id: {clientId}, name: {clientName}");
             })));
         }
-        
 
-        public static void FillClientList(byte id, string name)
+        public void UpdateBikeData(decimal elapsedTime, int meter, decimal speed, int heartRate)
         {
-            ClientList.Add((id, name));
-            Console.WriteLine($"Added {id}, {name}, size now: {ClientList.Count}");
+            // If a user is selected.
+            if(_selectedUserId != 0)
+            {
+                Invoke(new Action(new Action(() => {
+                    txtSpeed.Text = speed.ToString();
+                    txtDT.Text = meter.ToString();
+                    txtET.Text = elapsedTime.ToString();
+                    txtHR.Text = heartRate.ToString();
+
+                    txtInfo.Text = $"Connected with: {_selectedUserName}";
+                })));
+            }
         }
 
         public void setTXTSpeed(string s)
@@ -168,11 +180,11 @@ namespace DoctorApllication
             {
                 // Send text input to the server
                 string message = txtChatInput.Text;
-                if(message != "" && _selectedUser != 0)
+                if(message != "" && _selectedUserId != 0)
                 {
                     // Sends a message to the server, server send it to the client.
                     MessageWriter writer = new MessageWriter(0x30);
-                    writer.WriteByte(_selectedUser);
+                    writer.WriteByte(_selectedUserId);
                     writer.WritePacket(Encoding.UTF8.GetBytes(message));
                     DoctorClient.Send(writer.GetBytes());
                 }
@@ -264,13 +276,17 @@ namespace DoctorApllication
         {
             Console.WriteLine("Loading");
             string? selectedUser = lstClients2.SelectedItem.ToString();
-            selectedUser = selectedUser.Replace('i', ' ');
-            selectedUser = selectedUser.Replace('d', ' ');
-            selectedUser = selectedUser.Replace(':', ' ');
-            selectedUser = selectedUser.Trim();
+
+            Regex reg = new Regex("id: ");
+            selectedUser = reg.Replace(selectedUser, string.Empty);
             string[] data = selectedUser.Split(',');
-            byte id = byte.Parse(data[0]);
-            _selectedUser = id;
+
+            reg = new Regex("name: ");
+            string name = reg.Replace(data[1], string.Empty);
+
+            _selectedUserName = name;
+            _selectedUserId = byte.Parse(data[0]);
+            Console.WriteLine($"selectedUser = {_selectedUserId}, name: {_selectedUserName}");
         }
 
         private void txtInfo_TextChanged(object sender, EventArgs e)

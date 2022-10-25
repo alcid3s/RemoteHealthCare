@@ -61,8 +61,12 @@ namespace DoctorApplication
 
         private void btnDataBack_Click(object sender, EventArgs e)
         {
-            _index--;
-            UpdateValues(_index);
+            if(_index >= 1)
+            {
+                _index--;
+                UpdateValues(_index);
+            }
+            
         }
 
         private void DoctorScreenHistorie_Load(object sender, EventArgs e)

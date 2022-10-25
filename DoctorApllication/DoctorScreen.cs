@@ -26,16 +26,14 @@ namespace DoctorApllication
         private byte _selectedUserId = 0;
         private string _selectedUserName = string.Empty;
 
-        private LoadDataScreen _loadDataScreen;
+        private LoadDataScreen _loadDataScreen = new LoadDataScreen();
         private static List<Client> clientList = new List<Client>();
         public DoctorScreen()
         {
-         
-             InitializeComponent();
-            _loadDataScreen = new LoadDataScreen();
+            InitializeComponent();
+            txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
 
-            this.txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-            DoctorClient.Send(new MessageWriter(0x50).GetBytes());
+            Send(new MessageWriter(0x50).GetBytes());
             RefreshAvailableClients();
         }
 
@@ -56,7 +54,7 @@ namespace DoctorApllication
         {
             clientList.Clear();
             lstClients2.Items.Clear();
-            DoctorClient.Send(new MessageWriter(0x42).GetBytes());
+            Send(new MessageWriter(0x42).GetBytes());
         }
 
         public void AddClient(byte clientId, string clientName)
@@ -64,7 +62,7 @@ namespace DoctorApllication
             //txtInfo.Text = clientName; 
             Console.WriteLine("got client: " + clientName + " " + clientId);
             clientList.Add(new Client(clientId, clientName, false));
-            this.Invoke(new Action(new Action(() => {
+            Invoke(new Action(new Action(() => {
 
                 // Do not change this string, the btnLoad_Click method is dependend on this format.
                 lstClients2.Items.Add($"id: {clientId}, name: {clientName}");
@@ -105,7 +103,6 @@ namespace DoctorApllication
         }
         public void btnConnectClient_Click(object sender, EventArgs e)
         {
-            
             
         }
         
@@ -156,6 +153,7 @@ namespace DoctorApllication
         private void btnLoadData_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Loading LoadDataScreen");
+            _loadDataScreen = new LoadDataScreen();
             _loadDataScreen.Show();
         }
 
@@ -277,16 +275,19 @@ namespace DoctorApllication
             Console.WriteLine("Loading");
             string? selectedUser = lstClients2.SelectedItem.ToString();
 
-            Regex reg = new Regex("id: ");
-            selectedUser = reg.Replace(selectedUser, string.Empty);
-            string[] data = selectedUser.Split(',');
+            if(selectedUser != null)
+            {
+                Regex reg = new Regex("id: ");
+                selectedUser = reg.Replace(selectedUser, string.Empty);
+                string[] data = selectedUser.Split(',');
 
-            reg = new Regex("name: ");
-            string name = reg.Replace(data[1], string.Empty);
+                reg = new Regex("name: ");
+                string name = reg.Replace(data[1], string.Empty);
 
-            _selectedUserName = name;
-            _selectedUserId = byte.Parse(data[0]);
-            Console.WriteLine($"selectedUser = {_selectedUserId}, name: {_selectedUserName}");
+                _selectedUserName = name;
+                _selectedUserId = byte.Parse(data[0]);
+                Console.WriteLine($"selectedUser = {_selectedUserId}, name: {_selectedUserName}");
+            }
         }
 
         private void txtInfo_TextChanged(object sender, EventArgs e)

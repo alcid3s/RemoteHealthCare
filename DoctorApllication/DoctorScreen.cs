@@ -161,8 +161,8 @@ namespace DoctorApllication
 
         private void SetConnectedUser(byte clientId, string clientName)
         {
-            this._selectedUserId = clientId;
-            this._selectedUserName = clientName;
+            _selectedUserId = clientId;
+            _selectedUserName = clientName;
 
 
 
@@ -369,7 +369,7 @@ namespace DoctorApllication
                     }
                 }
 
-                DoctorScreen.UpdateBikeData(_selectedUserId, 0, 0, 0, 0);
+                UpdateBikeData(_selectedUserId, 0, 0, 0, 0);
             }
         }
         /// <summary>
@@ -384,7 +384,7 @@ namespace DoctorApllication
                     writer.WriteByte(client.Id);
                     writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
                     writer.WriteString(txtChatInput.Text);
-                    DoctorClient.Send(writer.GetBytes());
+                    Send(writer.GetBytes());
                 });
 
                 AddChatMessage(txtChatInput.Text, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));

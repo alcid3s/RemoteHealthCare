@@ -241,11 +241,15 @@ namespace RemoteHealthCare.GUI
                     ServerClient.Send(0x20, _bike.ElapsedTime, _bike.DistanceTravelled, _bike.Speed, _bike.HeartRate);
                 }
 
-
-                if (LocalNetworkEngineRunning)
+                Console.WriteLine("call");
+                if (BikeClient.hasTunnel)
                 {
+                    Console.WriteLine("if");
                     try
                     {
+                        Console.WriteLine("try");
+
+
                         errorcounter = 0;
                         Program.BikeClient.UpdateSpeed(_bike.Speed);
 
@@ -271,6 +275,7 @@ namespace RemoteHealthCare.GUI
                     }
                     catch (Exception e)
                     {
+                        Console.WriteLine("as expected " + e.ToString());
                         errorcounter++;
                     }
 
@@ -281,6 +286,14 @@ namespace RemoteHealthCare.GUI
                 }
                     
             };
+        }
+
+        public void SetErrorMessage(string message)
+        {
+            Invoke(new Action(() =>
+            {
+                txtInfo.Text = message;
+            }));
         }
 
         private void txtChatInput_TextChanged_1(object sender, EventArgs e)

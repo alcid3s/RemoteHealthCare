@@ -38,7 +38,6 @@ namespace DoctorApllication
 
         }
 
-
         private void lstAccounts_SelectedIndexChanged(object sender, EventArgs e)
         {
 

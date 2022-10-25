@@ -72,17 +72,12 @@ namespace RemoteHealthCare.Network
                         //reply wether login was allowed or not
 
                         case 0x81:
-
                             Program.loginScreen.login(Reply);
-
                             break;
 
                         case 0x80:
-
                             Program.loginScreen.login(Reply);
-
                             break;
-
                     }
                 }
                 catch (Exception e)

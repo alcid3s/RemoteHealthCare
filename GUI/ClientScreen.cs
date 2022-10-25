@@ -5,6 +5,9 @@ using MessageStream;
 using System.Reflection;
 using System.Threading;
 using RemoteHealthCare.Bikes;
+using Avans.TI.BLE;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Globalization;
 
@@ -12,6 +15,18 @@ namespace RemoteHealthCare.GUI
 {
     public partial class ClientScreen : Form
     {
+        public OnUpdate OnUpdate { get; set; }
+        public int HeartRate => _heartRate;
+
+        public bool IsRunning { get; set; }
+
+        private decimal _elapsedTime;
+        private int _distanceTravelled;
+        private decimal _speed;
+        private int _heartRate;
+
+        private int _elapsedTimeOverflow;
+        private int _distanceTravelledOverflow;
         public bool LocalNetworkEngineRunning { get; set; } = false;
         private IBike _bike;
         private Thread _bikeRunner;
@@ -197,7 +212,26 @@ namespace RemoteHealthCare.GUI
 
         private void ClientScreen_Load(object sender, EventArgs e)
         {
-            lstBikes.Items.Add("24517");
+            int code = 0;
+            BLE bike = new BLE();
+            BLE heart = new BLE();
+            Thread.Sleep(1000);
+
+            List<string> deviceList = bike.ListDevices();
+            List<string> bikeList = new List<string>();
+
+            deviceList.ForEach(device =>
+            {
+                if (device.Contains("Tacx"))
+                    bikeList.Add(device);
+            });
+
+            bikeList.ForEach(device =>
+            {
+                lstBikes.Items.Add(device);
+            });
+
+            lstBikes.Items.Add("SimBike");
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -289,7 +323,6 @@ namespace RemoteHealthCare.GUI
                         Console.WriteLine("BikeCLient has no tunnel or isnt finished loading " + e.ToString());
                     }
                 }
-                    
             };
         }
 
@@ -308,6 +341,134 @@ namespace RemoteHealthCare.GUI
                 txtChatInput.Text = txtChatInput.Text.Substring(0, 200);
                 txtInfo.Text = "message can have up to 200 characters";
             }
+        }
+
+        // Connect button
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            string selectedBike = lstBikes.SelectedItem.ToString();
+            if(selectedBike != null)
+            {
+                if (selectedBike.Equals("SimBike"))
+                {
+                    new Thread(() =>
+                    {
+                        StartBike(false);
+                    }).Start();
+                }
+                else
+                {
+                    int code = 0;
+                    BLE bike = new BLE();
+                    BLE heart = new BLE();
+
+                    code = await bike.OpenDevice($"Tacx Flux {selectedBike}");
+
+                    List<BluetoothLEAttributeDisplay> serviceList = bike.GetServices;
+
+                    // Set service
+                    code = await bike.SetService("6e40fec1-b5a3-f393-e0a9-e50e24dcca9e");
+
+                    // Subscribe
+                    bike.SubscriptionValueChanged += UpdateBikeData;
+                    code = await bike.SubscribeToCharacteristic("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e");
+
+                    // Heart rate
+                    code = await heart.OpenDevice("Decathlon Dual HR");
+                    await heart.SetService("HeartRate");
+
+                    heart.SubscriptionValueChanged += UpdateHeartrateData;
+                    await heart.SubscribeToCharacteristic("HeartRateMeasurement");
+                    IsRunning = true;
+                }
+            }
+        }
+
+        private void UpdateBikeData(object sender, BLESubscriptionValueChangedEventArgs e)
+        {
+            int y = 0;
+            string[] dataTypes = { "Type", "Elapsed Time", "Distance Travelled", "Speed", "Heart Rate", "Extra Info" };
+            PacketState state = PacketState.Standard;
+
+            if (!Checksum(e.Data))
+                return;
+
+            bool standardPacket = false;
+            // Runs through entire packet, beginning with the first 4 bytes which are standard information.
+            for (int i = 0; i < e.Data.Count(); i++)
+            {
+                // Checking if packet with identifier 1 (0x10) shows up. This packet contains useful data.
+                if (state == PacketState.MessageIdentifier)
+                    standardPacket = e.Data.ElementAt(i) == 0x10;
+
+                // printing the data with the corresponding value.
+                else if (state == PacketState.Data && standardPacket)
+                {
+                    string dataType = dataTypes.ElementAt(y);
+                    switch (dataType)
+                    {
+                        // Speed is 4 bytes, all other data are 2 bytes
+                        case "Speed":
+                            this._speed = ((e.Data.ElementAt(i + 1) * 0x100) + e.Data.ElementAt(i)) / 1000m;
+                            i++;
+                            break;
+                        case "Elapsed Time":
+                            decimal newElapsedTime = e.Data.ElementAt(i) / 4m;
+                            if (newElapsedTime < this._elapsedTime)
+                                this._elapsedTimeOverflow++;
+                            this._elapsedTime = newElapsedTime;
+                            break;
+                        case "Distance Travelled":
+                            int newDistanceTravelled = e.Data.ElementAt(i);
+                            if (newDistanceTravelled < this._distanceTravelled)
+                                this._distanceTravelledOverflow++;
+                            this._distanceTravelled = newDistanceTravelled;
+                            break;
+                        case "Heart Rate":
+                            break;
+                        default:
+                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
+                            break;
+                    }
+                    OnUpdate();
+                    y++;
+                }
+
+                // Check if the part of the packet checked has changed
+                switch (i)
+                {
+                    case 3:
+                        state = PacketState.MessageIdentifier;
+                        break;
+                    case 4:
+                        state = PacketState.Data;
+                        break;
+                    case 11:
+                        state = PacketState.Checksum;
+                        break;
+                }
+            }
+        }
+        private void UpdateHeartrateData(object sender, BLESubscriptionValueChangedEventArgs e)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                if (i == 1)
+                {
+                    _heartRate = e.Data.ElementAt((i));
+                }
+            }
+            OnUpdate();
+        }
+
+        private static bool Checksum(byte[] bytes)
+        {
+            byte checksum = 0;
+
+            foreach (byte b in bytes)
+                checksum ^= b;
+
+            return checksum == 0;
         }
     }
 }

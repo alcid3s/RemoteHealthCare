@@ -93,7 +93,7 @@
             // textBox1
             // 
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(568, 25);
+            this.textBox1.Location = new System.Drawing.Point(623, 25);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 16);
@@ -167,7 +167,7 @@
             // 
             this.btnLoadData.BackColor = System.Drawing.Color.Red;
             this.btnLoadData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoadData.Location = new System.Drawing.Point(630, 300);
+            this.btnLoadData.Location = new System.Drawing.Point(648, 303);
             this.btnLoadData.Name = "btnLoadData";
             this.btnLoadData.Size = new System.Drawing.Size(75, 23);
             this.btnLoadData.TabIndex = 4;
@@ -193,7 +193,7 @@
             this.lstChatView.GridLines = true;
             this.lstChatView.Location = new System.Drawing.Point(394, 46);
             this.lstChatView.Name = "lstChatView";
-            this.lstChatView.Size = new System.Drawing.Size(168, 230);
+            this.lstChatView.Size = new System.Drawing.Size(223, 230);
             this.lstChatView.TabIndex = 0;
             this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
             this.lstChatView.UseCompatibleStateImageBehavior = false;
@@ -209,7 +209,7 @@
             // 
             this.btnRefresh.BackColor = System.Drawing.Color.Red;
             this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnRefresh.Location = new System.Drawing.Point(579, 251);
+            this.btnRefresh.Location = new System.Drawing.Point(648, 248);
             this.btnRefresh.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 25);
@@ -222,7 +222,7 @@
             // 
             this.btnLoad.BackColor = System.Drawing.Color.Lime;
             this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoad.Location = new System.Drawing.Point(579, 223);
+            this.btnLoad.Location = new System.Drawing.Point(648, 220);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 21;
@@ -234,11 +234,12 @@
             // 
             this.lstClients2.FormattingEnabled = true;
             this.lstClients2.ItemHeight = 15;
-            this.lstClients2.Location = new System.Drawing.Point(568, 46);
+            this.lstClients2.Location = new System.Drawing.Point(623, 46);
             this.lstClients2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lstClients2.Name = "lstClients2";
             this.lstClients2.Size = new System.Drawing.Size(100, 169);
             this.lstClients2.TabIndex = 22;
+            this.lstClients2.SelectionMode = SelectionMode.MultiExtended;
             // 
             // DoctorScreen
             // 

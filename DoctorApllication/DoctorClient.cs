@@ -45,6 +45,9 @@ namespace DoctorApllication
             _port = port;
         }
 
+        /// <summary>
+        /// Connect to the server
+        /// </summary>
         public void Connect()
         {
             IPEndPoint endPoint = new IPEndPoint(_address, _port);
@@ -106,9 +109,9 @@ namespace DoctorApllication
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
                             break;
                         case 0x21:
-                            reader.ReadByte();
-                            DoctorLogin.doctorScreen.UpdateBikeData(reader.ReadInt(2) / 4m, reader.ReadInt(2), reader.ReadInt(2) / 1000m, reader.ReadInt(1));
-                            Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
+                            
+                            DoctorScreen.UpdateBikeData(reader.ReadByte(), reader.ReadInt(2) / 4m, reader.ReadInt(2), reader.ReadInt(2) / 1000m, reader.ReadInt(1));
+                            //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
                             break;
 
                     }
@@ -188,12 +191,17 @@ namespace DoctorApllication
         //    }
         //}
 
+        /// <summary>
+        /// send a message written in a messageWriter
+        /// </summary>
         public static void Send(byte[] message)
         {
             int received = _socket.Send(message);
         }
 
-        //wait until a new server message has been received
+        /// <summary>
+        /// wait until a new server message has been received
+        /// </summary>
         public static bool waitForReply()
         {
             int counter = 0;

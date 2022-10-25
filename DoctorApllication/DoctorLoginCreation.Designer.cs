@@ -48,7 +48,6 @@
             this.textBox2.Size = new System.Drawing.Size(100, 16);
             this.textBox2.TabIndex = 12;
             this.textBox2.Text = "Account name:";
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox1
             // 
@@ -121,7 +120,6 @@
             this.txtErrorMessage.ReadOnly = true;
             this.txtErrorMessage.Size = new System.Drawing.Size(159, 16);
             this.txtErrorMessage.TabIndex = 16;
-            this.txtErrorMessage.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // DoctorLoginCreation
             // 
@@ -157,6 +155,5 @@
         private Button btnBack;
         private TextBox txtErrorMessage;
         private TextBox textBox4;
-        private TextBox txtResponse;
     }
 }

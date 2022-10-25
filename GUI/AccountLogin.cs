@@ -26,12 +26,6 @@ namespace RemoteHealthCare.GUI
         }
 
 
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnLogin_Click(object sender, EventArgs e)
         {
             MessageWriter writer = new MessageWriter(0x11);
@@ -52,21 +46,6 @@ namespace RemoteHealthCare.GUI
 
                 accountTypeSelector.Show();
             }
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtAccountNameLogin_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textPasswordLogin_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void AccountLogin_Load(object sender, EventArgs e)

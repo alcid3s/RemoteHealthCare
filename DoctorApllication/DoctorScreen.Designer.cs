@@ -57,7 +57,6 @@
             this.textBox5.Size = new System.Drawing.Size(100, 16);
             this.textBox5.TabIndex = 12;
             this.textBox5.Text = "BPM";
-            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
             // 
             // textBox4
             // 
@@ -78,7 +77,6 @@
             this.textBox3.Size = new System.Drawing.Size(100, 16);
             this.textBox3.TabIndex = 10;
             this.textBox3.Text = "Seconds";
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // textBox2
             // 
@@ -99,7 +97,6 @@
             this.textBox1.Size = new System.Drawing.Size(100, 16);
             this.textBox1.TabIndex = 20;
             this.textBox1.Text = "clients:";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // txtET
             // 
@@ -110,7 +107,6 @@
             this.txtET.ReadOnly = true;
             this.txtET.Size = new System.Drawing.Size(137, 71);
             this.txtET.TabIndex = 6;
-            this.txtET.TextChanged += new System.EventHandler(this.txtET_TextChanged);
             // 
             // txtDT
             // 
@@ -121,7 +117,6 @@
             this.txtDT.ReadOnly = true;
             this.txtDT.Size = new System.Drawing.Size(141, 71);
             this.txtDT.TabIndex = 7;
-            this.txtDT.TextChanged += new System.EventHandler(this.txtDT_TextChanged);
             // 
             // txtHR
             // 
@@ -132,7 +127,6 @@
             this.txtHR.ReadOnly = true;
             this.txtHR.Size = new System.Drawing.Size(97, 71);
             this.txtHR.TabIndex = 8;
-            this.txtHR.TextChanged += new System.EventHandler(this.txtHR_TextChanged);
             // 
             // txtSpeed
             // 
@@ -143,7 +137,6 @@
             this.txtSpeed.ReadOnly = true;
             this.txtSpeed.Size = new System.Drawing.Size(115, 71);
             this.txtSpeed.TabIndex = 5;
-            this.txtSpeed.TextChanged += new System.EventHandler(this.txtSpeed_TextChanged);
             // 
             // textBox6
             // 
@@ -153,7 +146,6 @@
             this.textBox6.Size = new System.Drawing.Size(100, 23);
             this.textBox6.TabIndex = 13;
             this.textBox6.Text = "important info:";
-            this.textBox6.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
             // 
             // txtInfo
             // 
@@ -162,7 +154,6 @@
             this.txtInfo.ReadOnly = true;
             this.txtInfo.Size = new System.Drawing.Size(451, 23);
             this.txtInfo.TabIndex = 14;
-            this.txtInfo.TextChanged += new System.EventHandler(this.txtInfo_TextChanged);
             // 
             // btnLoadData
             // 
@@ -174,7 +165,6 @@
             this.btnLoadData.TabIndex = 4;
             this.btnLoadData.Text = "Load data";
             this.btnLoadData.UseVisualStyleBackColor = false;
-            this.btnLoadData.Click += new System.EventHandler(this.btnLoadData_Click);
             // 
             // txtChatInput
             // 
@@ -199,7 +189,6 @@
             this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
             this.lstChatView.UseCompatibleStateImageBehavior = false;
             this.lstChatView.View = System.Windows.Forms.View.Details;
-            this.lstChatView.SelectedIndexChanged += new System.EventHandler(this.lstChatView_SelectedIndexChanged);
             // 
             // ChatCollomn
             // 
@@ -279,7 +268,6 @@
         private TextBox textBox3;
         private TextBox textBox2;
         private TextBox textBox1;
-        private ListBox lstClients;
         private TextBox txtET;
         private TextBox txtDT;
         private TextBox txtHR;
@@ -287,7 +275,6 @@
         private TextBox textBox6;
         private TextBox txtInfo;
         private Button btnLoadData;
-        private TextBox txtChatBox;
         private TextBox txtChatInput;
         private ListView lstChatView;
         private ColumnHeader ChatCollomn;

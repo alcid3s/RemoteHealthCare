@@ -26,10 +26,6 @@ namespace RemoteHealthCare.GUI
         }
 
         AccountLogin accountLogin;
-        private void txtSpeed_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         public void setTxtSpeed(decimal s)
         {
@@ -140,11 +136,6 @@ namespace RemoteHealthCare.GUI
                 txtChatInput.Text = "";
             })));
         }
-
-        private void txtElapsedTime_TextChanged(object sender, EventArgs e)
-        {
-
-        }
         public void setTxtElapsedTime(decimal s)
         {
             try
@@ -155,11 +146,6 @@ namespace RemoteHealthCare.GUI
             {
 
             }
-
-        }
-
-        private void txtDistanceTravelled_TextChanged(object sender, EventArgs e)
-        {
 
         }
 
@@ -176,11 +162,6 @@ namespace RemoteHealthCare.GUI
 
         }
 
-        private void txtHeartRate_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         public void setTxtHeartRate(decimal s)
         {
             try
@@ -194,15 +175,6 @@ namespace RemoteHealthCare.GUI
 
         }
 
-        private void textBox4_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void ClientScreen_Load(object sender, EventArgs e)
         {
@@ -311,17 +283,7 @@ namespace RemoteHealthCare.GUI
             };
         }
 
-        private void lstBikes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listChatView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtChatInput_TextChanged(object sender, EventArgs e)
+        private void txtChatInput_TextChanged_1(object sender, EventArgs e)
         {
             if (txtChatInput.Text.Length > 200)
             {

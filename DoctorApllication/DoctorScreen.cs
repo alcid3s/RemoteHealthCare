@@ -153,50 +153,6 @@ namespace DoctorApllication
         {
             txtHR.Text = s;
         }
-        public void btnConnectClient_Click(object sender, EventArgs e)
-        {
-            
-        }
-        
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox5_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtSpeed_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtET_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDT_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtHR_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
@@ -221,11 +177,6 @@ namespace DoctorApllication
             Console.WriteLine("Loading LoadDataScreen");
             _loadDataScreen = new LoadDataScreen();
             _loadDataScreen.Show();
-        }
-
-        private void txtChatBox_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>
@@ -268,7 +219,7 @@ namespace DoctorApllication
         /// Add a message to lstChatView with a sender and time at 40 characters per line
         /// </summary>
         /// <param name="message">Id of the bike</param>
-        /// <param name="sender">TName of the person that send the message</param>
+        /// <param name="sender">Name of the person that send the message</param>
         /// <param name="timeSend">The time the message was send in hh:mm:ss format</param>
 
         public void AddChatMessage(string message, string sender, string timeSend)
@@ -341,6 +292,13 @@ namespace DoctorApllication
             })));
         }
 
+        /// <summary>
+        /// Add a received message to the connected client
+        /// </summary>
+        /// /// <param name="messageId">Id of the client</param>
+        /// <param name="message">Id of the bike</param>
+        /// <param name="name">Name of the person that send the message</param>
+        /// <param name="timeSend">The time the message was send in hh:mm:ss format</param>
         public static void ReceiveMessage(byte messageId, string name, string message, string timeSend)
         {
             if (DoctorLogin.doctorScreen._selectedUserId == messageId)
@@ -352,7 +310,6 @@ namespace DoctorApllication
 
             screens.ForEach(doctorScreen =>
             {
-                // If a user is selected.
                 if (doctorScreen._selectedUserId == messageId)
                 {
                     doctorScreen.Invoke(new Action(new Action(() => {
@@ -362,16 +319,6 @@ namespace DoctorApllication
                     })));
                 }
             });
-        }
-
-        private void lstChatBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>
@@ -424,16 +371,6 @@ namespace DoctorApllication
 
                 DoctorScreen.UpdateBikeData(_selectedUserId, 0, 0, 0, 0);
             }
-        }
-
-        private void txtInfo_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox6_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

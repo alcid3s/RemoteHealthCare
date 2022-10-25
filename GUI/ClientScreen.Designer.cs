@@ -59,7 +59,6 @@ namespace RemoteHealthCare.GUI
             this.txtSpeed.ReadOnly = true;
             this.txtSpeed.Size = new System.Drawing.Size(116, 68);
             this.txtSpeed.TabIndex = 0;
-            this.txtSpeed.TextChanged += new System.EventHandler(this.txtSpeed_TextChanged);
             // 
             // txtDistanceTravelled
             // 
@@ -69,7 +68,6 @@ namespace RemoteHealthCare.GUI
             this.txtDistanceTravelled.ReadOnly = true;
             this.txtDistanceTravelled.Size = new System.Drawing.Size(147, 68);
             this.txtDistanceTravelled.TabIndex = 1;
-            this.txtDistanceTravelled.TextChanged += new System.EventHandler(this.txtDistanceTravelled_TextChanged);
             // 
             // txtHeartRate
             // 
@@ -79,7 +77,6 @@ namespace RemoteHealthCare.GUI
             this.txtHeartRate.ReadOnly = true;
             this.txtHeartRate.Size = new System.Drawing.Size(113, 68);
             this.txtHeartRate.TabIndex = 3;
-            this.txtHeartRate.TextChanged += new System.EventHandler(this.txtHeartRate_TextChanged);
             // 
             // txtElapsedTime
             // 
@@ -89,7 +86,6 @@ namespace RemoteHealthCare.GUI
             this.txtElapsedTime.ReadOnly = true;
             this.txtElapsedTime.Size = new System.Drawing.Size(144, 68);
             this.txtElapsedTime.TabIndex = 2;
-            this.txtElapsedTime.TextChanged += new System.EventHandler(this.txtElapsedTime_TextChanged);
             // 
             // textBox1
             // 
@@ -127,7 +123,6 @@ namespace RemoteHealthCare.GUI
             this.textBox3.Size = new System.Drawing.Size(100, 14);
             this.textBox3.TabIndex = 6;
             this.textBox3.Text = "Seconds";
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // textBox4
             // 
@@ -140,7 +135,6 @@ namespace RemoteHealthCare.GUI
             this.textBox4.Size = new System.Drawing.Size(100, 14);
             this.textBox4.TabIndex = 7;
             this.textBox4.Text = "BPM";
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // lstBikes
             // 
@@ -151,7 +145,6 @@ namespace RemoteHealthCare.GUI
             this.lstBikes.Name = "lstBikes";
             this.lstBikes.Size = new System.Drawing.Size(120, 169);
             this.lstBikes.TabIndex = 8;
-            this.lstBikes.SelectedIndexChanged += new System.EventHandler(this.lstBikes_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -218,7 +211,7 @@ namespace RemoteHealthCare.GUI
             this.txtChatInput.Name = "txtChatInput";
             this.txtChatInput.Size = new System.Drawing.Size(168, 20);
             this.txtChatInput.TabIndex = 1;
-            this.txtChatInput.TextChanged += new System.EventHandler(this.txtChatInput_TextChanged);
+            this.txtChatInput.TextChanged += new System.EventHandler(this.txtChatInput_TextChanged_1);
             // 
             // txtInfoBox
             // 

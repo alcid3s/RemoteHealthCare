@@ -5,6 +5,8 @@ using MessageStream;
 using System.Reflection;
 using System.Threading;
 using RemoteHealthCare.Bikes;
+using System.Text;
+using System.Globalization;
 
 namespace RemoteHealthCare.GUI
 {
@@ -15,6 +17,7 @@ namespace RemoteHealthCare.GUI
         public ClientScreen()
         {
             InitializeComponent();
+            txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
             new Thread(() =>
             {
                 StartBike(false);
@@ -39,6 +42,103 @@ namespace RemoteHealthCare.GUI
 
             }
 
+        }
+
+        /// <summary>
+        /// React to an enter press while in txtCHatInput and then send the message to a client and add it to lstChatView
+        /// </summary>
+        private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
+            {
+                // Send text input to the server
+                string message = txtChatInput.Text;
+
+                // Sends a message to the server, server send it to the client.
+                ExtendedMessageWriter writer = new ExtendedMessageWriter(0x32);
+                writer.WriteString(DateTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                writer.WriteString(message);
+                ServerClient.Send(writer.GetBytes());
+
+                AddChatMessage(txtChatInput.Text, "You", DateTime.Now.TimeOfDay.ToString().Substring(0, 8));
+            }
+        }
+
+        /// <summary>
+        /// Add a message to lstChatView with a sender and time at 40 characters per line
+        /// </summary>
+        /// <param name="message">Id of the bike</param>
+        /// <param name="sender">TName of the person that send the message</param>
+        /// <param name="timeSend">The time the message was send in hh:mm:ss format</param>
+
+        public void AddChatMessage(string sender, string message, string timeSend)
+        {
+            Invoke(new Action(new Action(() =>
+            {
+                //put the time above the message, can later also have the sender
+                lstChatView.Items.Insert(0, new ListViewItem(timeSend + " - " + sender));
+
+                //get all the words from the input
+                string[] words = message.Split(' ');
+                string line = "";
+
+                int lineNr = 1;
+                for (int i = 0; i < words.Length; i++)
+                {
+                    //check if the word is bigger than a line
+                    if (words[i].Length > 40)
+                    {
+                        //if the line already has text print it out
+                        if (line.Length > 0)
+                        {
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length)));
+                            line = "";
+                            lineNr++;
+                        }
+
+                        //print out the long word bit by bit
+                        string longWord = words[i];
+
+                        while (longWord.Length > 40)
+                        {
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(longWord.Substring(0, 38) + "-"));
+                            lineNr++;
+                            longWord = longWord.Substring(38);
+                        }
+                        lstChatView.Items.Insert(lineNr, new ListViewItem(longWord));
+                        lineNr++;
+                    }
+                    else
+                    {
+                        //add a word to the line
+                        line += " " + words[i];
+
+                        //check if there is a next word
+                        if (words.Length > i + 1)
+                        {
+                            //check if the next word will fit on the line
+                            if ((line + " " + words[i + 1]).Length > 41)
+                            {
+                                //print out the line
+                                lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length - 1)));
+                                line = "";
+                                lineNr++;
+                            }
+                        }
+                        else
+                        {
+                            //print out the last line
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length - 1)));
+                            line = "";
+                            lineNr++;
+                        }
+                    }
+                }
+                //add an empty line for clarity
+                lstChatView.Items.Insert(lineNr, new ListViewItem());
+                //reset the chat input
+                txtChatInput.Text = "";
+            })));
         }
 
         private void txtElapsedTime_TextChanged(object sender, EventArgs e)
@@ -214,6 +314,20 @@ namespace RemoteHealthCare.GUI
         private void lstBikes_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void listChatView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtChatInput_TextChanged(object sender, EventArgs e)
+        {
+            if (txtChatInput.Text.Length > 200)
+            {
+                txtChatInput.Text = txtChatInput.Text.Substring(0, 200);
+                txtInfo.Text = "message can have up to 200 characters";
+            }
         }
     }
 }

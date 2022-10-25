@@ -17,7 +17,7 @@ namespace RemoteHealthCare.GUI
 {
     public partial class AccountLogin : Form
     {
-        internal static ClientScreen clientScreen;
+        public static ClientScreen clientScreen;
         internal static bool isloggedIn = false;
         AccountTypeSelector accountTypeSelector;
         public AccountLogin()

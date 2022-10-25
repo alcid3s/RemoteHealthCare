@@ -83,6 +83,16 @@ namespace DoctorApllication
 
                     switch (id)
                     {
+                        case 0x33:
+                            DoctorScreen.ReceiveMessage(reader.ReadByte(), reader.ReadString(), reader.ReadString(), reader.ReadString());
+                            break;
+
+
+                        case 0x21:
+
+                            DoctorScreen.UpdateBikeData(reader.ReadByte(), reader.ReadInt(2) / 4m, reader.ReadInt(2), reader.ReadInt(2) / 1000m, reader.ReadInt(1));
+                            //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
+                            break;
                         case 0x43:
                             Console.WriteLine("received 0x43");
                             byte id43 = reader.ReadByte();
@@ -108,11 +118,7 @@ namespace DoctorApllication
                             (decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate) data = reader.ReadBikeData();
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
                             break;
-                        case 0x21:
-                            
-                            DoctorScreen.UpdateBikeData(reader.ReadByte(), reader.ReadInt(2) / 4m, reader.ReadInt(2), reader.ReadInt(2) / 1000m, reader.ReadInt(1));
-                            //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
-                            break;
+                        
 
                     }
 

@@ -1,4 +1,5 @@
 ﻿using MessageStream;
+using RemoteHealthCare.GUI;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -56,7 +57,7 @@ namespace RemoteHealthCare.Network
                 Console.WriteLine("Received data");
                 try
                 {
-                    MessageReader reader = new MessageReader(message);
+                    ExtendedMessageReader reader = new ExtendedMessageReader(message);
                     Reply = reader.Id;
 
                     switch (Reply)
@@ -64,10 +65,10 @@ namespace RemoteHealthCare.Network
                         // Receives a message from the doctor
                         case 0x31:
                             byte id31 = reader.ReadByte();
-                            string message31 = Encoding.UTF8.GetString(reader.ReadPacket());
+                            
 
-                            //TODO 25-10-2022: Get this string into the ClientScreen GUI.
-                            Console.WriteLine($"A doctor send you this message: {message31}");
+                            
+                            AccountLogin.clientScreen.AddChatMessage(reader.ReadString(), reader.ReadString(), reader.ReadString());
                             break;
                         //reply wether login was allowed or not
 

@@ -15,12 +15,12 @@ using static DoctorApllication.DoctorClient;
 using System.Net.Sockets;
 using System.Transactions;
 using System.Text.RegularExpressions;
+using System.Diagnostics.Metrics;
 
 namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
-        private int _index = 0;
 
         private byte _selectedUserId = 0;
         private string _selectedUserName = string.Empty;
@@ -39,10 +39,12 @@ namespace DoctorApllication
             RefreshAvailableClients();
         }
 
+        //constructor for a secundary screen, where the refresh and load buttons are disabled
         private DoctorScreen(byte selectedUserId, string selectedUserName)
         {
             InitializeComponent();
             txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+
             lstClients2.Enabled = false;
             btnRefresh.Enabled = false;
             btnLoad.Enabled = false;
@@ -52,7 +54,7 @@ namespace DoctorApllication
 
             Text = "Secondary screen, Connected with: " + selectedUserName;
 
-            _selectedUserId = 1;
+            _selectedUserId = selectedUserId;
             _selectedUserName = selectedUserName;
         }
 
@@ -72,8 +74,8 @@ namespace DoctorApllication
         //clear the client lists and request a new list of clients
         public void RefreshAvailableClients()
         {
-            //clientList.Clear();
-            //lstClients2.Items.Clear();
+            clientList.Clear();
+            lstClients2.Items.Clear();
             Send(new MessageWriter(0x42).GetBytes());
         }
 
@@ -251,9 +253,10 @@ namespace DoctorApllication
                 if(message != "" && _selectedUserId != 0)
                 {
                     // Sends a message to the server, server send it to the client.
-                    MessageWriter writer = new MessageWriter(0x30);
+                    ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
                     writer.WriteByte(_selectedUserId);
-                    writer.WritePacket(Encoding.UTF8.GetBytes(message));
+                    writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    writer.WriteString(message);
                     DoctorClient.Send(writer.GetBytes());
                 }
 
@@ -338,6 +341,29 @@ namespace DoctorApllication
             })));
         }
 
+        public static void ReceiveMessage(byte messageId, string name, string message, string timeSend)
+        {
+            if (DoctorLogin.doctorScreen._selectedUserId == messageId)
+            {
+                DoctorLogin.doctorScreen.Invoke(new Action(new Action(() => {
+                    DoctorLogin.doctorScreen.AddChatMessage(message, name, timeSend);
+                })));
+            }
+
+            screens.ForEach(doctorScreen =>
+            {
+                // If a user is selected.
+                if (doctorScreen._selectedUserId == messageId)
+                {
+                    doctorScreen.Invoke(new Action(new Action(() => {
+                        doctorScreen.Invoke(new Action(new Action(() => {
+                            doctorScreen.AddChatMessage(message, name, timeSend);
+                        })));
+                    })));
+                }
+            });
+        }
+
         private void lstChatBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -384,7 +410,7 @@ namespace DoctorApllication
                             if (_selectedUserName == string.Empty)
                             {
                                 SetConnectedUser(client.Id, client.Name);
-                                Text = "Primary Doctor screen, COnnected with: " + client.Name;
+                                Text = "Primary Doctor screen, Connected with: " + client.Name;
                             }
                             else
                             {
@@ -401,6 +427,11 @@ namespace DoctorApllication
         }
 
         private void txtInfo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox6_TextChanged(object sender, EventArgs e)
         {
 
         }

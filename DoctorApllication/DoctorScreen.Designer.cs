@@ -153,6 +153,7 @@
             this.textBox6.Size = new System.Drawing.Size(100, 23);
             this.textBox6.TabIndex = 13;
             this.textBox6.Text = "important info:";
+            this.textBox6.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
             // 
             // txtInfo
             // 
@@ -237,9 +238,9 @@
             this.lstClients2.Location = new System.Drawing.Point(623, 46);
             this.lstClients2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lstClients2.Name = "lstClients2";
+            this.lstClients2.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lstClients2.Size = new System.Drawing.Size(100, 169);
             this.lstClients2.TabIndex = 22;
-            this.lstClients2.SelectionMode = SelectionMode.MultiExtended;
             // 
             // DoctorScreen
             // 

@@ -70,6 +70,7 @@
             // 
             this.textPasswordLogin.Location = new System.Drawing.Point(32, 152);
             this.textPasswordLogin.Name = "textPasswordLogin";
+            this.textPasswordLogin.PasswordChar = '*';
             this.textPasswordLogin.Size = new System.Drawing.Size(158, 20);
             this.textPasswordLogin.TabIndex = 3;
             this.textPasswordLogin.TextChanged += new System.EventHandler(this.textPasswordLogin_TextChanged);

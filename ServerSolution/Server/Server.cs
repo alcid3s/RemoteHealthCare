@@ -105,10 +105,10 @@ namespace Server
                 try
                 {
                     int receive = client.Socket.Receive(message);
-                    MessageReader reader;
+                    ExtendedMessageReader reader;
                     try
                     {
-                        reader = new MessageReader(message);
+                        reader = new ExtendedMessageReader(message);
                     }
                     catch (Exception e)
                     {
@@ -212,17 +212,41 @@ namespace Server
                         case 0x30:
                             Console.WriteLine("Received 0x30");
                             byte id30 = reader.ReadByte();
-                            string message30 = Encoding.UTF8.GetString(reader.ReadPacket());
-                            Console.WriteLine($"Doctor said: {id30}: {message30}");
+                            string message30Time = reader.ReadString();
+                            string message30 = reader.ReadString();
+                            Console.WriteLine($"Doctor said: {id30}: {message30} at: {message30Time}");
 
-                            MessageWriter writer30 = new MessageWriter(0x31);
+                            ExtendedMessageWriter writer30 = new ExtendedMessageWriter(0x31);
                             writer30.WriteByte(id30);
-                            writer30.WritePacket(Encoding.UTF8.GetBytes(message30));
+                            writer30.WriteString(client.Name);
+                            writer30.WriteString(message30);
+                            writer30.WriteString(message30Time);
                             clientList.ForEach(clientTarget =>
                             {
                                 if(clientTarget.Id == id30)
                                 {
                                     clientTarget.Socket.Send(writer30.GetBytes());
+                                }
+                            });
+
+                            break;
+
+                        // gets a message from a client and sends this to the doctors.
+                        case 0x32:
+                            Console.WriteLine("Received 0x30");
+                            string message32Time = reader.ReadString();
+                            string message32 = reader.ReadString();
+
+                            ExtendedMessageWriter writer32 = new ExtendedMessageWriter(0x33);
+                            writer32.WriteByte(client.Id);
+                            writer32.WriteString(client.Name);
+                            writer32.WriteString(message32);
+                            writer32.WriteString(message32Time);
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.IsDoctor)
+                                {
+                                    clientTarget.Socket.Send(writer32.GetBytes());
                                 }
                             });
 

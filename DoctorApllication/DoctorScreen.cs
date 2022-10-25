@@ -64,7 +64,7 @@ namespace DoctorApllication
             Console.WriteLine("got client: " + clientName + " " + clientId);
             clientList.Add(new Client(clientId, clientName, false));
             this.Invoke(new Action(new Action(() => {
-                lstClients2.Items.Add(clientName);
+                lstClients2.Items.Add($"id: {clientId}, name: {clientName}");
             })));
         }
         
@@ -263,7 +263,7 @@ namespace DoctorApllication
         private void btnLoad_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Loading");
-            string selectedUser = lstClients.SelectedItem.ToString();
+            string? selectedUser = lstClients2.SelectedItem.ToString();
             selectedUser = selectedUser.Replace('i', ' ');
             selectedUser = selectedUser.Replace('d', ' ');
             selectedUser = selectedUser.Replace(':', ' ');

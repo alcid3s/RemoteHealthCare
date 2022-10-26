@@ -16,6 +16,7 @@ using System.Net.Sockets;
 using System.Transactions;
 using System.Text.RegularExpressions;
 using System.Diagnostics.Metrics;
+using System.Threading;
 
 namespace DoctorApllication
 {
@@ -378,16 +379,27 @@ namespace DoctorApllication
         private void btnToAll_Click(object sender, EventArgs e)
         {
             if (txtChatInput.Text != "") {
-                clientList.ForEach(client =>
+                string message = txtChatInput.Text;
+
+                if (DoctorLogin.doctorScreen._selectedUserId > 0)
                 {
+                    
                     ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
-                    writer.WriteByte(client.Id);
+                    writer.WriteByte(DoctorLogin.doctorScreen._selectedUserId);
                     writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
                     writer.WriteString(txtChatInput.Text);
                     DoctorClient.Send(writer.GetBytes());
+
+                    DoctorLogin.doctorScreen.AddChatMessage(message, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                }
+
+
+                screens.ForEach(screen =>
+                {
+                    screen.AddChatMessage(message, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
                 });
 
-                AddChatMessage(txtChatInput.Text, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                
             }
             else
             {
@@ -421,6 +433,11 @@ namespace DoctorApllication
             {
                 txtInfo.Text = "Not connected with client";
             }
+        }
+
+        private void btnEmergency_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

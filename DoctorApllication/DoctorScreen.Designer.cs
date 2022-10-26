@@ -269,6 +269,7 @@
             this.btnEmergency.TabIndex = 25;
             this.btnEmergency.Text = "Emergency";
             this.btnEmergency.UseVisualStyleBackColor = false;
+            this.btnEmergency.Click += new System.EventHandler(this.btnEmergency_Click);
             // 
             // btnToAll
             // 

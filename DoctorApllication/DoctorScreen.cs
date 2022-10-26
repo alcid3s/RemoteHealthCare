@@ -473,5 +473,10 @@ namespace DoctorApllication
                 txtInfo.Text = "Not connected with client";
             }
         }
+
+        private void textBox10_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

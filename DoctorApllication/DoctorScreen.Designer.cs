@@ -62,6 +62,7 @@
             // 
             // textBox5
             // 
+            this.textBox5.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox5.Location = new System.Drawing.Point(488, 273);
             this.textBox5.Name = "textBox5";
@@ -72,6 +73,7 @@
             // 
             // textBox4
             // 
+            this.textBox4.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox4.Location = new System.Drawing.Point(332, 273);
             this.textBox4.Name = "textBox4";
@@ -82,6 +84,7 @@
             // 
             // textBox3
             // 
+            this.textBox3.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Location = new System.Drawing.Point(478, 131);
             this.textBox3.Name = "textBox3";
@@ -92,6 +95,7 @@
             // 
             // textBox2
             // 
+            this.textBox2.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Location = new System.Drawing.Point(332, 131);
             this.textBox2.Name = "textBox2";
@@ -102,7 +106,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox1.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Location = new System.Drawing.Point(12, 54);
             this.textBox1.Name = "textBox1";
@@ -113,6 +117,7 @@
             // 
             // txtET
             // 
+            this.txtET.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtET.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtET.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtET.Location = new System.Drawing.Point(451, 54);
@@ -123,6 +128,7 @@
             // 
             // txtDT
             // 
+            this.txtDT.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtDT.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDT.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtDT.Location = new System.Drawing.Point(271, 196);
@@ -133,6 +139,7 @@
             // 
             // txtHR
             // 
+            this.txtHR.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtHR.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtHR.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtHR.Location = new System.Drawing.Point(451, 196);
@@ -143,6 +150,7 @@
             // 
             // txtSpeed
             // 
+            this.txtSpeed.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtSpeed.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSpeed.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtSpeed.Location = new System.Drawing.Point(297, 54);
@@ -153,9 +161,9 @@
             // 
             // textBox6
             // 
-            this.textBox6.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox6.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox6.Location = new System.Drawing.Point(248, 371);
+            this.textBox6.Location = new System.Drawing.Point(237, 360);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(100, 16);
             this.textBox6.TabIndex = 13;
@@ -164,19 +172,19 @@
             // txtInfo
             // 
             this.txtInfo.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.txtInfo.Location = new System.Drawing.Point(248, 393);
+            this.txtInfo.Location = new System.Drawing.Point(237, 382);
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
-            this.txtInfo.Size = new System.Drawing.Size(451, 23);
+            this.txtInfo.Size = new System.Drawing.Size(592, 23);
             this.txtInfo.TabIndex = 14;
             // 
             // btnLoadData
             // 
-            this.btnLoadData.BackColor = System.Drawing.Color.RosyBrown;
+            this.btnLoadData.BackColor = System.Drawing.Color.PaleGreen;
             this.btnLoadData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoadData.Location = new System.Drawing.Point(851, 344);
+            this.btnLoadData.Location = new System.Drawing.Point(876, 339);
             this.btnLoadData.Name = "btnLoadData";
-            this.btnLoadData.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadData.Size = new System.Drawing.Size(75, 25);
             this.btnLoadData.TabIndex = 4;
             this.btnLoadData.Text = "Load data";
             this.btnLoadData.UseVisualStyleBackColor = false;
@@ -185,7 +193,7 @@
             // txtChatInput
             // 
             this.txtChatInput.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtChatInput.Location = new System.Drawing.Point(714, 248);
+            this.txtChatInput.Location = new System.Drawing.Point(714, 257);
             this.txtChatInput.Name = "txtChatInput";
             this.txtChatInput.PlaceholderText = "Message.";
             this.txtChatInput.Size = new System.Drawing.Size(168, 23);
@@ -200,7 +208,7 @@
             this.ChatCollomn});
             this.lstChatView.FullRowSelect = true;
             this.lstChatView.GridLines = true;
-            this.lstChatView.Location = new System.Drawing.Point(714, 12);
+            this.lstChatView.Location = new System.Drawing.Point(714, 21);
             this.lstChatView.Name = "lstChatView";
             this.lstChatView.Size = new System.Drawing.Size(237, 230);
             this.lstChatView.TabIndex = 0;
@@ -290,7 +298,7 @@
             // 
             this.btnToAll.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnToAll.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnToAll.Location = new System.Drawing.Point(888, 248);
+            this.btnToAll.Location = new System.Drawing.Point(888, 257);
             this.btnToAll.Name = "btnToAll";
             this.btnToAll.Size = new System.Drawing.Size(63, 23);
             this.btnToAll.TabIndex = 26;
@@ -312,7 +320,7 @@
             // 
             // txtResistance
             // 
-            this.txtResistance.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.txtResistance.BackColor = System.Drawing.Color.PapayaWhip;
             this.txtResistance.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtResistance.Location = new System.Drawing.Point(12, 284);
             this.txtResistance.Name = "txtResistance";
@@ -346,7 +354,7 @@
             // 
             // textBox7
             // 
-            this.textBox7.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox7.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox7.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.textBox7.Location = new System.Drawing.Point(12, 12);
@@ -358,7 +366,7 @@
             // 
             // textBox8
             // 
-            this.textBox8.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox8.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox8.Location = new System.Drawing.Point(12, 371);
             this.textBox8.Name = "textBox8";
@@ -369,31 +377,32 @@
             // 
             // textBox9
             // 
-            this.textBox9.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox9.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox9.Location = new System.Drawing.Point(851, 322);
+            this.textBox9.Location = new System.Drawing.Point(881, 317);
             this.textBox9.Name = "textBox9";
             this.textBox9.ReadOnly = true;
-            this.textBox9.Size = new System.Drawing.Size(100, 16);
+            this.textBox9.Size = new System.Drawing.Size(70, 16);
             this.textBox9.TabIndex = 34;
             this.textBox9.Text = "Past sessions";
             // 
             // textBox10
             // 
             this.textBox10.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.textBox10.Location = new System.Drawing.Point(248, 12);
+            this.textBox10.Location = new System.Drawing.Point(237, 21);
             this.textBox10.Multiline = true;
             this.textBox10.Name = "textBox10";
             this.textBox10.ReadOnly = true;
             this.textBox10.Size = new System.Drawing.Size(398, 313);
             this.textBox10.TabIndex = 35;
             this.textBox10.Text = "Session data";
+            this.textBox10.TextChanged += new System.EventHandler(this.textBox10_TextChanged);
             // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(970, 487);
             this.Controls.Add(this.textBox9);
             this.Controls.Add(this.textBox8);

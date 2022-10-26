@@ -40,10 +40,12 @@
             this.txtSpeed = new System.Windows.Forms.TextBox();
             this.btnDataBack = new System.Windows.Forms.Button();
             this.btnForward = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtInfo
             // 
+            this.txtInfo.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.txtInfo.Location = new System.Drawing.Point(117, 15);
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
@@ -52,15 +54,18 @@
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(7, 15);
+            this.textBox6.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox6.Location = new System.Drawing.Point(22, 18);
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(100, 23);
+            this.textBox6.Size = new System.Drawing.Size(89, 16);
             this.textBox6.TabIndex = 39;
             this.textBox6.Text = "important info:";
             // 
             // textBox5
             // 
+            this.textBox5.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox5.Location = new System.Drawing.Point(394, 327);
             this.textBox5.Name = "textBox5";
@@ -71,8 +76,9 @@
             // 
             // textBox4
             // 
+            this.textBox4.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox4.Location = new System.Drawing.Point(238, 327);
+            this.textBox4.Location = new System.Drawing.Point(203, 327);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(100, 16);
@@ -81,6 +87,7 @@
             // 
             // textBox3
             // 
+            this.textBox3.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Location = new System.Drawing.Point(384, 185);
             this.textBox3.Name = "textBox3";
@@ -91,6 +98,7 @@
             // 
             // textBox2
             // 
+            this.textBox2.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Location = new System.Drawing.Point(238, 185);
             this.textBox2.Name = "textBox2";
@@ -101,6 +109,7 @@
             // 
             // txtET
             // 
+            this.txtET.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtET.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtET.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtET.Location = new System.Drawing.Point(357, 108);
@@ -112,6 +121,7 @@
             // 
             // txtDT
             // 
+            this.txtDT.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtDT.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDT.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtDT.Location = new System.Drawing.Point(177, 250);
@@ -123,6 +133,7 @@
             // 
             // txtHR
             // 
+            this.txtHR.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtHR.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtHR.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtHR.Location = new System.Drawing.Point(357, 250);
@@ -134,6 +145,7 @@
             // 
             // txtSpeed
             // 
+            this.txtSpeed.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.txtSpeed.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSpeed.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtSpeed.Location = new System.Drawing.Point(203, 108);
@@ -145,11 +157,12 @@
             // 
             // btnDataBack
             // 
-            this.btnDataBack.BackColor = System.Drawing.SystemColors.Control;
+            this.btnDataBack.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.btnDataBack.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnDataBack.Font = new System.Drawing.Font("Segoe UI", 55F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnDataBack.Location = new System.Drawing.Point(24, 352);
+            this.btnDataBack.Location = new System.Drawing.Point(7, 288);
             this.btnDataBack.Name = "btnDataBack";
-            this.btnDataBack.Size = new System.Drawing.Size(104, 98);
+            this.btnDataBack.Size = new System.Drawing.Size(104, 111);
             this.btnDataBack.TabIndex = 42;
             this.btnDataBack.Text = "<";
             this.btnDataBack.UseVisualStyleBackColor = false;
@@ -157,21 +170,34 @@
             // 
             // btnForward
             // 
-            this.btnForward.BackColor = System.Drawing.SystemColors.Control;
+            this.btnForward.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.btnForward.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnForward.Font = new System.Drawing.Font("Segoe UI", 55F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnForward.Location = new System.Drawing.Point(548, 352);
+            this.btnForward.Location = new System.Drawing.Point(524, 288);
             this.btnForward.Name = "btnForward";
-            this.btnForward.Size = new System.Drawing.Size(104, 98);
+            this.btnForward.Size = new System.Drawing.Size(104, 111);
             this.btnForward.TabIndex = 43;
             this.btnForward.Text = ">";
             this.btnForward.UseVisualStyleBackColor = false;
             this.btnForward.Click += new System.EventHandler(this.button1_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.textBox1.Location = new System.Drawing.Point(117, 53);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(401, 315);
+            this.textBox1.TabIndex = 44;
+            this.textBox1.Text = "Past session data";
+            // 
             // DoctorScreenHistorie
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 450);
+            this.BackColor = System.Drawing.Color.PapayaWhip;
+            this.ClientSize = new System.Drawing.Size(655, 423);
             this.Controls.Add(this.btnForward);
             this.Controls.Add(this.btnDataBack);
             this.Controls.Add(this.txtInfo);
@@ -184,6 +210,7 @@
             this.Controls.Add(this.txtDT);
             this.Controls.Add(this.txtHR);
             this.Controls.Add(this.txtSpeed);
+            this.Controls.Add(this.textBox1);
             this.Name = "DoctorScreenHistorie";
             this.Text = "DoctorScreenHistorie";
             this.Load += new System.EventHandler(this.DoctorScreenHistorie_Load);
@@ -205,5 +232,6 @@
         private TextBox txtSpeed;
         private Button btnDataBack;
         private Button btnForward;
+        private TextBox textBox1;
     }
 }

@@ -200,7 +200,7 @@ namespace Server
                                     if (connectedClient.Name != null && connectedClient.IsDoctor == true) {
                                         //Console.WriteLine("sending data to " + connectedClient.Name);
 
-                                        MessageWriter writer = new MessageWriter(0x21);
+                                        MessageWriter writer = new MessageWriter(0x21, client.Id);
                                         writer.WriteByte(client.Id);
                                         writer.WriteInt(reader.ReadInt(2), 2);
                                         writer.WriteInt(reader.ReadInt(2), 2);
@@ -222,7 +222,7 @@ namespace Server
                             string message30 = reader.ReadString();
                             Console.WriteLine($"Doctor said: {id30}: {message30} at: {message30Time}");
 
-                            ExtendedMessageWriter writer30 = new ExtendedMessageWriter(0x31);
+                            ExtendedMessageWriter writer30 = new ExtendedMessageWriter(0x31, client.Id);
                             writer30.WriteByte(id30);
                             writer30.WriteString(client.Name);
                             writer30.WriteString(message30);
@@ -243,7 +243,7 @@ namespace Server
                             string message32Time = reader.ReadString();
                             string message32 = reader.ReadString();
 
-                            ExtendedMessageWriter writer32 = new ExtendedMessageWriter(0x33);
+                            ExtendedMessageWriter writer32 = new ExtendedMessageWriter(0x33, client.Id);
                             writer32.WriteByte(client.Id);
                             writer32.WriteString(client.Name);
                             writer32.WriteString(message32);
@@ -266,7 +266,7 @@ namespace Server
 
                                 if (connectedClient.IsDoctor == false)
                                 {
-                                    ExtendedMessageWriter messageWriter = new ExtendedMessageWriter(0x43);
+                                    ExtendedMessageWriter messageWriter = new ExtendedMessageWriter(0x43, client.Id);
                                     messageWriter.WriteByte(connectedClient.Id);
                                     messageWriter.WriteString(connectedClient.Name);
                                     client.Socket.Send(messageWriter.GetBytes());
@@ -283,7 +283,7 @@ namespace Server
 
                                 for (int i = 0; i < dirs.Length; i++)
                                 {
-                                    MessageWriter nameWriter = new MessageWriter(0x51);
+                                    MessageWriter nameWriter = new MessageWriter(0x51, client.Id);
                                     string[] name = dirs[i].Split('\\');
                                     dirs[i] = name[name.Length - 1];
                                     nameWriter.WritePacket(Encoding.UTF8.GetBytes(dirs[i]));
@@ -319,7 +319,7 @@ namespace Server
                                     // if credentials is the only thing in the dirs array.
                                     if (dirs.Length == 1)
                                     {
-                                        MessageWriter writer = new MessageWriter(0x53);
+                                        MessageWriter writer = new MessageWriter(0x53, client.Id);
                                         writer.WritePacket(Encoding.UTF8.GetBytes("No sessions found"));
                                         writer.WriteByte(1);
                                         client.Socket.Send(writer.GetBytes());
@@ -335,7 +335,7 @@ namespace Server
                                             string[] nameOfSession = n.Split('\\');
                                             string[] removeSuffix = nameOfSession[nameOfSession.Length - 1].Split('.');
 
-                                            MessageWriter writer = new MessageWriter(0x53);
+                                            MessageWriter writer = new MessageWriter(0x53, client.Id);
                                             writer.WritePacket(Encoding.UTF8.GetBytes(removeSuffix[0]));
                                             Console.WriteLine($"BYTE: {(byte)(dirs.Length - 1)}");
                                             writer.WriteByte((byte)(dirs.Length - 1));
@@ -356,7 +356,7 @@ namespace Server
                             string path54 = AccountManager.PathClient + $"/{accountUser}";
                             Console.WriteLine($"path: {path54}");
 
-                            ExtendedMessageWriter eWriter = new ExtendedMessageWriter(0x55);
+                            ExtendedMessageWriter eWriter = new ExtendedMessageWriter(0x55, client.Id);
 
                             if (Directory.Exists(path54))
                             {
@@ -425,7 +425,7 @@ namespace Server
                             Console.WriteLine("Received 0xA0");
                             byte idA0 = reader.ReadByte();
 
-                            ExtendedMessageWriter writerA0 = new ExtendedMessageWriter(0xA0);
+                            ExtendedMessageWriter writerA0 = new ExtendedMessageWriter(0xA0, client.Id);
 
                             clientList.ForEach(clientTarget =>
                             {
@@ -441,7 +441,7 @@ namespace Server
                             Console.WriteLine("Received 0xA01");
                             byte idA1 = reader.ReadByte();
 
-                            ExtendedMessageWriter writerA1 = new ExtendedMessageWriter(0xA0);
+                            ExtendedMessageWriter writerA1 = new ExtendedMessageWriter(0xA0, client.Id);
 
                             clientList.ForEach(clientTarget =>
                             {
@@ -483,7 +483,7 @@ namespace Server
         }
         private void Logout(Client client)
         {
-            client.Socket.Send(new MessageWriter(0x61).GetBytes());
+            client.Socket.Send(new MessageWriter(0x61, client.Id).GetBytes());
             Console.WriteLine($"Client: {client.Id} has logged out");
         }
         private void PrintBikeInformation(BikeData data, Client client)

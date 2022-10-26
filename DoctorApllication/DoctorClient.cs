@@ -91,6 +91,8 @@ namespace DoctorApllication
                     ExtendedMessageReader reader = new ExtendedMessageReader(message);
                     byte id = reader.Id;
 
+                    Console.WriteLine(reader);
+
                     switch (id)
                     {
                         case 0x33:

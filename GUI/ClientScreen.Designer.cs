@@ -49,50 +49,61 @@ namespace RemoteHealthCare.GUI
             this.txtChatInput = new System.Windows.Forms.TextBox();
             this.txtInfoBox = new System.Windows.Forms.TextBox();
             this.txtInfo = new System.Windows.Forms.TextBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox7 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtSpeed
             // 
+            this.txtSpeed.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtSpeed.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
-            this.txtSpeed.Location = new System.Drawing.Point(50, 64);
+            this.txtSpeed.Location = new System.Drawing.Point(251, 84);
             this.txtSpeed.Name = "txtSpeed";
             this.txtSpeed.ReadOnly = true;
-            this.txtSpeed.Size = new System.Drawing.Size(116, 68);
+            this.txtSpeed.Size = new System.Drawing.Size(116, 61);
             this.txtSpeed.TabIndex = 0;
             // 
             // txtDistanceTravelled
             // 
+            this.txtDistanceTravelled.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtDistanceTravelled.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDistanceTravelled.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
-            this.txtDistanceTravelled.Location = new System.Drawing.Point(36, 204);
+            this.txtDistanceTravelled.Location = new System.Drawing.Point(237, 224);
             this.txtDistanceTravelled.Name = "txtDistanceTravelled";
             this.txtDistanceTravelled.ReadOnly = true;
-            this.txtDistanceTravelled.Size = new System.Drawing.Size(147, 68);
+            this.txtDistanceTravelled.Size = new System.Drawing.Size(147, 61);
             this.txtDistanceTravelled.TabIndex = 1;
             // 
             // txtHeartRate
             // 
+            this.txtHeartRate.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtHeartRate.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtHeartRate.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
-            this.txtHeartRate.Location = new System.Drawing.Point(293, 204);
+            this.txtHeartRate.Location = new System.Drawing.Point(461, 224);
             this.txtHeartRate.Name = "txtHeartRate";
             this.txtHeartRate.ReadOnly = true;
-            this.txtHeartRate.Size = new System.Drawing.Size(113, 68);
+            this.txtHeartRate.Size = new System.Drawing.Size(113, 61);
             this.txtHeartRate.TabIndex = 3;
             // 
             // txtElapsedTime
             // 
+            this.txtElapsedTime.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtElapsedTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtElapsedTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
-            this.txtElapsedTime.Location = new System.Drawing.Point(280, 64);
+            this.txtElapsedTime.Location = new System.Drawing.Point(448, 84);
             this.txtElapsedTime.Name = "txtElapsedTime";
             this.txtElapsedTime.ReadOnly = true;
-            this.txtElapsedTime.Size = new System.Drawing.Size(144, 68);
+            this.txtElapsedTime.Size = new System.Drawing.Size(144, 61);
             this.txtElapsedTime.TabIndex = 2;
+            this.txtElapsedTime.TextChanged += new System.EventHandler(this.txtElapsedTime_TextChanged);
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.textBox1.Location = new System.Drawing.Point(96, 138);
+            this.textBox1.Location = new System.Drawing.Point(297, 158);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 14);
@@ -101,10 +112,10 @@ namespace RemoteHealthCare.GUI
             // 
             // textBox2
             // 
-            this.textBox2.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox2.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.textBox2.Location = new System.Drawing.Point(96, 278);
+            this.textBox2.Location = new System.Drawing.Point(297, 298);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(100, 14);
@@ -113,11 +124,11 @@ namespace RemoteHealthCare.GUI
             // 
             // textBox3
             // 
-            this.textBox3.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox3.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.textBox3.Location = new System.Drawing.Point(324, 138);
+            this.textBox3.Location = new System.Drawing.Point(492, 158);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
             this.textBox3.Size = new System.Drawing.Size(100, 14);
@@ -126,35 +137,39 @@ namespace RemoteHealthCare.GUI
             // 
             // textBox4
             // 
-            this.textBox4.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox4.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.textBox4.Location = new System.Drawing.Point(324, 278);
+            this.textBox4.Location = new System.Drawing.Point(501, 298);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(100, 14);
             this.textBox4.TabIndex = 7;
             this.textBox4.Text = "BPM";
+            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // lstBikes
             // 
+            this.lstBikes.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.lstBikes.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
             this.lstBikes.FormattingEnabled = true;
             this.lstBikes.ItemHeight = 15;
-            this.lstBikes.Location = new System.Drawing.Point(668, 27);
+            this.lstBikes.Location = new System.Drawing.Point(12, 76);
             this.lstBikes.Name = "lstBikes";
             this.lstBikes.Size = new System.Drawing.Size(120, 169);
             this.lstBikes.TabIndex = 8;
             // 
             // button1
             // 
+            this.button1.BackColor = System.Drawing.Color.PaleGreen;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.button1.Location = new System.Drawing.Point(713, 206);
+            this.button1.Location = new System.Drawing.Point(57, 251);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 9;
             this.button1.Text = "Connect";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // contextMenuStrip1
@@ -164,20 +179,21 @@ namespace RemoteHealthCare.GUI
             // 
             // textBox5
             // 
+            this.textBox5.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.textBox5.Location = new System.Drawing.Point(668, 8);
+            this.textBox5.Location = new System.Drawing.Point(12, 57);
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
             this.textBox5.Size = new System.Drawing.Size(100, 14);
             this.textBox5.TabIndex = 11;
-            this.textBox5.Text = "List  of bikes;";
+            this.textBox5.Text = "Select bike:";
             // 
             // btnBack
             // 
             this.btnBack.BackColor = System.Drawing.Color.Red;
             this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnBack.Location = new System.Drawing.Point(13, 8);
+            this.btnBack.Location = new System.Drawing.Point(12, 340);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(75, 23);
             this.btnBack.TabIndex = 12;
@@ -187,13 +203,14 @@ namespace RemoteHealthCare.GUI
             // 
             // lstChatView
             // 
+            this.lstChatView.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.lstChatView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstChatView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ChatCollomn});
             this.lstChatView.FullRowSelect = true;
             this.lstChatView.GridLines = true;
             this.lstChatView.HideSelection = false;
-            this.lstChatView.Location = new System.Drawing.Point(430, 42);
+            this.lstChatView.Location = new System.Drawing.Point(641, 57);
             this.lstChatView.Name = "lstChatView";
             this.lstChatView.Size = new System.Drawing.Size(223, 230);
             this.lstChatView.TabIndex = 0;
@@ -208,7 +225,8 @@ namespace RemoteHealthCare.GUI
             // 
             // txtChatInput
             // 
-            this.txtChatInput.Location = new System.Drawing.Point(430, 278);
+            this.txtChatInput.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.txtChatInput.Location = new System.Drawing.Point(641, 293);
             this.txtChatInput.Name = "txtChatInput";
             this.txtChatInput.Size = new System.Drawing.Size(168, 20);
             this.txtChatInput.TabIndex = 1;
@@ -216,27 +234,54 @@ namespace RemoteHealthCare.GUI
             // 
             // txtInfoBox
             // 
-            this.txtInfoBox.Location = new System.Drawing.Point(96, 8);
+            this.txtInfoBox.BackColor = System.Drawing.Color.PapayaWhip;
+            this.txtInfoBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtInfoBox.Location = new System.Drawing.Point(214, 381);
             this.txtInfoBox.Name = "txtInfoBox";
             this.txtInfoBox.ReadOnly = true;
-            this.txtInfoBox.Size = new System.Drawing.Size(100, 20);
+            this.txtInfoBox.Size = new System.Drawing.Size(100, 13);
             this.txtInfoBox.TabIndex = 13;
             this.txtInfoBox.Text = "important info:";
             // 
             // txtInfo
             // 
-            this.txtInfo.Location = new System.Drawing.Point(202, 7);
+            this.txtInfo.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.txtInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtInfo.Location = new System.Drawing.Point(282, 381);
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
-            this.txtInfo.Size = new System.Drawing.Size(451, 20);
+            this.txtInfo.Size = new System.Drawing.Size(451, 13);
             this.txtInfo.TabIndex = 14;
+            // 
+            // textBox6
+            // 
+            this.textBox6.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox6.Location = new System.Drawing.Point(214, 57);
+            this.textBox6.Multiline = true;
+            this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
+            this.textBox6.Size = new System.Drawing.Size(388, 315);
+            this.textBox6.TabIndex = 15;
+            // 
+            // textBox7
+            // 
+            this.textBox7.BackColor = System.Drawing.Color.PapayaWhip;
+            this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.textBox7.Location = new System.Drawing.Point(12, 12);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(100, 22);
+            this.textBox7.TabIndex = 16;
+            this.textBox7.Text = "Menu";
             // 
             // ClientScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.BackColor = System.Drawing.Color.PapayaWhip;
+            this.ClientSize = new System.Drawing.Size(934, 435);
+            this.Controls.Add(this.textBox7);
             this.Controls.Add(this.txtChatInput);
             this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.btnBack);
@@ -253,6 +298,7 @@ namespace RemoteHealthCare.GUI
             this.Controls.Add(this.txtSpeed);
             this.Controls.Add(this.txtInfo);
             this.Controls.Add(this.txtInfoBox);
+            this.Controls.Add(this.textBox6);
             this.Name = "ClientScreen";
             this.Text = "ClientScreen";
             this.Load += new System.EventHandler(this.ClientScreen_Load);
@@ -281,5 +327,7 @@ namespace RemoteHealthCare.GUI
         private TextBox txtInfoBox;
         private TextBox txtInfo;
         private ColumnHeader ChatCollomn;
+        private TextBox textBox6;
+        private TextBox textBox7;
     }
 }

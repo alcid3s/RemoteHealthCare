@@ -522,5 +522,15 @@ namespace RemoteHealthCare.GUI
 
             return checksum == 0;
         }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtElapsedTime_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

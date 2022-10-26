@@ -27,7 +27,7 @@ namespace RemoteHealthCare
             BikeClient = new BikeClient("145.48.6.10", 6666);
             BikeClient.Connect();
 
-            new Thread(() =>
+           /* new Thread(() =>
             {
                 while (!BikeClient.hasTunnel)
                 {
@@ -35,7 +35,7 @@ namespace RemoteHealthCare
                 }   
 
                 NetworkEngine();
-            }).Start();
+            }).Start();*/
             
 
             Application.Run(loginScreen);

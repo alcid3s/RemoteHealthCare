@@ -74,7 +74,7 @@ namespace Server.Accounts
                     }
                     else
                     {
-                        MessageWriter writer = new MessageWriter(0x80);
+                        MessageWriter writer = new MessageWriter(0x80, _id);
                         writer.WriteByte(0x11);
                         _socket.Send(writer.GetBytes());
                     }
@@ -208,7 +208,7 @@ namespace Server.Accounts
 
         private BikeData GetBikeData(byte[] message)
         {
-            MessageReader reader = new MessageReader(message);
+            MessageReader reader = new MessageReader(message, _id);
             byte identifier = reader.Id;
             decimal elapsedTime = reader.ReadInt(2) / 4m;
             int distanceTravelled = reader.ReadInt(2);

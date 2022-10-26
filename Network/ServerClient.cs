@@ -69,28 +69,35 @@ namespace RemoteHealthCare.Network
                 MessageReader reader;
                 try
                 {
-                    ExtendedMessageReader reader = new ExtendedMessageReader(message);
+                    reader = new MessageReader(message);
                     Reply = reader.Id;
+
+                    if (!reader.Checksum())
+                        continue;
+
+                    Console.WriteLine(reader);
+
+                    byte id = reader.Id;
 
                     switch (Reply)
                     {
                         // Receives a message from the doctor
                         case 0x31:
+                            Console.WriteLine("received 0x31");
                             byte id31 = reader.ReadByte();
-                            
-
-                            
-                            AccountLogin.clientScreen.AddChatMessage(reader.ReadString(), reader.ReadString(), reader.ReadString());
+                            AccountLogin.clientScreen.AddChatMessage(Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()));
                             break;
                         //reply wether login was allowed or not
-
-                        case 0x81:
-                            Program.loginScreen.login(Reply);
-                            break;
-
                         case 0x80:
+                            Console.WriteLine("received 0x80");
                             Program.loginScreen.login(Reply);
                             break;
+                        case 0x81:
+                            Console.WriteLine("received 0x81");
+                            Program.loginScreen.login(Reply);
+                            break;
+
+                        
 
                         //start a session
                         case 0xA0:
@@ -114,31 +121,25 @@ namespace RemoteHealthCare.Network
                             Program.BikeClient.ResetScene();
                             break;
 
+                        case 0x91:
+                            Console.WriteLine("received 0x91");
+                            MessageEncryption encryption = new MessageEncryption(
+                                reader.ReadByte(),
+                                reader.ReadByte(),
+                                (uint)reader.ReadInt(4),
+                                reader.ReadByte());
+
+                            Console.WriteLine(encryption.XorKey1 + " " + encryption.XorKey2);
+
+                            EncryptionManager.Manager.SetEncryption(encryption);
+                            break;
+
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     continue;
-                }
-                if (!reader.Checksum())
-                    continue;
-
-                Console.WriteLine(reader);
-
-                byte id = reader.Id;
-
-                switch (id)
-                {
-                    case 0x91:
-                        MessageEncryption encryption = new MessageEncryption(
-                            reader.ReadByte(), 
-                            reader.ReadByte(), 
-                            (uint)reader.ReadInt(4), 
-                            reader.ReadByte());
-
-                        EncryptionManager.Manager.SetEncryption(encryption);
-                        break;
                 }
             }
         }
@@ -163,7 +164,13 @@ namespace RemoteHealthCare.Network
 
         public static void Send(byte[] message)
         {
+            
+            Console.WriteLine("sending message");
+            
             MessageReader reader = new MessageReader(message);
+
+            
+
             switch (reader.Id)
             {
                 case 0x10:

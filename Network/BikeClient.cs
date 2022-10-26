@@ -174,12 +174,11 @@ namespace RemoteHealthCare.Network {
 
                             // iterates through the list of usernames to find the correct id used for tunneling
                             for (int i = 0; jData["data"].ToArray().Length > i; i++) {
-                                Console.WriteLine(
-                                    $"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
+                                //Console.WriteLine($"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
                                 if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
                                 {
                                     lastLocation = i;
-                                    Console.WriteLine($"New last location = {lastLocation}");
+                                    //Console.WriteLine($"New last location = {lastLocation}");
                                 }
                             }
 
@@ -189,7 +188,7 @@ namespace RemoteHealthCare.Network {
                             // messages the request in the form of JSON to the tunnel
                             string message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session +
                                              "\", \"key\" : \"\"}}";
-                            Console.WriteLine($"Sending: {message}");
+                            //Console.WriteLine($"Sending: {message}");
 
                             // sends the message
                             Send(message);
@@ -199,11 +198,10 @@ namespace RemoteHealthCare.Network {
                         case "tunnel/create":
                             // checks if the received message is an error and prints that message
                             if (jData["data"]["status"].ToObject<string>() == "error") {
-                                Console.WriteLine(
-                                    "Error while making a tunnel with server, are you running NetworkEngine?");
+                                //Console.WriteLine("Error while making a tunnel with server, are you running NetworkEngine?");
                                 if (AccountLogin.clientScreen != null)
                                     AccountLogin.clientScreen.SetErrorMessage("Error while making a tunnel with server, are you running NetworkEngine?");
-                                Console.WriteLine("Server error message:\n" + jData["data"]);
+                                //Console.WriteLine("Server error message:\n" + jData["data"]);
                                 Send(@"{""id"": ""session/list""}");
                                 break;
                             }

@@ -71,32 +71,60 @@ namespace DoctorApllication
         /// </summary>
         private void Listen()
         {
+            new EncryptionManager(false);
+
+            List<MessageWriter> writers = MessageWriter.WriteRsa();
+            foreach (MessageWriter writer in writers)
+            {
+                int received;
+                received = _socket.Send(writer.GetBytes());
+                Thread.Sleep(2000);
+            }
+
             byte tempId = 0x00;
             while (true)
             {
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
+
+                MessageReader reader;
+
+                Console.WriteLine("message received");
                 try
                 {
-                    ExtendedMessageReader reader = new ExtendedMessageReader(message);
+                    reader = new ExtendedMessageReader(message);
+
+                    if (!reader.Checksum())
+                    {
+                        Console.WriteLine("checksum failed");
+                        continue;
+                    }
+                        
+
+                    Console.WriteLine(reader);
                     byte id = reader.Id;
+
+                    Console.WriteLine(id);
 
                     switch (id)
                     {
-                        case 0x33:
-                            DoctorScreen.ReceiveMessage(reader.ReadByte(), reader.ReadString(), reader.ReadString(), reader.ReadString());
-                            break;
-
-
                         case 0x21:
-
+                            Console.WriteLine("received: 0x21");
                             DoctorScreen.UpdateBikeData(reader.ReadByte(), reader.ReadInt(2) / 4m, reader.ReadInt(2), reader.ReadInt(2) / 1000m, reader.ReadInt(1));
                             //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
                             break;
+
+                        case 0x33:
+                            Console.WriteLine("received: 0x33");
+                            DoctorScreen.ReceiveMessage(reader.ReadByte(), Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()));
+                            break;
+
+
+                        
                         case 0x43:
                             Console.WriteLine("received 0x43");
                             byte id43 = reader.ReadByte();
-                            string name43 = reader.ReadString();
+                            string name43 = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"id: {id43}, name: {name43}");
                             DoctorLogin.doctorScreen.AddClient(id43, name43);
                             break;
@@ -115,16 +143,30 @@ namespace DoctorApllication
                             break;
                         case 0x55:
                             Console.WriteLine("Received 0x55");
-                            (decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate) data = reader.ReadBikeData();
-                            DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
+                            
+                            DoctorScreenHistorie.ChangeValues(reader.ReadInt(2), reader.ReadInt(2), reader.ReadInt(2), reader.ReadByte());
                             break;
-                        
+
+                        case 0x91:
+                            Console.WriteLine("received 0x91");
+                            MessageEncryption encryption = new MessageEncryption(
+                                reader.ReadByte(),
+                                reader.ReadByte(),
+                                (uint)reader.ReadInt(4),
+                                reader.ReadByte());
+
+                            Console.WriteLine(encryption.XorKey1 + " " + encryption.XorKey2);
+
+                            EncryptionManager.Manager.SetEncryption(encryption);
+                            break;
+
 
                     }
 
                     // Used only for login now.
                     if (id == 0x80 || id == 0x81)
                     {
+                        Console.WriteLine("Login");
                         // Request sent by the doctor client.
                         byte originalRequest = reader.ReadByte();
 
@@ -146,56 +188,11 @@ namespace DoctorApllication
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.ToString());
                     continue;
                 }
             }
         }
-
-        //public static void sendHistoryRequest(byte id, string s)
-        //{
-        //    MessageWriter writer = new MessageWriter(id);
-        //    switch (id)
-        //    {
-        //        case 0x52:
-        //            //send request for all sessions of specific user 
-        //            writer.WritePacket(Encoding.UTF8.GetBytes(s));
-        //            break;
-        //        case 0x54:
-        //            //opvragen details session
-        //            writer.WritePacket(Encoding.UTF8.GetBytes(s));
-        //            break;
-        //    }
-        //}
-
-        //public static void Receive(MessageReader reader)
-        //{
-        //    switch (reader.Id)
-        //    {
-        //        //Receive information about a client
-        //        case 0x21:
-        //            byte identifier = reader.ReadByte();            // requires to be different for every client, however this id is the id of the bicycle.
-        //            decimal elapsedTime = reader.ReadInt(2) / 4m;
-        //            int distance = reader.ReadInt(2);
-        //            decimal speed = reader.ReadInt(2) / 1000m;
-        //            int heartRate = reader.ReadByte();
-        //            ClientDataList.Add(identifier, new List<ClientData>());
-        //            ClientDataList[identifier].Add(new ClientData(elapsedTime, distance, speed, heartRate));
-        //            break;
-
-        //        case 0x12:
-        //            break;
-
-        //        case 0x51:
-        //            string account = Encoding.UTF8.GetString(reader.ReadPacket());
-        //            accounts.Add(account);
-        //            break;
-
-        //        case 0x53:
-        //            //server sends all sessions
-
-        //            break;
-        //    }
-        //}
 
         /// <summary>
         /// send a message written in a messageWriter

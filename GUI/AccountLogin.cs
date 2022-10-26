@@ -33,7 +33,44 @@ namespace RemoteHealthCare.GUI
             writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameLogin.Text));
             writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
 
-            
+            ServerClient.Send(writer.GetBytes());
+
+            /*int counter = 0;
+            ServerClient.Reply = 0x00;
+
+            ServerClient.Send(writer.GetBytes());
+
+            while (ServerClient.Reply == 0x00)
+            {
+                Thread.Sleep(100);
+                counter++;
+                if (counter == 50)
+                {
+                    throw new Exception("Reply from server takes too long");
+                }
+            }
+
+            Console.WriteLine($"Checking serverClient.Reply = {ServerClient.Reply}");
+            if (ServerClient.Reply == 0x80)
+            {
+                Console.WriteLine("Error");
+            }
+            else if (ServerClient.Reply == 0x81)
+            {
+                if (!IsLoggedIn)
+                {
+                    ClientScreen = new ClientScreen();
+                    IsLoggedIn = true;
+
+                    if (Program.NetworkEngineRunning)
+                    {
+                        ClientScreen.LocalNetworkEngineRunning = true;
+                    }
+                    Hide();
+                    ClientScreen.Show();
+                }*/
+            //}
+
         }
 
         private void btnCreateAccount_Click(object sender, EventArgs e)

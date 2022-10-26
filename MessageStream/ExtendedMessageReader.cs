@@ -9,6 +9,7 @@ namespace MessageStream
 {
     public class ExtendedMessageReader : MessageReader
     {
+        public ExtendedMessageReader(byte[] data, byte address) : base(data, address) { }
         public ExtendedMessageReader(byte[] data) : base(data) { }
 
         /// <summary>

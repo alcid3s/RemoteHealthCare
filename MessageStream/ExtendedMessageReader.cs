@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MessageStream
 {
     public class ExtendedMessageReader : MessageReader
     {
+        public ExtendedMessageReader(byte[] data, byte address) : base(data, address) { }
+
         public ExtendedMessageReader(byte[] data) : base(data) { }
 
         /// <summary>

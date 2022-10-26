@@ -113,7 +113,7 @@ namespace Server
                     ExtendedMessageReader reader;
                     try
                     {
-                        reader = new MessageReader(message, client.Id);
+                        reader = new ExtendedMessageReader(message, client.Id);
                     }
                     catch (Exception e)
                     {

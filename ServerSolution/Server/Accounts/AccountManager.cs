@@ -198,7 +198,7 @@ namespace Server.Accounts
 
         private BikeData GetBikeData(byte[] message)
         {
-            MessageReader reader = new MessageReader(message);
+            MessageReader reader = new MessageReader(message, _id);
             byte identifier = reader.Id;
             decimal elapsedTime = reader.ReadInt(2) / 4m;
             int distanceTravelled = reader.ReadInt(2);

@@ -8,6 +8,7 @@ namespace MessageStream
 {
     public class ExtendedMessageWriter : MessageWriter
     {
+        public ExtendedMessageWriter(byte id, byte address) : base(id, address) { }
         public ExtendedMessageWriter(byte id) : base(id) { }
 
         /// <summary>

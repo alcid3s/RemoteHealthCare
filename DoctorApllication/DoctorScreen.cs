@@ -164,19 +164,12 @@ namespace DoctorApllication
             _selectedUserId = clientId;
             _selectedUserName = clientName;
 
-
-
             Name = "Secondary screen, Connected with: " + clientName;
         }
 
-        /// <summary>
-        /// Show loadDataScreen when the loadData button is pressed
-        /// </summary>
         private void btnLoadData_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Loading LoadDataScreen");
-            _loadDataScreen = new LoadDataScreen();
-            _loadDataScreen.Show();
+            // DEPRICATED
         }
 
         /// <summary>
@@ -421,6 +414,16 @@ namespace DoctorApllication
             {
                 txtInfo.Text = "Not connected with client";
             }
+        }
+
+        /// <summary>
+        /// Show loadDataScreen when the loadData button is pressed
+        /// </summary>
+        private void btnLoadData_Click_1(object sender, EventArgs e)
+        {
+            Console.WriteLine("Loading LoadDataScreen");
+            _loadDataScreen = new LoadDataScreen();
+            _loadDataScreen.Show();
         }
     }
 }

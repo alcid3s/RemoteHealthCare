@@ -26,6 +26,8 @@ namespace DoctorApllication
 
         private void button1_Click(object sender, EventArgs e)
         {
+            txtLoginInfo.Text = "";
+
             ExtendedMessageWriter writer = new ExtendedMessageWriter(0x15);
             writer.WriteString(txtAccountName.Text);
             writer.WriteString(txtPassword.Text);
@@ -63,6 +65,9 @@ namespace DoctorApllication
             }
             else if (CanLogin == 0x80 && this.InvokeRequired)
             {
+                this.Invoke(new Action(new Action(() => {
+                    txtLoginInfo.Text = "Incorrect credentials";
+                })));
                 Console.WriteLine("Faulty credentials");
             }
         }

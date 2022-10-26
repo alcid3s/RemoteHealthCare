@@ -24,12 +24,14 @@ namespace RemoteHealthCare.GUI
         private int _distanceTravelled;
         private decimal _speed;
         private int _heartRate;
+        private bool startedNetwerkEngine = false;
 
         private int _elapsedTimeOverflow;
         private int _distanceTravelledOverflow;
         public bool LocalNetworkEngineRunning { get; set; } = false;
         private IBike _bike;
         private Thread _bikeRunner;
+        AccountLogin accountLogin;
         public ClientScreen()
         {
             InitializeComponent();
@@ -44,22 +46,63 @@ namespace RemoteHealthCare.GUI
 
         public void StartSession()
         {
-            if (!_bikeRunner.IsAlive)
+            Console.WriteLine("startsession");
+            Invoke(new Action(() =>
             {
-                _bikeRunner.Start();
-            }
-            else
-            {
-                _bike.Init();
-            }
+
+                if (Program.NetworkEngineRunning == false && BikeClient.hasTunnel && !startedNetwerkEngine)
+                {
+                    startedNetwerkEngine=true;
+                    Console.WriteLine("starting netwerkengine");
+                    new Thread(() =>
+                    {
+                        Program.NetworkEngine();
+                    }).Start();
+
+                }
+
+                if (_bike == null || _bike.IsRunning == false)
+                {
+                    Console.WriteLine("starting session");
+                    new Thread(() =>
+                    {
+                        StartBike(false);
+                    }).Start();
+                }
+            }));
+            
         }
 
         public void StopSession()
         {
-            _bike.Stop();
+            Console.WriteLine("stopping session");
+            Invoke(new Action(() =>
+            {
+                _bike.Stop();
+                Program.BikeClient.UpdateSpeed(0);
+            }));
+            
         }
 
-        AccountLogin accountLogin;
+        public void Emergency()
+        {
+            Console.WriteLine("emergency");
+            Invoke(new Action(() =>
+            {
+                startedNetwerkEngine = false;
+                _bike.Stop();
+            }));
+        }
+
+        public void SetTxtInfo(string info)
+        {
+            
+            Invoke(new Action(() =>
+                txtInfo.Text = info
+            ));
+        }
+
+       
 
         public void setTxtSpeed(decimal s)
         {

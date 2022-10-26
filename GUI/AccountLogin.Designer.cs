@@ -34,6 +34,7 @@
             this.textPasswordLogin = new System.Windows.Forms.TextBox();
             this.btnLogin = new System.Windows.Forms.Button();
             this.btnCreateAccount = new System.Windows.Forms.Button();
+            this.txtLoginInfo = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // textBox1
@@ -91,11 +92,21 @@
             this.btnCreateAccount.UseVisualStyleBackColor = true;
             this.btnCreateAccount.Click += new System.EventHandler(this.btnCreateAccount_Click);
             // 
+            // txtLoginInfo
+            // 
+            this.txtLoginInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtLoginInfo.Location = new System.Drawing.Point(32, 12);
+            this.txtLoginInfo.Name = "txtLoginInfo";
+            this.txtLoginInfo.ReadOnly = true;
+            this.txtLoginInfo.Size = new System.Drawing.Size(158, 13);
+            this.txtLoginInfo.TabIndex = 6;
+            // 
             // AccountLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(233, 401);
+            this.Controls.Add(this.txtLoginInfo);
             this.Controls.Add(this.btnCreateAccount);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.textPasswordLogin);
@@ -118,5 +129,6 @@
         private System.Windows.Forms.TextBox textPasswordLogin;
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Button btnCreateAccount;
+        private System.Windows.Forms.TextBox txtLoginInfo;
     }
 }

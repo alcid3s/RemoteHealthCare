@@ -407,6 +407,8 @@ namespace DoctorApllication
                 MessageWriter writer = new MessageWriter(0xA0);
                 writer.WriteByte(_selectedUserId);
                 Send(writer.GetBytes());
+
+                txtInfo.Text = "Starting session with: " + _selectedUserName;
             }
             else
             {
@@ -421,6 +423,8 @@ namespace DoctorApllication
                 MessageWriter writer = new MessageWriter(0xA1);
                 writer.WriteByte(_selectedUserId);
                 Send(writer.GetBytes());
+
+                txtInfo.Text = "Stopping session with: " + _selectedUserName;
             }
             else
             {
@@ -430,7 +434,18 @@ namespace DoctorApllication
 
         private void btnEmergency_Click(object sender, EventArgs e)
         {
+            if (_selectedUserId != 0)
+            {
+                MessageWriter writer = new MessageWriter(0xA2);
+                writer.WriteByte(_selectedUserId);
+                Send(writer.GetBytes());
 
+                txtInfo.Text = "Emergency stop for: " + _selectedUserName;
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
         }
 
         /// <summary>

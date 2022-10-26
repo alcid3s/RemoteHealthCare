@@ -386,6 +386,8 @@ namespace RemoteHealthCare.Network {
         /// Resets the simulation scene
         /// </summary>
         public void ResetScene() {
+            Program.NetworkEngineRunning = false;
+
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
             ob["data"]["dest"] = Id;
 

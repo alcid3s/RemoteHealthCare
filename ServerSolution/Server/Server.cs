@@ -408,16 +408,32 @@ namespace Server
 
                         //send a stop session message to a given client
                         case 0xA1:
-                            Console.WriteLine("Received 0xA01");
+                            Console.WriteLine("Received 0xA1");
                             byte idA1 = reader.ReadByte();
 
-                            ExtendedMessageWriter writerA1 = new ExtendedMessageWriter(0xA0);
+                            ExtendedMessageWriter writerA1 = new ExtendedMessageWriter(0xA1);
 
                             clientList.ForEach(clientTarget =>
                             {
                                 if (clientTarget.Id == idA1)
                                 {
                                     clientTarget.Socket.Send(writerA1.GetBytes());
+                                }
+                            });
+                            break;
+
+                        //send an emergency stop session message to a given client
+                        case 0xA2:
+                            Console.WriteLine("Received 0xA2");
+                            byte idA2 = reader.ReadByte();
+
+                            ExtendedMessageWriter writerA2 = new ExtendedMessageWriter(0xA2);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == idA2)
+                                {
+                                    clientTarget.Socket.Send(writerA2.GetBytes());
                                 }
                             });
                             break;

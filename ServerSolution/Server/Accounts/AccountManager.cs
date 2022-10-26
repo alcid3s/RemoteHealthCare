@@ -69,6 +69,12 @@ namespace Server.Accounts
                         writer.WriteByte(0x11);
                         _socket.Send(writer.GetBytes());
                     }
+                    else
+                    {
+                        MessageWriter writer = new MessageWriter(0x80);
+                        writer.WriteByte(0x11);
+                        _socket.Send(writer.GetBytes());
+                    }
                 }
                 else
                 {

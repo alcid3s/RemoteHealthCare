@@ -28,6 +28,7 @@ namespace RemoteHealthCare.GUI
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            txtLoginInfo.Text = "";
             MessageWriter writer = new MessageWriter(0x11);
             writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameLogin.Text));
             writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
@@ -72,6 +73,9 @@ namespace RemoteHealthCare.GUI
             }
             else if (CanLogin == 0x80 && this.InvokeRequired)
             {
+                this.Invoke(new Action(new Action(() => {
+                    txtLoginInfo.Text = "Incorrect credentials";
+                })));
                 Console.WriteLine("Faulty credentials");
             }
         }

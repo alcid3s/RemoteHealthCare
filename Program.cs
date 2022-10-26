@@ -46,7 +46,7 @@ namespace RemoteHealthCare
         /// Creates a network engine with all required nodes
         /// </summary>
         /// <param name="bikeClient">The client that will receive all the commands</param>
-        private static void NetworkEngine()
+        public static void NetworkEngine()
         {
             BikeClient.ResetScene();
             BikeClient.GetScene();

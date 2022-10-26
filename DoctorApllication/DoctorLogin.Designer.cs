@@ -36,6 +36,8 @@
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.txtLoginInfo = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -98,11 +100,21 @@
             this.textBox2.TabIndex = 4;
             this.textBox2.Text = "Account name:";
             // 
+            // txtLoginInfo
+            // 
+            this.txtLoginInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtLoginInfo.Location = new System.Drawing.Point(34, 12);
+            this.txtLoginInfo.Name = "txtLoginInfo";
+            this.txtLoginInfo.ReadOnly = true;
+            this.txtLoginInfo.Size = new System.Drawing.Size(154, 16);
+            this.txtLoginInfo.TabIndex = 6;
+            // 
             // DoctorLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(240, 413);
+            this.Controls.Add(this.txtLoginInfo);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.txtPassword);
@@ -126,5 +138,7 @@
         private TextBox txtPassword;
         private TextBox textBox1;
         private TextBox textBox2;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private TextBox txtLoginInfo;
     }
 }

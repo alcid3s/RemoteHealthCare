@@ -71,6 +71,16 @@ namespace DoctorApllication
         /// </summary>
         private void Listen()
         {
+            new EncryptionManager(false);
+
+            List<MessageWriter> writers = MessageWriter.WriteRsa();
+            foreach (MessageWriter writer in writers)
+            {
+                int received;
+                received = _socket.Send(writer.GetBytes());
+                Thread.Sleep(20);
+            }
+
             byte tempId = 0x00;
             while (true)
             {
@@ -118,8 +128,17 @@ namespace DoctorApllication
                             (decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate) data = reader.ReadBikeData();
                             DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
                             break;
-                        
 
+                        //sets encryption client-side
+                        case 0x91:
+                            MessageEncryption encryption = new MessageEncryption(
+                                reader.ReadByte(),
+                                reader.ReadByte(),
+                                (uint)reader.ReadInt(4),
+                                reader.ReadByte());
+
+                            EncryptionManager.Manager.SetEncryption(encryption);
+                            break;
                     }
 
                     // Used only for login now.

@@ -57,7 +57,7 @@ namespace RemoteHealthCare.Network
             {
                 int received;
                 received = _socket.Send(writer.GetBytes());
-                Thread.Sleep(2000);
+                Thread.Sleep(20);
             }
 
             byte tempId = 0x00;

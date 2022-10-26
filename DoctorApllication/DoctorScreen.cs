@@ -390,13 +390,13 @@ namespace DoctorApllication
                     writer.WriteString(txtChatInput.Text);
                     DoctorClient.Send(writer.GetBytes());
 
-                    DoctorLogin.doctorScreen.AddChatMessage(message, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    DoctorLogin.doctorScreen.AddChatMessage(message, "You - to All", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
                 }
 
 
                 screens.ForEach(screen =>
                 {
-                    screen.AddChatMessage(message, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    screen.AddChatMessage(message, "You - to All", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
                 });
 
                 

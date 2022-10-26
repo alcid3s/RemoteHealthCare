@@ -162,22 +162,15 @@ namespace DoctorApllication
 
         private void SetConnectedUser(byte clientId, string clientName)
         {
-            this._selectedUserId = clientId;
-            this._selectedUserName = clientName;
-
-
+            _selectedUserId = clientId;
+            _selectedUserName = clientName;
 
             Name = "Secondary screen, Connected with: " + clientName;
         }
 
-        /// <summary>
-        /// Show loadDataScreen when the loadData button is pressed
-        /// </summary>
         private void btnLoadData_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Loading LoadDataScreen");
-            _loadDataScreen = new LoadDataScreen();
-            _loadDataScreen.Show();
+            // DEPRICATED
         }
 
         /// <summary>
@@ -370,7 +363,7 @@ namespace DoctorApllication
                     }
                 }
 
-                DoctorScreen.UpdateBikeData(_selectedUserId, 0, 0, 0, 0);
+                UpdateBikeData(_selectedUserId, 0, 0, 0, 0);
             }
         }
         /// <summary>
@@ -438,6 +431,16 @@ namespace DoctorApllication
         private void btnEmergency_Click(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Show loadDataScreen when the loadData button is pressed
+        /// </summary>
+        private void btnLoadData_Click_1(object sender, EventArgs e)
+        {
+            Console.WriteLine("Loading LoadDataScreen");
+            _loadDataScreen = new LoadDataScreen();
+            _loadDataScreen.Show();
         }
     }
 }

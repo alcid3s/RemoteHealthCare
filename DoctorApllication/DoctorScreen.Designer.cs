@@ -53,13 +53,17 @@
             this.btnSetRes = new System.Windows.Forms.Button();
             this.txtResistance = new System.Windows.Forms.TextBox();
             this.nmrResInput = new System.Windows.Forms.NumericUpDown();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.textBox10 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.nmrResInput)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox5
             // 
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox5.Location = new System.Drawing.Point(244, 300);
+            this.textBox5.Location = new System.Drawing.Point(488, 273);
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
             this.textBox5.Size = new System.Drawing.Size(100, 16);
@@ -69,7 +73,7 @@
             // textBox4
             // 
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox4.Location = new System.Drawing.Point(88, 300);
+            this.textBox4.Location = new System.Drawing.Point(332, 273);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(100, 16);
@@ -79,7 +83,7 @@
             // textBox3
             // 
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox3.Location = new System.Drawing.Point(234, 158);
+            this.textBox3.Location = new System.Drawing.Point(478, 131);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
             this.textBox3.Size = new System.Drawing.Size(100, 16);
@@ -89,7 +93,7 @@
             // textBox2
             // 
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox2.Location = new System.Drawing.Point(88, 158);
+            this.textBox2.Location = new System.Drawing.Point(332, 131);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(100, 16);
@@ -98,19 +102,20 @@
             // 
             // textBox1
             // 
+            this.textBox1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(651, 25);
+            this.textBox1.Location = new System.Drawing.Point(12, 54);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 16);
             this.textBox1.TabIndex = 20;
-            this.textBox1.Text = "clients:";
+            this.textBox1.Text = "Select Client";
             // 
             // txtET
             // 
             this.txtET.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtET.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtET.Location = new System.Drawing.Point(207, 81);
+            this.txtET.Location = new System.Drawing.Point(451, 54);
             this.txtET.Name = "txtET";
             this.txtET.ReadOnly = true;
             this.txtET.Size = new System.Drawing.Size(137, 71);
@@ -120,7 +125,7 @@
             // 
             this.txtDT.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtDT.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtDT.Location = new System.Drawing.Point(27, 223);
+            this.txtDT.Location = new System.Drawing.Point(271, 196);
             this.txtDT.Name = "txtDT";
             this.txtDT.ReadOnly = true;
             this.txtDT.Size = new System.Drawing.Size(141, 71);
@@ -130,7 +135,7 @@
             // 
             this.txtHR.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtHR.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtHR.Location = new System.Drawing.Point(207, 223);
+            this.txtHR.Location = new System.Drawing.Point(451, 196);
             this.txtHR.Name = "txtHR";
             this.txtHR.ReadOnly = true;
             this.txtHR.Size = new System.Drawing.Size(97, 71);
@@ -140,7 +145,7 @@
             // 
             this.txtSpeed.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSpeed.Font = new System.Drawing.Font("Segoe UI", 40F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtSpeed.Location = new System.Drawing.Point(53, 81);
+            this.txtSpeed.Location = new System.Drawing.Point(297, 54);
             this.txtSpeed.Name = "txtSpeed";
             this.txtSpeed.ReadOnly = true;
             this.txtSpeed.Size = new System.Drawing.Size(115, 71);
@@ -148,16 +153,18 @@
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(1, 17);
+            this.textBox6.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox6.Location = new System.Drawing.Point(248, 371);
             this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(100, 23);
+            this.textBox6.Size = new System.Drawing.Size(100, 16);
             this.textBox6.TabIndex = 13;
             this.textBox6.Text = "important info:";
             // 
             // txtInfo
             // 
-            this.txtInfo.Location = new System.Drawing.Point(111, 17);
+            this.txtInfo.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtInfo.Location = new System.Drawing.Point(248, 393);
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
             this.txtInfo.Size = new System.Drawing.Size(451, 23);
@@ -165,9 +172,9 @@
             // 
             // btnLoadData
             // 
-            this.btnLoadData.BackColor = System.Drawing.Color.Red;
+            this.btnLoadData.BackColor = System.Drawing.Color.RosyBrown;
             this.btnLoadData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnLoadData.Location = new System.Drawing.Point(676, 353);
+            this.btnLoadData.Location = new System.Drawing.Point(851, 344);
             this.btnLoadData.Name = "btnLoadData";
             this.btnLoadData.Size = new System.Drawing.Size(75, 23);
             this.btnLoadData.TabIndex = 4;
@@ -177,7 +184,8 @@
             // 
             // txtChatInput
             // 
-            this.txtChatInput.Location = new System.Drawing.Point(394, 282);
+            this.txtChatInput.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.txtChatInput.Location = new System.Drawing.Point(714, 248);
             this.txtChatInput.Name = "txtChatInput";
             this.txtChatInput.PlaceholderText = "Message.";
             this.txtChatInput.Size = new System.Drawing.Size(168, 23);
@@ -186,12 +194,13 @@
             // 
             // lstChatView
             // 
+            this.lstChatView.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.lstChatView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstChatView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ChatCollomn});
             this.lstChatView.FullRowSelect = true;
             this.lstChatView.GridLines = true;
-            this.lstChatView.Location = new System.Drawing.Point(394, 46);
+            this.lstChatView.Location = new System.Drawing.Point(714, 12);
             this.lstChatView.Name = "lstChatView";
             this.lstChatView.Size = new System.Drawing.Size(237, 230);
             this.lstChatView.TabIndex = 0;
@@ -206,9 +215,9 @@
             // 
             // btnRefresh
             // 
-            this.btnRefresh.BackColor = System.Drawing.Color.Red;
+            this.btnRefresh.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnRefresh.Location = new System.Drawing.Point(676, 248);
+            this.btnRefresh.Location = new System.Drawing.Point(118, 191);
             this.btnRefresh.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 25);
@@ -219,9 +228,9 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.BackColor = System.Drawing.Color.Lime;
+            this.btnConnect.BackColor = System.Drawing.Color.PaleGreen;
             this.btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnConnect.Location = new System.Drawing.Point(676, 220);
+            this.btnConnect.Location = new System.Drawing.Point(118, 221);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
             this.btnConnect.TabIndex = 21;
@@ -231,9 +240,10 @@
             // 
             // lstClients2
             // 
+            this.lstClients2.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.lstClients2.FormattingEnabled = true;
             this.lstClients2.ItemHeight = 15;
-            this.lstClients2.Location = new System.Drawing.Point(651, 46);
+            this.lstClients2.Location = new System.Drawing.Point(12, 75);
             this.lstClients2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lstClients2.Name = "lstClients2";
             this.lstClients2.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
@@ -242,9 +252,9 @@
             // 
             // btnStart
             // 
-            this.btnStart.BackColor = System.Drawing.Color.Lime;
+            this.btnStart.BackColor = System.Drawing.Color.PaleGreen;
             this.btnStart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnStart.Location = new System.Drawing.Point(394, 353);
+            this.btnStart.Location = new System.Drawing.Point(12, 400);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 23;
@@ -254,9 +264,9 @@
             // 
             // btnStop
             // 
-            this.btnStop.BackColor = System.Drawing.Color.Red;
+            this.btnStop.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnStop.Location = new System.Drawing.Point(475, 353);
+            this.btnStop.Location = new System.Drawing.Point(12, 429);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 23);
             this.btnStop.TabIndex = 24;
@@ -266,21 +276,21 @@
             // 
             // btnEmergency
             // 
-            this.btnEmergency.BackColor = System.Drawing.Color.Red;
+            this.btnEmergency.BackColor = System.Drawing.Color.RosyBrown;
             this.btnEmergency.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnEmergency.Location = new System.Drawing.Point(556, 353);
+            this.btnEmergency.Location = new System.Drawing.Point(12, 458);
             this.btnEmergency.Name = "btnEmergency";
-            this.btnEmergency.Size = new System.Drawing.Size(75, 23);
+            this.btnEmergency.Size = new System.Drawing.Size(111, 23);
             this.btnEmergency.TabIndex = 25;
-            this.btnEmergency.Text = "Emergency";
+            this.btnEmergency.Text = "Emergency Stop";
             this.btnEmergency.UseVisualStyleBackColor = false;
             this.btnEmergency.Click += new System.EventHandler(this.btnEmergency_Click);
             // 
             // btnToAll
             // 
-            this.btnToAll.BackColor = System.Drawing.Color.OldLace;
+            this.btnToAll.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnToAll.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnToAll.Location = new System.Drawing.Point(568, 282);
+            this.btnToAll.Location = new System.Drawing.Point(888, 248);
             this.btnToAll.Name = "btnToAll";
             this.btnToAll.Size = new System.Drawing.Size(63, 23);
             this.btnToAll.TabIndex = 26;
@@ -290,11 +300,11 @@
             // 
             // btnSetRes
             // 
-            this.btnSetRes.BackColor = System.Drawing.Color.OldLace;
+            this.btnSetRes.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.btnSetRes.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSetRes.Location = new System.Drawing.Point(88, 351);
+            this.btnSetRes.Location = new System.Drawing.Point(79, 315);
             this.btnSetRes.Name = "btnSetRes";
-            this.btnSetRes.Size = new System.Drawing.Size(120, 23);
+            this.btnSetRes.Size = new System.Drawing.Size(93, 23);
             this.btnSetRes.TabIndex = 28;
             this.btnSetRes.Text = "Set Resistance";
             this.btnSetRes.UseVisualStyleBackColor = false;
@@ -302,17 +312,19 @@
             // 
             // txtResistance
             // 
+            this.txtResistance.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.txtResistance.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtResistance.Location = new System.Drawing.Point(21, 329);
+            this.txtResistance.Location = new System.Drawing.Point(12, 284);
             this.txtResistance.Name = "txtResistance";
             this.txtResistance.ReadOnly = true;
             this.txtResistance.Size = new System.Drawing.Size(61, 16);
             this.txtResistance.TabIndex = 30;
-            this.txtResistance.Text = "Resistance:";
+            this.txtResistance.Text = "Resistance";
             // 
             // nmrResInput
             // 
-            this.nmrResInput.Location = new System.Drawing.Point(88, 322);
+            this.nmrResInput.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.nmrResInput.Location = new System.Drawing.Point(12, 315);
             this.nmrResInput.Maximum = new decimal(new int[] {
             200,
             0,
@@ -324,7 +336,7 @@
             0,
             0});
             this.nmrResInput.Name = "nmrResInput";
-            this.nmrResInput.Size = new System.Drawing.Size(120, 23);
+            this.nmrResInput.Size = new System.Drawing.Size(61, 23);
             this.nmrResInput.TabIndex = 31;
             this.nmrResInput.Value = new decimal(new int[] {
             1,
@@ -332,11 +344,60 @@
             0,
             0});
             // 
+            // textBox7
+            // 
+            this.textBox7.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox7.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.textBox7.Location = new System.Drawing.Point(12, 12);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.ReadOnly = true;
+            this.textBox7.Size = new System.Drawing.Size(136, 29);
+            this.textBox7.TabIndex = 32;
+            this.textBox7.Text = "Session menu";
+            // 
+            // textBox8
+            // 
+            this.textBox8.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox8.Location = new System.Drawing.Point(12, 371);
+            this.textBox8.Name = "textBox8";
+            this.textBox8.ReadOnly = true;
+            this.textBox8.Size = new System.Drawing.Size(100, 16);
+            this.textBox8.TabIndex = 33;
+            this.textBox8.Text = "Session controls";
+            // 
+            // textBox9
+            // 
+            this.textBox9.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.textBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox9.Location = new System.Drawing.Point(851, 322);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.ReadOnly = true;
+            this.textBox9.Size = new System.Drawing.Size(100, 16);
+            this.textBox9.TabIndex = 34;
+            this.textBox9.Text = "Past sessions";
+            // 
+            // textBox10
+            // 
+            this.textBox10.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.textBox10.Location = new System.Drawing.Point(248, 12);
+            this.textBox10.Multiline = true;
+            this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
+            this.textBox10.Size = new System.Drawing.Size(398, 313);
+            this.textBox10.TabIndex = 35;
+            this.textBox10.Text = "Session data";
+            // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(763, 388);
+            this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.ClientSize = new System.Drawing.Size(970, 487);
+            this.Controls.Add(this.textBox9);
+            this.Controls.Add(this.textBox8);
+            this.Controls.Add(this.textBox7);
             this.Controls.Add(this.nmrResInput);
             this.Controls.Add(this.txtResistance);
             this.Controls.Add(this.btnSetRes);
@@ -361,6 +422,7 @@
             this.Controls.Add(this.txtDT);
             this.Controls.Add(this.txtHR);
             this.Controls.Add(this.txtSpeed);
+            this.Controls.Add(this.textBox10);
             this.Name = "DoctorScreen";
             this.Text = "DoctorScreen";
             this.Load += new System.EventHandler(this.DoctorScreen_Load);
@@ -397,5 +459,9 @@
         private Button btnSetRes;
         private TextBox txtResistance;
         private NumericUpDown nmrResInput;
+        private TextBox textBox7;
+        private TextBox textBox8;
+        private TextBox textBox9;
+        private TextBox textBox10;
     }
 }

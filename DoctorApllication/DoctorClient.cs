@@ -1,4 +1,5 @@
-﻿using MessageStream;
+﻿using DoctorApplication;
+using MessageStream;
 using RemoteHealthCare.GUI;
 using System;
 using System.Collections;
@@ -8,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DoctorApllication
 {
@@ -43,6 +45,9 @@ namespace DoctorApllication
             _port = port;
         }
 
+        /// <summary>
+        /// Connect to the server
+        /// </summary>
         public void Connect()
         {
             IPEndPoint endPoint = new IPEndPoint(_address, _port);
@@ -73,11 +78,29 @@ namespace DoctorApllication
                 int receive = _socket.Receive(message);
                 try
                 {
-                    MessageReader reader = new MessageReader(message);
+                    ExtendedMessageReader reader = new ExtendedMessageReader(message);
                     byte id = reader.Id;
 
                     switch (id)
                     {
+                        case 0x33:
+                            DoctorScreen.ReceiveMessage(reader.ReadByte(), reader.ReadString(), reader.ReadString(), reader.ReadString());
+                            break;
+
+
+                        case 0x21:
+
+                            DoctorScreen.UpdateBikeData(reader.ReadByte(), reader.ReadInt(2) / 4m, reader.ReadInt(2), reader.ReadInt(2) / 1000m, reader.ReadInt(1));
+                            //Console.WriteLine("bike data: " +reader.ReadByte() + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(2) + " " + reader.ReadInt(1));
+                            break;
+                        case 0x43:
+                            Console.WriteLine("received 0x43");
+                            byte id43 = reader.ReadByte();
+                            string name43 = reader.ReadString();
+                            Console.WriteLine($"id: {id43}, name: {name43}");
+                            DoctorLogin.doctorScreen.AddClient(id43, name43);
+                            break;
+
                         // Doctor receives all registered accounts;
                         case 0x51:
                             Console.WriteLine("Received 0x51");
@@ -90,6 +113,12 @@ namespace DoctorApllication
                             int size = reader.ReadByte();
                             LoadDataScreen.FillSessions(sessionName, size);
                             break;
+                        case 0x55:
+                            Console.WriteLine("Received 0x55");
+                            (decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate) data = reader.ReadBikeData();
+                            DoctorScreenHistorie.ChangeValues(data.elapsedTime, data.distanceTravelled, data.speed, data.heartRate);
+                            break;
+                        
 
                     }
 
@@ -168,12 +197,17 @@ namespace DoctorApllication
         //    }
         //}
 
+        /// <summary>
+        /// send a message written in a messageWriter
+        /// </summary>
         public static void Send(byte[] message)
         {
             int received = _socket.Send(message);
         }
 
-        //wait until a new server message has been received
+        /// <summary>
+        /// wait until a new server message has been received
+        /// </summary>
         public static bool waitForReply()
         {
             int counter = 0;

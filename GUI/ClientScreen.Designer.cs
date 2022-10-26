@@ -1,4 +1,6 @@
-﻿namespace RemoteHealthCare.GUI
+﻿using System.Windows.Forms;
+
+namespace RemoteHealthCare.GUI
 {
     partial class ClientScreen
     {
@@ -42,6 +44,11 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.btnBack = new System.Windows.Forms.Button();
+            this.lstChatView = new System.Windows.Forms.ListView();
+            this.ChatCollomn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.txtChatInput = new System.Windows.Forms.TextBox();
+            this.txtInfoBox = new System.Windows.Forms.TextBox();
+            this.txtInfo = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtSpeed
@@ -52,7 +59,6 @@
             this.txtSpeed.ReadOnly = true;
             this.txtSpeed.Size = new System.Drawing.Size(116, 68);
             this.txtSpeed.TabIndex = 0;
-            this.txtSpeed.TextChanged += new System.EventHandler(this.txtSpeed_TextChanged);
             // 
             // txtDistanceTravelled
             // 
@@ -62,7 +68,6 @@
             this.txtDistanceTravelled.ReadOnly = true;
             this.txtDistanceTravelled.Size = new System.Drawing.Size(147, 68);
             this.txtDistanceTravelled.TabIndex = 1;
-            this.txtDistanceTravelled.TextChanged += new System.EventHandler(this.txtDistanceTravelled_TextChanged);
             // 
             // txtHeartRate
             // 
@@ -72,7 +77,6 @@
             this.txtHeartRate.ReadOnly = true;
             this.txtHeartRate.Size = new System.Drawing.Size(113, 68);
             this.txtHeartRate.TabIndex = 3;
-            this.txtHeartRate.TextChanged += new System.EventHandler(this.txtHeartRate_TextChanged);
             // 
             // txtElapsedTime
             // 
@@ -82,7 +86,6 @@
             this.txtElapsedTime.ReadOnly = true;
             this.txtElapsedTime.Size = new System.Drawing.Size(144, 68);
             this.txtElapsedTime.TabIndex = 2;
-            this.txtElapsedTime.TextChanged += new System.EventHandler(this.txtElapsedTime_TextChanged);
             // 
             // textBox1
             // 
@@ -120,7 +123,6 @@
             this.textBox3.Size = new System.Drawing.Size(100, 14);
             this.textBox3.TabIndex = 6;
             this.textBox3.Text = "Seconds";
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // textBox4
             // 
@@ -133,7 +135,6 @@
             this.textBox4.Size = new System.Drawing.Size(100, 14);
             this.textBox4.TabIndex = 7;
             this.textBox4.Text = "BPM";
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // lstBikes
             // 
@@ -154,6 +155,7 @@
             this.button1.TabIndex = 9;
             this.button1.Text = "Connect";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // contextMenuStrip1
             // 
@@ -183,12 +185,60 @@
             this.btnBack.UseVisualStyleBackColor = false;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
+            // lstChatView
+            // 
+            this.lstChatView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstChatView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.ChatCollomn});
+            this.lstChatView.FullRowSelect = true;
+            this.lstChatView.GridLines = true;
+            this.lstChatView.HideSelection = false;
+            this.lstChatView.Location = new System.Drawing.Point(430, 42);
+            this.lstChatView.Name = "lstChatView";
+            this.lstChatView.Size = new System.Drawing.Size(223, 230);
+            this.lstChatView.TabIndex = 0;
+            this.lstChatView.TileSize = new System.Drawing.Size(1, 1);
+            this.lstChatView.UseCompatibleStateImageBehavior = false;
+            this.lstChatView.View = System.Windows.Forms.View.Details;
+            // 
+            // ChatCollomn
+            // 
+            this.ChatCollomn.Text = "Messages";
+            this.ChatCollomn.Width = 338;
+            // 
+            // txtChatInput
+            // 
+            this.txtChatInput.Location = new System.Drawing.Point(430, 278);
+            this.txtChatInput.Name = "txtChatInput";
+            this.txtChatInput.Size = new System.Drawing.Size(168, 20);
+            this.txtChatInput.TabIndex = 1;
+            this.txtChatInput.TextChanged += new System.EventHandler(this.txtChatInput_TextChanged_1);
+            // 
+            // txtInfoBox
+            // 
+            this.txtInfoBox.Location = new System.Drawing.Point(96, 8);
+            this.txtInfoBox.Name = "txtInfoBox";
+            this.txtInfoBox.ReadOnly = true;
+            this.txtInfoBox.Size = new System.Drawing.Size(100, 20);
+            this.txtInfoBox.TabIndex = 13;
+            this.txtInfoBox.Text = "important info:";
+            // 
+            // txtInfo
+            // 
+            this.txtInfo.Location = new System.Drawing.Point(202, 7);
+            this.txtInfo.Name = "txtInfo";
+            this.txtInfo.ReadOnly = true;
+            this.txtInfo.Size = new System.Drawing.Size(451, 20);
+            this.txtInfo.TabIndex = 14;
+            // 
             // ClientScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.txtChatInput);
+            this.Controls.Add(this.lstChatView);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.button1);
@@ -201,6 +251,8 @@
             this.Controls.Add(this.txtElapsedTime);
             this.Controls.Add(this.txtDistanceTravelled);
             this.Controls.Add(this.txtSpeed);
+            this.Controls.Add(this.txtInfo);
+            this.Controls.Add(this.txtInfoBox);
             this.Name = "ClientScreen";
             this.Text = "ClientScreen";
             this.Load += new System.EventHandler(this.ClientScreen_Load);
@@ -224,5 +276,10 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.ListView lstChatView;
+        private System.Windows.Forms.TextBox txtChatInput;
+        private TextBox txtInfoBox;
+        private TextBox txtInfo;
+        private ColumnHeader ChatCollomn;
     }
 }

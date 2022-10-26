@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static Server.Server;
 
 namespace Server.Accounts
 {
@@ -191,13 +192,22 @@ namespace Server.Accounts
         }
         public void SaveData(byte[] message, StreamWriter sr)
         {
-            MessageReader reader = new MessageReader(message, _id);
-            sr.WriteLine('[' +
-                Encoding.UTF8.GetString(
-                Enumerable.Range(0, 7).
-                Select(_ => reader.ReadByte()).
-                ToArray()) + ']');
+            Server.BikeData data = GetBikeData(message);
+            sr.WriteLine($"[{data.ElapsedTime}-{data.DistanceTravelled}-{data.Speed}-{data.HeartRate}]");
         }
+
+        private BikeData GetBikeData(byte[] message)
+        {
+            MessageReader reader = new MessageReader(message);
+            byte identifier = reader.Id;
+            decimal elapsedTime = reader.ReadInt(2) / 4m;
+            int distanceTravelled = reader.ReadInt(2);
+            decimal speed = reader.ReadInt(2) / 1000m;
+            int heartRate = reader.ReadByte();
+
+            return new BikeData(identifier, elapsedTime, distanceTravelled, speed, heartRate);
+        }
+
         public FileStream CreateFile()
         {
             return File.Create(PathClient + "/" + _username +

@@ -1,8 +1,10 @@
 ﻿using MessageStream;
+using RemoteHealthCare.GUI;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 
 namespace RemoteHealthCare.Network
@@ -64,34 +66,60 @@ namespace RemoteHealthCare.Network
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
                 Console.WriteLine("Received data");
-                MessageReader reader;
                 try
                 {
-                    reader = new MessageReader(message);
+                    ExtendedMessageReader reader = new ExtendedMessageReader(message);
+                    Reply = reader.Id;
+                    if (!reader.Checksum())
+                        continue;
+
+                    switch (Reply)
+                    {
+                        // Receives a message from the doctor
+                        case 0x31:
+                            byte id31 = reader.ReadByte();
+                            
+
+                            
+                            AccountLogin.clientScreen.AddChatMessage(reader.ReadString(), reader.ReadString(), reader.ReadString());
+                            break;
+                        //reply whether login was allowed or not
+
+                        case 0x81:
+                            Program.loginScreen.login(Reply);
+                            break;
+
+                        case 0x80:
+                            Program.loginScreen.login(Reply);
+                            break;
+
+                        //sets encryption client-side
+                        case 0x91:
+                            MessageEncryption encryption = new MessageEncryption(
+                                reader.ReadByte(),
+                                reader.ReadByte(),
+                                (uint)reader.ReadInt(4),
+                                reader.ReadByte());
+
+                            EncryptionManager.Manager.SetEncryption(encryption);
+                            break;
+
+                        //start a session
+                        case 0xA0:
+                            AccountLogin.clientScreen.StartSession();
+                            break;
+
+                        //stop a session
+                        case 0xA1:
+                            AccountLogin.clientScreen.StopSession();
+                            break;
+
+                    }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     continue;
-                }
-                if (!reader.Checksum())
-                    continue;
-
-                Console.WriteLine(reader);
-
-                byte id = reader.Id;
-
-                switch (id)
-                {
-                    case 0x91:
-                        MessageEncryption encryption = new MessageEncryption(
-                            reader.ReadByte(), 
-                            reader.ReadByte(), 
-                            (uint)reader.ReadInt(4), 
-                            reader.ReadByte());
-
-                        EncryptionManager.Manager.SetEncryption(encryption);
-                        break;
                 }
             }
         }

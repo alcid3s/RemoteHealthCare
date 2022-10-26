@@ -17,8 +17,8 @@ namespace RemoteHealthCare.GUI
 {
     public partial class AccountLogin : Form
     {
-        internal static ClientScreen ClientScreen;
-        internal static bool IsLoggedIn = false;
+        public static ClientScreen clientScreen;
+        internal static bool isloggedIn = false;
         AccountTypeSelector accountTypeSelector;
         public AccountLogin()
         {
@@ -26,53 +26,13 @@ namespace RemoteHealthCare.GUI
         }
 
 
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnLogin_Click(object sender, EventArgs e)
         {
             MessageWriter writer = new MessageWriter(0x11);
             writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameLogin.Text));
             writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
 
-            int counter = 0;
-            ServerClient.Reply = 0x00;
-
-            ServerClient.Send(writer.GetBytes());
-
-            while (ServerClient.Reply == 0x00)
-            {
-                Thread.Sleep(100);
-                counter++;
-                if (counter == 50)
-                {
-                    throw new Exception("Reply from server takes too long");
-                }
-            }
-
-            Console.WriteLine($"Checking serverClient.Reply = {ServerClient.Reply}");
-            if (ServerClient.Reply == 0x80)
-            {
-                Console.WriteLine("Error");
-            }
-            else if (ServerClient.Reply == 0x81)
-            {
-                if (!IsLoggedIn)
-                {
-                    ClientScreen = new ClientScreen();
-                    IsLoggedIn = true;
-
-                    if (Program.NetworkEngineRunning)
-                    {
-                        ClientScreen.LocalNetworkEngineRunning = true;
-                    }
-                    Hide();
-                    ClientScreen.Show();
-                }
-            }
+            
         }
 
         private void btnCreateAccount_Click(object sender, EventArgs e)
@@ -87,24 +47,32 @@ namespace RemoteHealthCare.GUI
             }
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtAccountNameLogin_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textPasswordLogin_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void AccountLogin_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void login(byte CanLogin)
+        {
+
+            if (CanLogin == 0x81 && this.InvokeRequired)
+            {
+                if (!isloggedIn)
+                {
+                    this.Invoke(new Action(new Action(() => {
+                        clientScreen = new ClientScreen();
+                        isloggedIn = true;
+                        clientScreen.Show();
+                        Hide();
+                    })));
+
+                }
+
+            }
+            else if (CanLogin == 0x80 && this.InvokeRequired)
+            {
+                Console.WriteLine("Faulty credentials");
+            }
         }
     }
 }

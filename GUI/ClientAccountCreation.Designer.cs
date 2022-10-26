@@ -47,7 +47,6 @@ namespace RemoteHealthCare.GUI
             this.txtPasswordAccountCreationClient.Name = "txtPasswordAccountCreationClient";
             this.txtPasswordAccountCreationClient.Size = new System.Drawing.Size(158, 20);
             this.txtPasswordAccountCreationClient.TabIndex = 7;
-            this.txtPasswordAccountCreationClient.TextChanged += new System.EventHandler(this.textPasswordAccountCreationClient_TextChanged);
             // 
             // txtAccountNameAccountCreationClient
             // 
@@ -55,7 +54,6 @@ namespace RemoteHealthCare.GUI
             this.txtAccountNameAccountCreationClient.Name = "txtAccountNameAccountCreationClient";
             this.txtAccountNameAccountCreationClient.Size = new System.Drawing.Size(158, 20);
             this.txtAccountNameAccountCreationClient.TabIndex = 6;
-            this.txtAccountNameAccountCreationClient.TextChanged += new System.EventHandler(this.txtAccountNameAccountCreationClient_TextChanged);
             // 
             // textBox2
             // 
@@ -76,7 +74,6 @@ namespace RemoteHealthCare.GUI
             this.textBox3.Size = new System.Drawing.Size(158, 13);
             this.textBox3.TabIndex = 4;
             this.textBox3.Text = "Account name:";
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // txtPasswordConfirmAccountCreationClient
             // 
@@ -84,7 +81,6 @@ namespace RemoteHealthCare.GUI
             this.txtPasswordConfirmAccountCreationClient.Name = "txtPasswordConfirmAccountCreationClient";
             this.txtPasswordConfirmAccountCreationClient.Size = new System.Drawing.Size(158, 20);
             this.txtPasswordConfirmAccountCreationClient.TabIndex = 9;
-            this.txtPasswordConfirmAccountCreationClient.TextChanged += new System.EventHandler(this.txtPasswordConfirmAccountCreationClient_TextChanged);
             // 
             // txtConfirmPaswordAccountCreationClient
             // 

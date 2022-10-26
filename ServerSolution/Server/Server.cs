@@ -450,6 +450,38 @@ namespace Server
                                 sr.Close();
                             break;
 
+                        //send a stop session message to a given client
+                        case 0x71:
+                            Console.WriteLine("Received 0x71");
+                            byte id71 = reader.ReadByte();
+
+                            MessageWriter writer71 = new MessageWriter(0x71, id71);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == id71)
+                                {
+                                    clientTarget.Socket.Send(writer71.GetBytes());
+                                }
+                            });
+                            break;
+
+                        //send an emergency stop session message to a given client
+                        case 0x73:
+                            Console.WriteLine("Received 0x73");
+                            byte id73 = reader.ReadByte();
+
+                            MessageWriter writer73 = new MessageWriter(073, id73);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == id73)
+                                {
+                                    clientTarget.Socket.Send(writer73.GetBytes());
+                                }
+                            });
+                            break;
+
                         case 0x90:
                             Console.WriteLine(reader);
                             bool continuing = reader.ReadByte() == 1;
@@ -490,37 +522,7 @@ namespace Server
                             });
                             break;
 
-                        //send a stop session message to a given client
-                        case 0x71:
-                            Console.WriteLine("Received 0x71");
-                            byte id71 = reader.ReadByte();
 
-                            MessageWriter writer71 = new MessageWriter(0x71, id71);
-
-                            clientList.ForEach(clientTarget =>
-                            {
-                                if (clientTarget.Id == id71)
-                                {
-                                    clientTarget.Socket.Send(writer71.GetBytes());
-                                }
-                            });
-                            break;
-
-                        //send an emergency stop session message to a given client
-                        case 0x73:
-                            Console.WriteLine("Received 0x73");
-                            byte id73 = reader.ReadByte();
-
-                            MessageWriter writer73 = new MessageWriter(073, id73);
-
-                            clientList.ForEach(clientTarget =>
-                            {
-                                if (clientTarget.Id == id73)
-                                {
-                                    clientTarget.Socket.Send(writer73.GetBytes());
-                                }
-                            });
-                            break;
 
 
                     }

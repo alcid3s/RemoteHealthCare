@@ -93,6 +93,29 @@ namespace RemoteHealthCare.Network
                             byte id31 = reader.ReadByte();
                             AccountLogin.clientScreen.AddChatMessage(Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()));
                             break;
+
+                        //start a session
+                        case 0x70:
+                            Console.WriteLine("starting session received");
+                            AccountLogin.clientScreen.SetTxtInfo("starting session");
+                            AccountLogin.clientScreen.StartSession();
+                            break;
+
+                        //stop a session
+                        case 0xA7:
+                            Console.WriteLine("stopping session received");
+                            AccountLogin.clientScreen.SetTxtInfo("stopping session");
+                            AccountLogin.clientScreen.StopSession();
+                            break;
+
+                        //emergency stop
+                        case 0x73:
+                            Console.WriteLine("emergency stop received");
+                            AccountLogin.clientScreen.SetTxtInfo("Emergency stop");
+                            AccountLogin.clientScreen.Emergency();
+                            Program.BikeClient.ResetScene();
+                            break;
+
                         //reply wether login was allowed or not
                         case 0x80:
                             Console.WriteLine("received 0x80");
@@ -105,27 +128,7 @@ namespace RemoteHealthCare.Network
 
                         
 
-                        //start a session
-                        case 0xA0:
-                            Console.WriteLine("starting session received");
-                            AccountLogin.clientScreen.SetTxtInfo("starting session");
-                            AccountLogin.clientScreen.StartSession();
-                            break;
 
-                        //stop a session
-                        case 0xA1:
-                            Console.WriteLine("stopping session received");
-                            AccountLogin.clientScreen.SetTxtInfo("stopping session");
-                            AccountLogin.clientScreen.StopSession();
-                            break;
-
-                        //emergency stop
-                        case 0xA2:
-                            Console.WriteLine("emergency stop received");
-                            AccountLogin.clientScreen.SetTxtInfo("Emergency stop");
-                            AccountLogin.clientScreen.Emergency();
-                            Program.BikeClient.ResetScene();
-                            break;
 
                         case 0x91:
                             Console.WriteLine("received 0x91");

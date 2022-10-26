@@ -504,6 +504,38 @@ namespace Server
                                 }
                             });
                             break;
+
+                        //Increase the clients bike resistance
+                        case 0xA3:
+                            Console.WriteLine("Received 0xA3");
+                            byte idA3 = reader.ReadByte();
+
+                            MessageWriter writerA3 = new MessageWriter(0xA4, idA3);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == idA3)
+                                {
+                                    clientTarget.Socket.Send(writerA3.GetBytes());
+                                }
+                            });
+                            break;
+
+                        //Decrease the clients bike resistance
+                        case 0xA4:
+                            Console.WriteLine("Received 0xA3");
+                            byte idA4 = reader.ReadByte();
+
+                            MessageWriter writerA4 = new MessageWriter(0xA4, idA4);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == idA4)
+                                {
+                                    clientTarget.Socket.Send(writerA4.GetBytes());
+                                }
+                            });
+                            break;
                     }
                     Thread.Sleep(100);
                 }

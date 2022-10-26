@@ -121,6 +121,20 @@ namespace RemoteHealthCare.Network
                             Program.BikeClient.ResetScene();
                             break;
 
+                        //Increase resistance
+                        case 0xA3:
+                            Console.WriteLine("Increase resistance");
+                            //TODO
+                            //add a way to increase resistance
+                            break;
+
+                        //Decrease resistance
+                        case 0xA4:
+                            Console.WriteLine("Decrease resistance");
+                            //TODO
+                            //add a way to decrease resistance
+                            break;
+
                         case 0x91:
                             Console.WriteLine("received 0x91");
                             MessageEncryption encryption = new MessageEncryption(

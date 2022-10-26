@@ -17,6 +17,7 @@ using System.Transactions;
 using System.Text.RegularExpressions;
 using System.Diagnostics.Metrics;
 using System.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace DoctorApllication
 {
@@ -456,6 +457,52 @@ namespace DoctorApllication
             Console.WriteLine("Loading LoadDataScreen");
             _loadDataScreen = new LoadDataScreen();
             _loadDataScreen.Show();
+        }
+
+        private void btnResDecrease_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                if (int.Parse(txtResistanceLvl.Text) > 0)
+                {
+                    MessageWriter writer = new MessageWriter(0xA4);
+                    writer.WriteByte(_selectedUserId);
+                    Send(writer.GetBytes());
+
+                    txtResistanceLvl.Text = (int.Parse(txtResistanceLvl.Text) - 1).ToString();
+                }
+                else
+                {
+                    txtInfo.Text = "At minimum resistance";
+                }
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
+        }
+
+        private void btnResIncrease_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                if (int.Parse(txtResistanceLvl.Text) < 8)
+                {
+                    MessageWriter writer = new MessageWriter(0xA3);
+                    writer.WriteByte(_selectedUserId);
+                    Send(writer.GetBytes());
+
+                    txtResistanceLvl.Text = (int.Parse(txtResistanceLvl.Text) + 1).ToString();
+                }
+                else
+                {
+                    txtInfo.Text = "At maximum resistance";
+                }
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
         }
     }
 }

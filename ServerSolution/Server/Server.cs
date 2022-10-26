@@ -91,19 +91,28 @@ namespace Server
 
             bool firstRun = true;
 
+            string rsaCode = "";
+            EncryptionManager.Manager.GenerateEncryption(client.Id);
+            MessageEncryption encryption = EncryptionManager.Manager.GetEncryption(client.Id);
+
             // While the client is connected.
             while (client.Socket.Connected)
             {
                 try
                 {
+                    message = new byte[1024];
                     int receive = client.Socket.Receive(message);
+                    Console.WriteLine(receive);
                     MessageReader reader;
                     try
                     {
-                        reader = new MessageReader(message);
+                        reader = new MessageReader(message, client.Id);
+                        Console.WriteLine(BitConverter.ToString(message));
+                        Console.WriteLine(reader);
                     }
                     catch (Exception e)
                     {
+                        Console.WriteLine(e);
                         continue;
                     }
                     if (!reader.Checksum())
@@ -117,7 +126,7 @@ namespace Server
                             string usernameCreate = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordCreate = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Account, data received: {usernameCreate}, {passwordCreate}");
-                            new AccountManager(usernameCreate, passwordCreate, client.Socket, AccountManager.AccountState.CreateClient);
+                            new AccountManager(usernameCreate, passwordCreate, client.Socket, AccountManager.AccountState.CreateClient, client.Id);
                             break;
 
                         // Client wants to login
@@ -125,7 +134,7 @@ namespace Server
                             string usernameLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
-                            account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
+                            account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient, client.Id);
                             if (account.LoggedIn) 
                             { 
                             
@@ -145,7 +154,7 @@ namespace Server
                             string user = Encoding.UTF8.GetString(reader.ReadPacket());
                             string pass = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Doctor Account, data received: {user}, {pass}");
-                            new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
+                            new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor, client.Id);
                             break;
 
                         // Doctor wants to login
@@ -154,7 +163,7 @@ namespace Server
                             string passwordCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make doctor Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
                             account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor,
-                                client.Socket, AccountManager.AccountState.LoginDoctor);
+                                client.Socket, AccountManager.AccountState.LoginDoctor, client.Id);
                             break;
 
                         // Bike information from client to server
@@ -274,6 +283,29 @@ namespace Server
                             firstRun = true;
                             if (sr != null)
                                 sr.Close();
+                            break;
+
+                        case 0x90:
+                            Console.WriteLine(reader);
+                            bool continuing = reader.ReadByte() == 1;
+                            rsaCode += Encoding.UTF8.GetString(reader.ReadPacket());
+                            if (continuing)
+                                break;
+
+                            //sending the encoded cipher keys
+                            {
+                                Console.WriteLine($"Generated encryption for address {client.Id} with keys {encryption}");
+
+                                MessageWriter writer = new MessageWriter(0x91);
+                                writer.WriteByte(encryption.XorKey1);
+                                writer.WriteByte(encryption.XorKey2);
+                                writer.WriteInt((int)encryption.StartIndex, 4);
+                                writer.WriteByte((byte)Math.Round(Math.Log(encryption.StepLength) / Math.Log(2)));
+
+                                client.Socket.Send(writer.GetBytes(rsaCode));
+                                Thread.Sleep(10);
+                            }
+
                             break;
                     }
                     Thread.Sleep(100);

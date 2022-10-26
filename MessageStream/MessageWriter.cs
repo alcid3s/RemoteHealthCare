@@ -160,7 +160,7 @@ namespace MessageStream
             //The length can't be encrypted because decryption is length-dependent
             if (key != null)
                 _data = _data.Take(2).Concat(RsaCipher.Encrypt(key, _data.Skip(2).ToArray())).ToList();
-            else if (_data[1] != 0x90)
+            else if (_data[1] != 0x91)
                 _data = _data.Take(2).Concat(EncryptionManager.Manager.GetEncryption(_address).Encrypt(_data.Skip(2).ToArray())).ToList();
 
             _data[0] = (byte)(_data.Count - 1);

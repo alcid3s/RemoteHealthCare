@@ -30,11 +30,11 @@ namespace MessageStream
             _id = data[1];
 
             if (_id == 0x91)
-                _data = data.Take(2).Concat(RsaCipher.Decrypt(data.Skip(2).Take(length).ToArray())).ToArray();
+                _data = data.Take(2).Concat(RsaCipher.Decrypt(data.Skip(2).Take(length - 1).ToArray())).ToArray();
             else if (_id == 0x90)
                 _data = data;
             else
-                _data = data.Take(2).Concat(encryption.Decrypt(data.Skip(2).Take(length).ToArray())).ToArray();
+                _data = data.Take(2).Concat(encryption.Decrypt(data.Skip(2).Take(length - 1).ToArray())).ToArray();
             _index = 2;
         }
 

@@ -37,10 +37,12 @@ namespace RemoteHealthCare.GUI
             MessageWriter writer = new MessageWriter(0x11);
             writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameLogin.Text));
             writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
-            ServerClient.Send(writer.GetBytes());
 
             int counter = 0;
             ServerClient.Reply = 0x00;
+
+            ServerClient.Send(writer.GetBytes());
+
             while (ServerClient.Reply == 0x00)
             {
                 Thread.Sleep(100);

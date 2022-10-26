@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using MessageStream;
+using System.Text;
 
 namespace Server
 {
@@ -6,6 +7,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
+            new EncryptionManager(true);
             Server server = new(1337);
             server.Run();
 

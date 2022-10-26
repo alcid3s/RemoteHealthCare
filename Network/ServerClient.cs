@@ -1,6 +1,7 @@
 ﻿using MessageStream;
 using RemoteHealthCare.GUI;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -49,12 +50,23 @@ namespace RemoteHealthCare.Network
 
         public void Listen()
         {
+            new EncryptionManager(false);
+
+            List<MessageWriter> writers = MessageWriter.WriteRsa();
+            foreach (MessageWriter writer in writers)
+            {
+                int received;
+                received = _socket.Send(writer.GetBytes());
+                Thread.Sleep(2000);
+            }
+
             byte tempId = 0x00;
             while (true)
             {
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
                 Console.WriteLine("Received data");
+                MessageReader reader;
                 try
                 {
                     ExtendedMessageReader reader = new ExtendedMessageReader(message);
@@ -106,9 +118,28 @@ namespace RemoteHealthCare.Network
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     continue;
                 }
-                
+                if (!reader.Checksum())
+                    continue;
+
+                Console.WriteLine(reader);
+
+                byte id = reader.Id;
+
+                switch (id)
+                {
+                    case 0x91:
+                        MessageEncryption encryption = new MessageEncryption(
+                            reader.ReadByte(), 
+                            reader.ReadByte(), 
+                            (uint)reader.ReadInt(4), 
+                            reader.ReadByte());
+
+                        EncryptionManager.Manager.SetEncryption(encryption);
+                        break;
+                }
             }
         }
 

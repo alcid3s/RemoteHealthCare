@@ -1,4 +1,4 @@
-﻿using MessageStream;
+using MessageStream;
 using RemoteHealthCare.Accounts;
 using RemoteHealthCare.Network;
 using System;
@@ -31,7 +31,7 @@ namespace RemoteHealthCare.GUI
             MessageWriter writer = new MessageWriter(0x11);
             writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameLogin.Text));
             writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
-
+            ServerClient.Send(writer.GetBytes());
             
         }
 

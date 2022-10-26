@@ -1,4 +1,4 @@
-﻿using Server.Accounts;
+using Server.Accounts;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -405,6 +405,7 @@ namespace Server
 
                             //sending the encoded cipher keys
                             {
+                                encryption = EncryptionManager.Manager.GetEncryption(client.Id);
                                 Console.WriteLine($"Generated encryption for address {client.Id} with keys {encryption}");
 
                                 MessageWriter writer = new MessageWriter(0x91);

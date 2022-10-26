@@ -504,6 +504,15 @@ namespace RemoteHealthCare.GUI
             OnUpdate();
         }
 
+        public void SetResistance(byte resistance)
+        {
+            if (_bike != null && _bike.IsRunning)
+            {
+                _bike.SetResistance(resistance);
+            }
+        }
+
+
         private static bool Checksum(byte[] bytes)
         {
             byte checksum = 0;

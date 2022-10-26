@@ -81,6 +81,12 @@ namespace RemoteHealthCare.Network
 
                     switch (Reply)
                     {
+                        //set the resistance
+                        case 0x23:
+                            Console.WriteLine("received 0x23");
+                            AccountLogin.clientScreen.SetResistance(reader.ReadByte());
+                            
+                            break;
                         // Receives a message from the doctor
                         case 0x31:
                             Console.WriteLine("received 0x31");
@@ -119,20 +125,6 @@ namespace RemoteHealthCare.Network
                             AccountLogin.clientScreen.SetTxtInfo("Emergency stop");
                             AccountLogin.clientScreen.Emergency();
                             Program.BikeClient.ResetScene();
-                            break;
-
-                        //Increase resistance
-                        case 0xA3:
-                            Console.WriteLine("Increase resistance");
-                            //TODO
-                            //add a way to increase resistance
-                            break;
-
-                        //Decrease resistance
-                        case 0xA4:
-                            Console.WriteLine("Decrease resistance");
-                            //TODO
-                            //add a way to decrease resistance
                             break;
 
                         case 0x91:

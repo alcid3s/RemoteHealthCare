@@ -248,7 +248,24 @@ namespace Server
                             }
                             break;
 
-                            // gets a message from the doctor and sends this to the corresponding client.
+                        //Set the resistance from doctor to client
+                        case 0x22:
+                            Console.WriteLine("Received 0x22");
+                            byte id22 = reader.ReadByte();
+
+                            MessageWriter writer22 = new MessageWriter(0x23, id22);
+                            writer22.WriteByte(reader.ReadByte());
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == id22)
+                                {
+                                    clientTarget.Socket.Send(writer22.GetBytes());
+                                }
+                            });
+                            break;
+
+                        // gets a message from the doctor and sends this to the corresponding client.
                         case 0x30:
                             Console.WriteLine("Received 0x30");
                             byte id30 = reader.ReadByte();
@@ -458,84 +475,54 @@ namespace Server
                             break;
 
                         //send a start session message to a given client
-                        case 0xA0:
-                            Console.WriteLine("Received 0xA0");
-                            byte idA0 = reader.ReadByte();
+                        case 0x70:
+                            Console.WriteLine("Received 0x70");
+                            byte id70 = reader.ReadByte();
 
-                            MessageWriter writerA0 = new MessageWriter(0xA0, idA0);
+                            MessageWriter writer70 = new MessageWriter(0x70, id70);
 
                             clientList.ForEach(clientTarget =>
                             {
-                                if (clientTarget.Id == idA0)
+                                if (clientTarget.Id == id70)
                                 {
-                                    clientTarget.Socket.Send(writerA0.GetBytes());
+                                    clientTarget.Socket.Send(writer70.GetBytes());
                                 }
                             });
                             break;
 
                         //send a stop session message to a given client
-                        case 0xA1:
-                            Console.WriteLine("Received 0xA1");
-                            byte idA1 = reader.ReadByte();
+                        case 0x71:
+                            Console.WriteLine("Received 0x71");
+                            byte id71 = reader.ReadByte();
 
-                            MessageWriter writerA1 = new MessageWriter(0xA1, idA1);
+                            MessageWriter writer71 = new MessageWriter(0x71, id71);
 
                             clientList.ForEach(clientTarget =>
                             {
-                                if (clientTarget.Id == idA1)
+                                if (clientTarget.Id == id71)
                                 {
-                                    clientTarget.Socket.Send(writerA1.GetBytes());
+                                    clientTarget.Socket.Send(writer71.GetBytes());
                                 }
                             });
                             break;
 
                         //send an emergency stop session message to a given client
-                        case 0xA2:
-                            Console.WriteLine("Received 0xA2");
-                            byte idA2 = reader.ReadByte();
+                        case 0x73:
+                            Console.WriteLine("Received 0x73");
+                            byte id73 = reader.ReadByte();
 
-                            MessageWriter writerA2 = new MessageWriter(0xA2, idA2);
+                            MessageWriter writer73 = new MessageWriter(073, id73);
 
                             clientList.ForEach(clientTarget =>
                             {
-                                if (clientTarget.Id == idA2)
+                                if (clientTarget.Id == id73)
                                 {
-                                    clientTarget.Socket.Send(writerA2.GetBytes());
+                                    clientTarget.Socket.Send(writer73.GetBytes());
                                 }
                             });
                             break;
 
-                        //Increase the clients bike resistance
-                        case 0xA3:
-                            Console.WriteLine("Received 0xA3");
-                            byte idA3 = reader.ReadByte();
 
-                            MessageWriter writerA3 = new MessageWriter(0xA4, idA3);
-
-                            clientList.ForEach(clientTarget =>
-                            {
-                                if (clientTarget.Id == idA3)
-                                {
-                                    clientTarget.Socket.Send(writerA3.GetBytes());
-                                }
-                            });
-                            break;
-
-                        //Decrease the clients bike resistance
-                        case 0xA4:
-                            Console.WriteLine("Received 0xA3");
-                            byte idA4 = reader.ReadByte();
-
-                            MessageWriter writerA4 = new MessageWriter(0xA4, idA4);
-
-                            clientList.ForEach(clientTarget =>
-                            {
-                                if (clientTarget.Id == idA4)
-                                {
-                                    clientTarget.Socket.Send(writerA4.GetBytes());
-                                }
-                            });
-                            break;
                     }
                     Thread.Sleep(100);
                 }

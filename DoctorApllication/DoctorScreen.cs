@@ -459,45 +459,14 @@ namespace DoctorApllication
             _loadDataScreen.Show();
         }
 
-        private void btnResDecrease_Click(object sender, EventArgs e)
-        {
-            if (_selectedUserId != 0)
-            {
-                if (int.Parse(txtResistanceLvl.Text) > 0)
-                {
-                    MessageWriter writer = new MessageWriter(0xA4);
-                    writer.WriteByte(_selectedUserId);
-                    Send(writer.GetBytes());
-
-                    txtResistanceLvl.Text = (int.Parse(txtResistanceLvl.Text) - 1).ToString();
-                }
-                else
-                {
-                    txtInfo.Text = "At minimum resistance";
-                }
-            }
-            else
-            {
-                txtInfo.Text = "Not connected with client";
-            }
-        }
-
         private void btnResIncrease_Click(object sender, EventArgs e)
         {
             if (_selectedUserId != 0)
             {
-                if (int.Parse(txtResistanceLvl.Text) < 8)
-                {
-                    MessageWriter writer = new MessageWriter(0xA3);
-                    writer.WriteByte(_selectedUserId);
-                    Send(writer.GetBytes());
-
-                    txtResistanceLvl.Text = (int.Parse(txtResistanceLvl.Text) + 1).ToString();
-                }
-                else
-                {
-                    txtInfo.Text = "At maximum resistance";
-                }
+                MessageWriter writer = new MessageWriter(0x22);
+                writer.WriteByte(_selectedUserId);
+                writer.WriteByte((byte)nmrResInput.Value);
+                Send(writer.GetBytes());
             }
             else
             {

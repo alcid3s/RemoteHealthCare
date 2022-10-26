@@ -50,10 +50,10 @@
             this.btnStop = new System.Windows.Forms.Button();
             this.btnEmergency = new System.Windows.Forms.Button();
             this.btnToAll = new System.Windows.Forms.Button();
-            this.btnResDecrease = new System.Windows.Forms.Button();
-            this.btnResIncrease = new System.Windows.Forms.Button();
-            this.txtResistanceLvl = new System.Windows.Forms.TextBox();
+            this.btnSetRes = new System.Windows.Forms.Button();
             this.txtResistance = new System.Windows.Forms.TextBox();
+            this.nmrResInput = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.nmrResInput)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox5
@@ -288,60 +288,58 @@
             this.btnToAll.UseVisualStyleBackColor = false;
             this.btnToAll.Click += new System.EventHandler(this.btnToAll_Click);
             // 
-            // btnResDecrease
+            // btnSetRes
             // 
-            this.btnResDecrease.BackColor = System.Drawing.Color.OldLace;
-            this.btnResDecrease.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnResDecrease.Location = new System.Drawing.Point(53, 353);
-            this.btnResDecrease.Name = "btnResDecrease";
-            this.btnResDecrease.Size = new System.Drawing.Size(63, 23);
-            this.btnResDecrease.TabIndex = 27;
-            this.btnResDecrease.Text = "Decrease";
-            this.btnResDecrease.UseVisualStyleBackColor = false;
-            this.btnResDecrease.Click += new System.EventHandler(this.btnResDecrease_Click);
-            // 
-            // btnResIncrease
-            // 
-            this.btnResIncrease.BackColor = System.Drawing.Color.OldLace;
-            this.btnResIncrease.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnResIncrease.Location = new System.Drawing.Point(241, 354);
-            this.btnResIncrease.Name = "btnResIncrease";
-            this.btnResIncrease.Size = new System.Drawing.Size(63, 23);
-            this.btnResIncrease.TabIndex = 28;
-            this.btnResIncrease.Text = "Increase";
-            this.btnResIncrease.UseVisualStyleBackColor = false;
-            this.btnResIncrease.Click += new System.EventHandler(this.btnResIncrease_Click);
-            // 
-            // txtResistanceLvl
-            // 
-            this.txtResistanceLvl.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtResistanceLvl.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtResistanceLvl.Location = new System.Drawing.Point(189, 347);
-            this.txtResistanceLvl.Name = "txtResistanceLvl";
-            this.txtResistanceLvl.ReadOnly = true;
-            this.txtResistanceLvl.Size = new System.Drawing.Size(46, 29);
-            this.txtResistanceLvl.TabIndex = 29;
-            this.txtResistanceLvl.Text = "0";
+            this.btnSetRes.BackColor = System.Drawing.Color.OldLace;
+            this.btnSetRes.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnSetRes.Location = new System.Drawing.Point(88, 351);
+            this.btnSetRes.Name = "btnSetRes";
+            this.btnSetRes.Size = new System.Drawing.Size(120, 23);
+            this.btnSetRes.TabIndex = 28;
+            this.btnSetRes.Text = "Set Resistance";
+            this.btnSetRes.UseVisualStyleBackColor = false;
+            this.btnSetRes.Click += new System.EventHandler(this.btnResIncrease_Click);
             // 
             // txtResistance
             // 
             this.txtResistance.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtResistance.Location = new System.Drawing.Point(122, 357);
+            this.txtResistance.Location = new System.Drawing.Point(21, 329);
             this.txtResistance.Name = "txtResistance";
             this.txtResistance.ReadOnly = true;
             this.txtResistance.Size = new System.Drawing.Size(61, 16);
             this.txtResistance.TabIndex = 30;
-            this.txtResistance.Text = "Resistance";
+            this.txtResistance.Text = "Resistance:";
+            // 
+            // nmrResInput
+            // 
+            this.nmrResInput.Location = new System.Drawing.Point(88, 322);
+            this.nmrResInput.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.nmrResInput.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nmrResInput.Name = "nmrResInput";
+            this.nmrResInput.Size = new System.Drawing.Size(120, 23);
+            this.nmrResInput.TabIndex = 31;
+            this.nmrResInput.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // DoctorScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 388);
+            this.Controls.Add(this.nmrResInput);
             this.Controls.Add(this.txtResistance);
-            this.Controls.Add(this.txtResistanceLvl);
-            this.Controls.Add(this.btnResIncrease);
-            this.Controls.Add(this.btnResDecrease);
+            this.Controls.Add(this.btnSetRes);
             this.Controls.Add(this.btnToAll);
             this.Controls.Add(this.btnEmergency);
             this.Controls.Add(this.btnStop);
@@ -366,6 +364,7 @@
             this.Name = "DoctorScreen";
             this.Text = "DoctorScreen";
             this.Load += new System.EventHandler(this.DoctorScreen_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.nmrResInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -395,9 +394,8 @@
         private Button btnStop;
         private Button btnEmergency;
         private Button btnToAll;
-        private Button btnResDecrease;
-        private Button btnResIncrease;
-        private TextBox txtResistanceLvl;
+        private Button btnSetRes;
         private TextBox txtResistance;
+        private NumericUpDown nmrResInput;
     }
 }

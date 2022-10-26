@@ -121,5 +121,10 @@ namespace RemoteHealthCare.Bikes
         {
             IsRunning = false;
         }
+
+        public void SetResistance(byte resistance)
+        {
+
+        }
     }
 }

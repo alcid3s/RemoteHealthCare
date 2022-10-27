@@ -26,7 +26,7 @@ namespace RemoteHealthCare.GUI
             {
                 if (txtPasswordAccountCreationClient.Text.Length > 7 && txtPasswordAccountCreationClient.Text.Length < 32)
                 {
-                    if (txtPasswordAccountCreationClient == txtPasswordConfirmAccountCreationClient)
+                    if (txtPasswordAccountCreationClient.Text == txtPasswordConfirmAccountCreationClient.Text)
                     {
                         MessageWriter writer = new MessageWriter(0x10);
                         writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameAccountCreationClient.Text));

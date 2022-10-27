@@ -20,8 +20,6 @@ namespace RemoteHealthCare.GUI
             InitializeComponent();
         }
 
-        AccountTypeSelector accountTypeSelector;
-
         private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
         {
             if (txtAccountNameAccountCreationClient.Text.Length < 41 && txtAccountNameAccountCreationClient.Text.Length > 3)
@@ -59,13 +57,9 @@ namespace RemoteHealthCare.GUI
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            if(accountTypeSelector == null)
-            {
-                accountTypeSelector = new AccountTypeSelector();
-                accountTypeSelector.Show();
-            }
 
-            this.Hide();
+            Program.loginScreen.Show();
+            this.Close();
         }
 
         private void ClientAccountCreation_Load(object sender, EventArgs e)

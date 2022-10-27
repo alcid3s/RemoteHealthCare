@@ -64,12 +64,6 @@
     <Compile Include="GUI\AccountLogin.Designer.cs">
       <DependentUpon>AccountLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\AccountTypeSelector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\AccountTypeSelector.Designer.cs">
-      <DependentUpon>AccountTypeSelector.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\ClientAccountCreation.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,9 +119,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\AccountLogin.resx">
       <DependentUpon>AccountLogin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\AccountTypeSelector.resx">
-      <DependentUpon>AccountTypeSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ClientAccountCreation.resx">
       <DependentUpon>ClientAccountCreation.cs</DependentUpon>

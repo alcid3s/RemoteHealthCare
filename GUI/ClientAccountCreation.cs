@@ -35,9 +35,9 @@ namespace RemoteHealthCare.GUI
 
                         // await successfull reply
 
-                        AccountLogin login = new AccountLogin();
-                        Close();
-                        login.Show();
+                        //AccountLogin login = new AccountLogin();
+/*                        Close();
+                        login.Show();*/
                     }
                     else
                     {
@@ -65,6 +65,26 @@ namespace RemoteHealthCare.GUI
         private void ClientAccountCreation_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void AccountCreatedReply(byte reply)
+        {
+            if (reply == 0x80)
+            {
+                Invoke(new Action(() =>
+                {
+                    Program.loginScreen.Show();
+                    this.Close();
+                }));
+                
+            }
+            else
+            {
+                Invoke(new Action(()=>
+                    txtErrorMsg.Text = "Name taken"
+                ));
+                
+            }
         }
     }
 }

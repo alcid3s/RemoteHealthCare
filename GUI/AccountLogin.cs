@@ -19,7 +19,7 @@ namespace RemoteHealthCare.GUI
     {
         public static ClientScreen clientScreen;
         internal static bool isloggedIn = false;
-        ClientAccountCreation client;
+        public static ClientAccountCreation Creation;
 
         public AccountLogin()
         {
@@ -78,8 +78,8 @@ namespace RemoteHealthCare.GUI
         private void btnCreateAccount_Click(object sender, EventArgs e)
         {
 
-            client = new ClientAccountCreation();
-            client.Show();
+            Creation = new ClientAccountCreation();
+            Creation.Show();
             
             this.Hide();
         }

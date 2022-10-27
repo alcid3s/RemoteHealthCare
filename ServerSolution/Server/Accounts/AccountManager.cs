@@ -95,14 +95,26 @@ namespace Server.Accounts
             else if (_state == AccountState.CreateClient)
             {
                 if (Directory.Exists(pathClient))
-                       
-                Directory.CreateDirectory(pathClient);
+                {
+                    MessageWriter writer = new MessageWriter(0x81, _id);
+                    writer.WriteByte(0x10);
+                    _socket.Send(writer.GetBytes());
+                }
+                else
+                {
+                    Directory.CreateDirectory(pathClient);
+                    Thread.Sleep(10);
+                    FileStream fs = File.Create(pathClient + "/credentials" + Suffix);
+                    var sr = new StreamWriter(fs);
+                    sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
+                    sr.Close();
 
-                Thread.Sleep(10);
-                FileStream fs = File.Create(pathClient + "/credentials" + Suffix);
-                var sr = new StreamWriter(fs);
-                sr.WriteLine('[' + _username + "," + _password + ',' + "c]");
-                sr.Close();
+                    MessageWriter writer = new MessageWriter(0x80, _id);
+                    writer.WriteByte(0x10);
+                    _socket.Send(writer.GetBytes());
+                }
+
+                
             }
 
             else if (_state == AccountState.LoginDoctor)
@@ -145,19 +157,31 @@ namespace Server.Accounts
             else if (_state == AccountState.CreateDoctor)
             {
                 Console.WriteLine("Doctor");
-                if (!Directory.Exists(pathDoctor))
+                if (Directory.Exists(pathDoctor)) 
+                {
+                    MessageWriter writerDoctor = new MessageWriter(0x81, _id);
+                    writerDoctor.WriteByte(0x14);
+                    writerDoctor.WriteByte(0x14);
+                    _socket.Send(writerDoctor.GetBytes());
+                    _socket.Send(writerDoctor.GetBytes());
+                }
+                else
+                {
                     Directory.CreateDirectory(pathDoctor);
 
-                Thread.Sleep(10);
-                FileStream fs = File.Create(pathDoctor + "/credentials" + Suffix);
-                var sr = new StreamWriter(fs);
-                sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
-                sr.Close();
+                    Thread.Sleep(10);
+                    FileStream fs = File.Create(pathDoctor + "/credentials" + Suffix);
+                    var sr = new StreamWriter(fs);
+                    sr.WriteLine('[' + _username + "," + _password + ',' + "d]");
+                    sr.Close();
 
-                Console.WriteLine("Sending data back");
-                MessageWriter writer = new MessageWriter(0x81, _id);
-                writer.WriteByte(0x14);
-                _socket.Send(writer.GetBytes());
+                    Console.WriteLine("Sending data back");
+                    MessageWriter writer = new MessageWriter(0x80, _id);
+                    writer.WriteByte(0x14);
+                    _socket.Send(writer.GetBytes());
+                }
+                    
+                
             }
         }
 

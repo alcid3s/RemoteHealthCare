@@ -15,8 +15,8 @@ namespace DoctorApplication
 {
     public partial class DoctorScreenHistorie : Form
     {
-        public string clientUsername { private get; set; } = "";
-        public string clientSession { private get; set; } = "";
+        public string clientUsername { private get; set; } = string.Empty;
+        public string clientSession { private get; set; } = string.Empty;
 
         public static List<BikeData> ReviewedData = new List<BikeData>();
         private int _currentSize = 0;

@@ -107,11 +107,17 @@ namespace DoctorApllication
 
                 if (success)
                 {
-                    _sizeOfSessionList = 0;
-                    SessionNameList.ForEach(val =>
+                    try
                     {
-                        lstSessions.Items.Add(val);
-                    });
+                        _sizeOfSessionList = 0;
+                        SessionNameList.ForEach(val =>
+                        {
+                            lstSessions.Items.Add(val);
+                        });
+                    } catch(Exception ex)
+                    {
+                        txtError.Text = "opes... something went wrong";
+                    }
                 }
             }
 

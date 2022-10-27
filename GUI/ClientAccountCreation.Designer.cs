@@ -49,6 +49,7 @@ namespace RemoteHealthCare.GUI
             this.txtPasswordAccountCreationClient.Cursor = System.Windows.Forms.Cursors.Default;
             this.txtPasswordAccountCreationClient.Location = new System.Drawing.Point(39, 199);
             this.txtPasswordAccountCreationClient.Name = "txtPasswordAccountCreationClient";
+            this.txtPasswordAccountCreationClient.PasswordChar = '*';
             this.txtPasswordAccountCreationClient.Size = new System.Drawing.Size(158, 13);
             this.txtPasswordAccountCreationClient.TabIndex = 7;
             // 
@@ -89,6 +90,7 @@ namespace RemoteHealthCare.GUI
             this.txtPasswordConfirmAccountCreationClient.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtPasswordConfirmAccountCreationClient.Location = new System.Drawing.Point(39, 290);
             this.txtPasswordConfirmAccountCreationClient.Name = "txtPasswordConfirmAccountCreationClient";
+            this.txtPasswordConfirmAccountCreationClient.PasswordChar = '*';
             this.txtPasswordConfirmAccountCreationClient.Size = new System.Drawing.Size(158, 13);
             this.txtPasswordConfirmAccountCreationClient.TabIndex = 9;
             // 

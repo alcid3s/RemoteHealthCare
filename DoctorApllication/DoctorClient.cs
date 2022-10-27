@@ -163,7 +163,7 @@ namespace DoctorApllication
 
                     }
 
-                    // Used only for login now.
+                    // 
                     if (id == 0x80 || id == 0x81)
                     {
                         Console.WriteLine("Login");
@@ -175,8 +175,8 @@ namespace DoctorApllication
                         {
                             // Server replies with 0x14 if doctor wants to create account.
                             case 0x14:
-                                
-                                DoctorLoginCreation.Succes = id;
+
+                                DoctorLogin.doctorLoginCreation.AccountCreatedReply(id);
                                 break;
 
                             // Server replies with 0x15 if the Doctor wants to login. Id will be 0x80 or 0x81.

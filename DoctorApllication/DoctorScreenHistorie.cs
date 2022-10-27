@@ -40,7 +40,6 @@ namespace DoctorApplication
         public DoctorScreenHistorie()
         {
             InitializeComponent();
-            new Thread(UpdateValues).Start();
         }
         // btn forward
         private void button1_Click(object sender, EventArgs e)
@@ -74,7 +73,7 @@ namespace DoctorApplication
 
         private void DoctorScreenHistorie_Load(object sender, EventArgs e)
         {
-
+            new Thread(UpdateValues).Start();
         }
 
         public static void ChangeValues(decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)

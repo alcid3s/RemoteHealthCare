@@ -12,5 +12,7 @@
 
         void Init();
         void Stop();
+
+        void SetResistance(byte resistance);
     }
 }

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RemoteHealthCare.GUI;
 using RemoteHealthCare.Scene;
 
 namespace RemoteHealthCare.Network {
@@ -27,6 +28,7 @@ namespace RemoteHealthCare.Network {
         private Terrain _terrain = new Terrain();
 
         public static bool Connected { get; set; }
+        public static bool hasTunnel { get; set; } = false;
         public string Path { get; }
         public string Id { get; private set; }
 
@@ -66,7 +68,7 @@ namespace RemoteHealthCare.Network {
         /// <param name="ip">Address of the server</param>
         /// <param name="port">Port-number the server is running on</param>
         public void Connect() {
-
+            Console.WriteLine("attempting to create tunnel with server");
 
             // makes a connection with the server with the given ip and port
             try {
@@ -79,7 +81,7 @@ namespace RemoteHealthCare.Network {
             }
             // writes an exception when connection fails
             catch (Exception e) {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Error while connecting to server: " + e.Message);
             }
 
             // creates tunnel to send data 
@@ -172,12 +174,11 @@ namespace RemoteHealthCare.Network {
 
                             // iterates through the list of usernames to find the correct id used for tunneling
                             for (int i = 0; jData["data"].ToArray().Length > i; i++) {
-                                Console.WriteLine(
-                                    $"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
+                                //Console.WriteLine($"session id user: {jData["data"].ElementAt(i)["clientinfo"]["user"]}");
                                 if ($"{jData["data"].ElementAt(i)["clientinfo"]["user"]}" == Environment.UserName)
                                 {
                                     lastLocation = i;
-                                    Console.WriteLine($"New last location = {lastLocation}");
+                                    //Console.WriteLine($"New last location = {lastLocation}");
                                 }
                             }
 
@@ -187,7 +188,7 @@ namespace RemoteHealthCare.Network {
                             // messages the request in the form of JSON to the tunnel
                             string message = @"{""id"" : ""tunnel/create"", ""data"" : {""session"" : """ + session +
                                              "\", \"key\" : \"\"}}";
-                            Console.WriteLine($"Sending: {message}");
+                            //Console.WriteLine($"Sending: {message}");
 
                             // sends the message
                             Send(message);
@@ -197,15 +198,18 @@ namespace RemoteHealthCare.Network {
                         case "tunnel/create":
                             // checks if the received message is an error and prints that message
                             if (jData["data"]["status"].ToObject<string>() == "error") {
-                                Console.WriteLine(
-                                    "Error while making a tunnel with server, are you running NetworkEngine?");
-                                Console.WriteLine("Server error message:\n" + jData["data"]);
+                                //Console.WriteLine("Error while making a tunnel with server, are you running NetworkEngine?");
+                                if (AccountLogin.clientScreen != null)
+                                    AccountLogin.clientScreen.SetErrorMessage("Error while making a tunnel with server, are you running NetworkEngine?");
+                                //Console.WriteLine("Server error message:\n" + jData["data"]);
+                                Send(@"{""id"": ""session/list""}");
                                 break;
                             }
 
                             // gets the tunnel id and saves it
                             Console.WriteLine($"\nServer response Data: {jData["data"]}");
                             Id = jData["data"]["id"].ToObject<string>();
+                            hasTunnel = true;
 
                             // throws an error if the id is empty
                             if (Id != null && Id.Equals(string.Empty)) {
@@ -380,6 +384,8 @@ namespace RemoteHealthCare.Network {
         /// Resets the simulation scene
         /// </summary>
         public void ResetScene() {
+            Program.NetworkEngineRunning = false;
+
             JObject ob = JObject.Parse(File.ReadAllText(Path + "/reset.json"));
             ob["data"]["dest"] = Id;
 

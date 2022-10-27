@@ -34,6 +34,8 @@ namespace RemoteHealthCare.Bikes
         private int _elapsedTimeOverflow;
         private int _distanceTravelledOverflow;
 
+        private BLE _bike;
+
         public async void Init()
         {
             int code = 0;
@@ -80,6 +82,8 @@ namespace RemoteHealthCare.Bikes
             heart.SubscriptionValueChanged += UpdateHeartrateData;
             await heart.SubscribeToCharacteristic("HeartRateMeasurement");
             IsRunning = true;
+
+            _bike = bike;
         }
 
         public void Stop()
@@ -162,6 +166,18 @@ namespace RemoteHealthCare.Bikes
                 }
             }
             OnUpdate();
+        }
+
+        /// <summary>
+        /// Sets the bike's resistance
+        /// </summary>
+        /// <param name="resistance">The resistance, between 0 and 1 inclusive</param>
+        public async void SetResistance(byte resistance)
+        {
+            Console.WriteLine("trying to write resistance " + resistance + " as " + resistance);
+            byte[] values = { 0xa4, 0x09, 0x4e, 0x05, 0x30, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, resistance, (byte)(0xe6 ^ resistance) };
+            while (_bike == null) ;
+            await _bike.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", values);
         }
 
         private static bool Checksum(byte[] bytes)

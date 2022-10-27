@@ -10,12 +10,13 @@ namespace Server
     public class Server
     {
         private Socket? ServerSocket;
+
         private static List<Client> clientList = new List<Client>();
 
         private int _port;
 
         private StreamReader _streamReader0x54 = null;
-        private struct Client
+        internal class Client
         {
             public string? Name { get; set; }
             public Socket? Socket { get; }
@@ -77,6 +78,7 @@ namespace Server
 
                     // saving client to list.
                     Client client = new(null, socket, (byte)(clientList.Count + 1), false);
+                    clientList.Add(client);
 
                     // Every client gets its own thread.
                     new Thread(() =>
@@ -89,7 +91,7 @@ namespace Server
 
         private void HandleClient(Client client)
         {
-            Console.WriteLine($"Client connection from: {client.Socket.RemoteEndPoint}");
+            Console.WriteLine($"Client connection from: {client.Socket.RemoteEndPoint} id: {client.Id}");
             byte[] message = new byte[1024];
 
             AccountManager? account = null;
@@ -97,27 +99,37 @@ namespace Server
 
             bool firstRun = true;
 
-            bool firstTime0x54 = false;
+            bool firstTime0x54 = true;
+
+            string rsaCode = "";
+            EncryptionManager.Manager.GenerateEncryption(client.Id);
+            MessageEncryption encryption = EncryptionManager.Manager.GetEncryption(client.Id);
 
             // While the client is connected.
             while (client.Socket.Connected)
             {
                 try
                 {
+                    message = new byte[1024];
                     int receive = client.Socket.Receive(message);
-                    MessageReader reader;
+                    ExtendedMessageReader reader;
+                    Console.WriteLine("message received");
                     try
                     {
-                        reader = new MessageReader(message);
+                        reader = new ExtendedMessageReader(message, client.Id);
+                        //Console.WriteLine(BitConverter.ToString(message));
+                        //Console.WriteLine(reader);
                     }
                     catch (Exception e)
                     {
+                        Console.WriteLine(e);
                         continue;
                     }
                     if (!reader.Checksum())
                         continue;
 
                     byte id = reader.Id;
+                    Console.WriteLine(reader.Id);
                     switch (id)
                     {
                         // Client wants to create new account
@@ -125,7 +137,7 @@ namespace Server
                             string usernameCreate = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordCreate = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Account, data received: {usernameCreate}, {passwordCreate}");
-                            new AccountManager(usernameCreate, passwordCreate, client.Socket, AccountManager.AccountState.CreateClient);
+                            new AccountManager(usernameCreate, passwordCreate, client.Socket, AccountManager.AccountState.CreateClient, client.Id);
                             break;
 
                         // Client wants to login
@@ -133,12 +145,28 @@ namespace Server
                             string usernameLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             string passwordLogin = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to Login, data received: {usernameLogin}, {passwordLogin}");
-                            account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient);
+                            account = new AccountManager(usernameLogin, passwordLogin, client.Socket, AccountManager.AccountState.LoginClient, client.Id);
                             if (account.LoggedIn) 
                             {
                                 client.Name = usernameLogin;
-                                clientList.Add(client);
-                                Console.WriteLine($"Client: {usernameLogin}, logged in");
+
+                                for (int i = 0; i < clientList.Count; i++)
+                                {
+                                    if (clientList[i].Id == id)
+                                    {
+                                        Client tempClient = clientList[i];
+                                        tempClient.Name = usernameLogin;
+                                        clientList[i] = tempClient;
+                                    }
+                                }
+
+                                clientList.ForEach(s =>
+                                {
+                                    Console.WriteLine(s.Name + s.Id);
+                                });
+
+
+                                    Console.WriteLine($"Client: {usernameLogin}, logged in");
                             }
                             break;
 
@@ -155,7 +183,7 @@ namespace Server
                             string user = Encoding.UTF8.GetString(reader.ReadPacket());
                             string pass = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make new Doctor Account, data received: {user}, {pass}");
-                            account = new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor);
+                            new AccountManager(user, pass, client.Socket, AccountManager.AccountState.CreateDoctor, client.Id);
                             break;
 
                         // Doctor wants to login
@@ -164,13 +192,25 @@ namespace Server
                             string passwordCreateDoctor = Encoding.UTF8.GetString(reader.ReadPacket());
                             Console.WriteLine($"Trying to make doctor Log in, data received: {usernameCreateDoctor}, {passwordCreateDoctor}");
                             account = new AccountManager(usernameCreateDoctor, passwordCreateDoctor,
-                            client.Socket, AccountManager.AccountState.LoginDoctor);
+                                client.Socket, AccountManager.AccountState.LoginDoctor, client.Id);
+
+                            client.Name = usernameCreateDoctor;
+                            Console.WriteLine(client.Name);
 
                             if (account.LoggedIn)
                             {
                                 client.Name = usernameCreateDoctor;
-                                client.IsDoctor = true;
-                                clientList.Add(client);
+
+                                for (int i = 0; i < clientList.Count; i++)
+                                {
+                                    if (clientList[i].Id == client.Id)
+                                    {
+                                        Client tempClient = clientList[i];
+                                        tempClient.Name = usernameCreateDoctor;
+                                        tempClient.IsDoctor = true;
+                                        clientList[i] = tempClient;
+                                    }
+                                }
                             }
                             break;
 
@@ -194,7 +234,7 @@ namespace Server
                                     if (connectedClient.Name != null && connectedClient.IsDoctor == true) {
                                         //Console.WriteLine("sending data to " + connectedClient.Name);
 
-                                        MessageWriter writer = new MessageWriter(0x21);
+                                        MessageWriter writer = new MessageWriter(0x21, connectedClient.Id);
                                         writer.WriteByte(client.Id);
                                         writer.WriteInt(reader.ReadInt(2), 2);
                                         writer.WriteInt(reader.ReadInt(2), 2);
@@ -208,16 +248,36 @@ namespace Server
                             }
                             break;
 
-                            // gets a message from the doctor and sends this to the corresponding client.
+                        //Set the resistance from doctor to client
+                        case 0x22:
+                            Console.WriteLine("Received 0x22");
+                            byte id22 = reader.ReadByte();
+
+                            MessageWriter writer22 = new MessageWriter(0x23, id22);
+                            writer22.WriteByte(reader.ReadByte());
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == id22)
+                                {
+                                    clientTarget.Socket.Send(writer22.GetBytes());
+                                }
+                            });
+                            break;
+
+                        // gets a message from the doctor and sends this to the corresponding client.
                         case 0x30:
                             Console.WriteLine("Received 0x30");
                             byte id30 = reader.ReadByte();
+                            string message30Time = Encoding.UTF8.GetString(reader.ReadPacket());
                             string message30 = Encoding.UTF8.GetString(reader.ReadPacket());
-                            Console.WriteLine($"Doctor said: {id30}: {message30}");
+                            Console.WriteLine($"Doctor said: {id30}: {message30} at: {message30Time}");
 
-                            MessageWriter writer30 = new MessageWriter(0x31);
+                            MessageWriter writer30 = new MessageWriter(0x31, id30);
                             writer30.WriteByte(id30);
-                            writer30.WritePacket(Encoding.UTF8.GetBytes(message30));
+                            writer30.WritePacket(Encoding.UTF8.GetBytes(client.Name));
+                            writer30.WritePacket(Encoding.UTF8.GetBytes((message30)));
+                            writer30.WritePacket(Encoding.UTF8.GetBytes((message30Time)));
                             clientList.ForEach(clientTarget =>
                             {
                                 if(clientTarget.Id == id30)
@@ -228,17 +288,41 @@ namespace Server
 
                             break;
 
+                        // gets a message from a client and sends this to the doctors.
+                        case 0x32:
+                            Console.WriteLine("Received 0x30");
+                            string message32Time = Encoding.UTF8.GetString(reader.ReadPacket());
+                            string message32 = Encoding.UTF8.GetString(reader.ReadPacket());
+
+                            
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.IsDoctor)
+                                {
+                                    MessageWriter writer32 = new MessageWriter(0x33, clientTarget.Id);
+                                    writer32.WriteByte(client.Id);
+                                    writer32.WritePacket(Encoding.UTF8.GetBytes(client.Name));
+                                    writer32.WritePacket(Encoding.UTF8.GetBytes((message32)));
+                                    writer32.WritePacket(Encoding.UTF8.GetBytes(message32Time));
+                                    clientTarget.Socket.Send(writer32.GetBytes());
+                                }
+                            });
+
+                            break;
+
+                        //send available clients to the doctor
                         case 0x42:
                             Console.WriteLine("Received 0x42");
                             foreach (var connectedClient in clientList)
                             {
-                                Console.WriteLine($"has client: {connectedClient.Name}");
+                                Console.WriteLine($"has client: {connectedClient.Name} id: {connectedClient.Id}");
 
-                                if (connectedClient.IsDoctor == false)
+                                if (connectedClient.IsDoctor == false && connectedClient.Name != null)
                                 {
-                                    ExtendedMessageWriter messageWriter = new ExtendedMessageWriter(0x43);
+                                    Console.WriteLine("found client: " + connectedClient.Name);
+                                    MessageWriter messageWriter = new MessageWriter(0x43, client.Id);
                                     messageWriter.WriteByte(connectedClient.Id);
-                                    messageWriter.WriteString(connectedClient.Name);
+                                    messageWriter.WritePacket(Encoding.UTF8.GetBytes(connectedClient.Name));
                                     client.Socket.Send(messageWriter.GetBytes());
                                 }
                             }
@@ -253,7 +337,7 @@ namespace Server
 
                                 for (int i = 0; i < dirs.Length; i++)
                                 {
-                                    MessageWriter nameWriter = new MessageWriter(0x51);
+                                    MessageWriter nameWriter = new MessageWriter(0x51, client.Id);
                                     string[] name = dirs[i].Split('\\');
                                     dirs[i] = name[name.Length - 1];
                                     nameWriter.WritePacket(Encoding.UTF8.GetBytes(dirs[i]));
@@ -289,7 +373,7 @@ namespace Server
                                     // if credentials is the only thing in the dirs array.
                                     if (dirs.Length == 1)
                                     {
-                                        MessageWriter writer = new MessageWriter(0x53);
+                                        MessageWriter writer = new MessageWriter(0x53, client.Id);
                                         writer.WritePacket(Encoding.UTF8.GetBytes("No sessions found"));
                                         writer.WriteByte(1);
                                         client.Socket.Send(writer.GetBytes());
@@ -305,7 +389,7 @@ namespace Server
                                             string[] nameOfSession = n.Split('\\');
                                             string[] removeSuffix = nameOfSession[nameOfSession.Length - 1].Split('.');
 
-                                            MessageWriter writer = new MessageWriter(0x53);
+                                            MessageWriter writer = new MessageWriter(0x53, client.Id);
                                             writer.WritePacket(Encoding.UTF8.GetBytes(removeSuffix[0]));
                                             Console.WriteLine($"BYTE: {(byte)(dirs.Length - 1)}");
                                             writer.WriteByte((byte)(dirs.Length - 1));
@@ -326,7 +410,7 @@ namespace Server
                             string path54 = AccountManager.PathClient + $"/{accountUser}";
                             Console.WriteLine($"path: {path54}");
 
-                            ExtendedMessageWriter eWriter = new ExtendedMessageWriter(0x55);
+                            MessageWriter eWriter = new MessageWriter(0x55, client.Id);
 
                             if (Directory.Exists(path54))
                             {
@@ -345,10 +429,10 @@ namespace Server
                                         if (data != null)
                                         {
                                             BikeData bikeData = ParseBikeData(data);
-                                            eWriter.WriteBikeData(bikeData.ElapsedTime,
-                                                bikeData.DistanceTravelled,
-                                                bikeData.Speed,
-                                                bikeData.HeartRate);
+                                            eWriter.WriteInt((short)Math.Round(bikeData.ElapsedTime * 4), 2);
+                                            eWriter.WriteInt(bikeData.DistanceTravelled, 2);
+                                            eWriter.WriteInt((short)Math.Round(bikeData.Speed * 1000), 2);
+                                            eWriter.WriteInt(bikeData.HeartRate, 1);
                                             client.Socket.Send(eWriter.GetBytes());
                                         }
                                     }
@@ -365,6 +449,82 @@ namespace Server
                             if (sr != null)
                                 sr.Close();
                             break;
+
+                        //send a stop session message to a given client
+                        case 0x71:
+                            Console.WriteLine("Received 0x71");
+                            byte id71 = reader.ReadByte();
+
+                            MessageWriter writer71 = new MessageWriter(0x71, id71);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == id71)
+                                {
+                                    clientTarget.Socket.Send(writer71.GetBytes());
+                                }
+                            });
+                            break;
+
+                        //send an emergency stop session message to a given client
+                        case 0x73:
+                            Console.WriteLine("Received 0x73");
+                            byte id73 = reader.ReadByte();
+
+                            MessageWriter writer73 = new MessageWriter(073, id73);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == id73)
+                                {
+                                    clientTarget.Socket.Send(writer73.GetBytes());
+                                }
+                            });
+                            break;
+
+                        case 0x90:
+                            Console.WriteLine(reader);
+                            bool continuing = reader.ReadByte() == 1;
+                            rsaCode += Encoding.UTF8.GetString(reader.ReadPacket());
+                            if (continuing)
+                                break;
+
+                            //sending the encoded cipher keys
+                            {
+                                encryption = EncryptionManager.Manager.GetEncryption(client.Id);
+                                Console.WriteLine($"Generated encryption for address {client.Id} with keys {encryption}");
+
+                                MessageWriter writer = new MessageWriter(0x91);
+                                writer.WriteByte(encryption.XorKey1);
+                                writer.WriteByte(encryption.XorKey2);
+                                writer.WriteInt((int)encryption.StartIndex, 4);
+                                writer.WriteByte((byte)Math.Round(Math.Log(encryption.StepLength) / Math.Log(2)));
+
+                                client.Socket.Send(writer.GetBytes(rsaCode));
+                                Thread.Sleep(10);
+                            }
+
+                            break;
+
+                        //send a start session message to a given client
+                        case 0x70:
+                            Console.WriteLine("Received 0x70");
+                            byte id70 = reader.ReadByte();
+
+                            MessageWriter writer70 = new MessageWriter(0x70, id70);
+
+                            clientList.ForEach(clientTarget =>
+                            {
+                                if (clientTarget.Id == id70)
+                                {
+                                    clientTarget.Socket.Send(writer70.GetBytes());
+                                }
+                            });
+                            break;
+
+
+
+
                     }
                     Thread.Sleep(100);
                 }

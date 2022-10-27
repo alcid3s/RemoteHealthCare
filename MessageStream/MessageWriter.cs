@@ -13,8 +13,14 @@ namespace MessageStream
         private List<byte> _data;
         private bool _closed;
 
-        public MessageWriter(byte id)
+        private byte _address = 0;
+
+        public MessageWriter(byte id) : this(id, 0) { }
+
+        public MessageWriter(byte id, byte address)
         {
+            _address = address;
+
             _data = new List<byte>();
             _closed = false;
 
@@ -96,14 +102,41 @@ namespace MessageStream
             WritePacket(bytes);
         }
 
+        public static List<MessageWriter> WriteRsa()
+        {
+            RsaCipher.SetCipher();
+
+            List<MessageWriter> messageWriters = new List<MessageWriter>();
+
+            for (int i = 0; i < (RsaCipher.PublicKeyString.Length + 249) / 250; i++)
+            {
+                MessageWriter writer = new MessageWriter(0x90);
+                writer.WriteByte(i < (RsaCipher.PublicKeyString.Length - 1) / 250 ? (byte)1 : (byte)0);
+                writer.WritePacket(Encoding.UTF8.GetBytes(RsaCipher.PublicKeyString.Substring(i * 250, Math.Min(250, RsaCipher.PublicKeyString.Length - i * 250))));
+                messageWriters.Add(writer);
+            }
+
+            return messageWriters;
+        }
+
         /// <summary>
         /// Returns the message to send in bytes
         /// </summary>
         /// <returns>The message to send</returns>
         public byte[] GetBytes()
         {
+            return GetBytes(null);
+        }
+
+        /// <summary>
+        /// Returns the message to send in bytes
+        /// </summary>
+        /// <param name="rsaKey">the key for RSA encryption</param>
+        /// <returns>The message to send</returns>
+        public byte[] GetBytes(string rsaKey)
+        {
             if (!_closed)
-                Compile();
+                Compile(rsaKey);
 
             return _data.ToArray();
         }
@@ -111,20 +144,26 @@ namespace MessageStream
         /// <summary>
         /// Closes all options to change the message and appends a checksum
         /// </summary>
-        private void Compile()
+        private void Compile(string key)
         {
             if (_data.Count > 255)
                 throw new InternalBufferOverflowException();
 
-            _data[0] = (byte)_data.Count;
-
-            byte checksum = 0;
+            byte checksum = 0xFF;
             foreach (byte value in _data)
             {
                 checksum ^= value;
             }
 
             WriteByte(checksum);
+
+            //The length can't be encrypted because decryption is length-dependent
+            if (key != null)
+                _data = _data.Take(2).Concat(RsaCipher.Encrypt(key, _data.Skip(2).ToArray())).ToList();
+            else if (_data[1] != 0x91)
+                _data = _data.Take(2).Concat(EncryptionManager.Manager.GetEncryption(_address).Encrypt(_data.Skip(2).ToArray())).ToList();
+
+            _data[0] = (byte)(_data.Count - 1);
 
             _closed = true;
         }

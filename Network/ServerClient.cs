@@ -1,5 +1,7 @@
 ﻿using MessageStream;
+using RemoteHealthCare.GUI;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -48,48 +50,106 @@ namespace RemoteHealthCare.Network
 
         public void Listen()
         {
+            new EncryptionManager(false);
+
+            List<MessageWriter> writers = MessageWriter.WriteRsa();
+            foreach (MessageWriter writer in writers)
+            {
+                int received;
+                received = _socket.Send(writer.GetBytes());
+                Thread.Sleep(2000);
+            }
+
             byte tempId = 0x00;
             while (true)
             {
                 byte[] message = new byte[1024];
                 int receive = _socket.Receive(message);
                 Console.WriteLine("Received data");
+                MessageReader reader;
                 try
                 {
-                    MessageReader reader = new MessageReader(message);
+                    reader = new MessageReader(message);
                     Reply = reader.Id;
+
+                    if (!reader.Checksum())
+                        continue;
+
+                    Console.WriteLine(reader);
+
+                    byte id = reader.Id;
 
                     switch (Reply)
                     {
+                        //set the resistance
+                        case 0x23:
+                            Console.WriteLine("received 0x23");
+                            AccountLogin.clientScreen.SetResistance(reader.ReadByte());
+                            
+                            break;
                         // Receives a message from the doctor
                         case 0x31:
+                            Console.WriteLine("received 0x31");
                             byte id31 = reader.ReadByte();
-                            string message31 = Encoding.UTF8.GetString(reader.ReadPacket());
-
-                            //TODO 25-10-2022: Get this string into the ClientScreen GUI.
-                            Console.WriteLine($"A doctor send you this message: {message31}");
+                            AccountLogin.clientScreen.AddChatMessage(Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()));
                             break;
+
+                        //start a session
+                        case 0x70:
+                            Console.WriteLine("starting session received");
+                            AccountLogin.clientScreen.SetTxtInfo("starting session");
+                            AccountLogin.clientScreen.StartSession();
+                            break;
+
+                        //stop a session
+                        case 0xA7:
+                            Console.WriteLine("stopping session received");
+                            AccountLogin.clientScreen.SetTxtInfo("stopping session");
+                            AccountLogin.clientScreen.StopSession();
+                            break;
+
+                        //emergency stop
+                        case 0x73:
+                            Console.WriteLine("emergency stop received");
+                            AccountLogin.clientScreen.SetTxtInfo("Emergency stop");
+                            AccountLogin.clientScreen.Emergency();
+                            Program.BikeClient.ResetScene();
+                            break;
+
                         //reply wether login was allowed or not
-
-                        case 0x81:
-
+                        case 0x80:
+                            Console.WriteLine("received 0x80");
                             Program.loginScreen.login(Reply);
-
+                            break;
+                        case 0x81:
+                            Console.WriteLine("received 0x81");
+                            Program.loginScreen.login(Reply);
                             break;
 
-                        case 0x80:
+                        
 
-                            Program.loginScreen.login(Reply);
 
+
+                        case 0x91:
+                            Console.WriteLine("received 0x91");
+                            MessageEncryption encryption = new MessageEncryption(
+                                reader.ReadByte(),
+                                reader.ReadByte(),
+                                (uint)reader.ReadInt(4),
+                                reader.ReadByte());
+
+                            Console.WriteLine(encryption.XorKey1 + " " + encryption.XorKey2);
+
+                            EncryptionManager.Manager.SetEncryption(encryption);
                             break;
 
                     }
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     continue;
                 }
-                
             }
         }
 
@@ -113,7 +173,13 @@ namespace RemoteHealthCare.Network
 
         public static void Send(byte[] message)
         {
+            
+            Console.WriteLine("sending message");
+            
             MessageReader reader = new MessageReader(message);
+
+            
+
             switch (reader.Id)
             {
                 case 0x10:

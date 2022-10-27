@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -8,21 +9,41 @@ namespace MessageStream
     {
         static void Main(string[] args)
         {
-            ExtendedMessageWriter writer = new ExtendedMessageWriter(0x43);
-            writer.WriteString("Hallo Wereld!");
-            writer.WriteBikeData(65.25m, 120, 4.53m, 110);
-
-            Console.WriteLine(writer.ToString());
-
-            ExtendedMessageReader reader = new ExtendedMessageReader(writer.GetBytes());
+            new EncryptionManager(false);          
+            EncryptionManager.Manager.SetEncryption(MessageEncryption.Generate());
+            Console.WriteLine("Generated keys: " + EncryptionManager.Manager.GetEncryption(0));
 
 
-            Console.WriteLine("0x" + BitConverter.ToString(new byte[] { reader.Id }));
-            Console.WriteLine(reader);
-            Console.WriteLine(reader.ReadString());
-            Console.WriteLine(reader);
-            Console.WriteLine(reader.ReadBikeData());
-            Console.WriteLine(reader);
+            List<MessageWriter> writerList = MessageWriter.WriteRsa();
+            Queue<byte[]> data = new Queue<byte[]>(writerList.Select(x => x.GetBytes()));
+
+            Console.WriteLine("Transmitting: " + string.Join(";\n", data.Select(x => BitConverter.ToString(x).Replace('-', ' '))));
+
+            string key = "";
+            MessageReader reader;
+            while (true)
+            {
+                bool continuing = true;
+                reader = new MessageReader(data.Dequeue());
+                continuing = reader.ReadByte() == 1;
+                key += Encoding.UTF8.GetString(reader.ReadPacket());
+                if (!continuing)
+                    break;
+            }
+
+            MessageWriter writer = new MessageWriter(0x91);
+            writer.WriteByte(EncryptionManager.Manager.GetEncryption(0).XorKey1);
+            writer.WriteByte(EncryptionManager.Manager.GetEncryption(0).XorKey2);
+            writer.WriteInt((int)EncryptionManager.Manager.GetEncryption(0).StartIndex, 4);
+            writer.WriteByte((byte)Math.Round(Math.Log(EncryptionManager.Manager.GetEncryption(0).StepLength) / Math.Log(2)));
+            byte[] newData = writer.GetBytes(key);
+
+            Console.WriteLine("Transmitting: " + BitConverter.ToString(newData).Replace('-', ' '));
+
+            reader = new MessageReader(newData);
+
+            MessageEncryption encryption = new MessageEncryption(reader.ReadByte(), reader.ReadByte(), (uint)reader.ReadInt(4), reader.ReadByte());
+            Console.WriteLine("Decoded keys: " + encryption);
         }
     }
 }

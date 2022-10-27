@@ -27,9 +27,16 @@ namespace RemoteHealthCare
             BikeClient = new BikeClient("145.48.6.10", 6666);
             BikeClient.Connect();
 
-            Thread.Sleep(1000);
+           /* new Thread(() =>
+            {
+                while (!BikeClient.hasTunnel)
+                {
+                    Thread.Sleep(1);
+                }   
 
-            //NetworkEngine();
+                NetworkEngine();
+            }).Start();*/
+            
 
             Application.Run(loginScreen);
             for (; ; );
@@ -39,13 +46,13 @@ namespace RemoteHealthCare
         /// Creates a network engine with all required nodes
         /// </summary>
         /// <param name="bikeClient">The client that will receive all the commands</param>
-        private static void NetworkEngine()
+        public static void NetworkEngine()
         {
             BikeClient.ResetScene();
             BikeClient.GetScene();
 
             //wait for the getscene response
-            while (!BikeClient.IdReceived("GroundPlane") || !BikeClient.IdReceived("LeftHand") || !BikeClient.IdReceived("RightHand") || !BikeClient.IdReceived("Camera"))
+            while (!BikeClient.IdReceived("GroundPlane") || !BikeClient.IdReceived("LeftHand") || !BikeClient.IdReceived("RightHand") || !BikeClient.IdReceived("Camera") || !BikeClient.IdReceived("Head"))
                 Thread.Sleep(1);
             //head cant be removed for some reason
             //bikeClient.DeleteNode("Head");

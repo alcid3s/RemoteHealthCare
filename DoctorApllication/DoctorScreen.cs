@@ -15,26 +15,49 @@ using static DoctorApllication.DoctorClient;
 using System.Net.Sockets;
 using System.Transactions;
 using System.Text.RegularExpressions;
+using System.Diagnostics.Metrics;
+using System.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace DoctorApllication
 {
     public partial class DoctorScreen : Form
     {
-        public static List<(byte, string)> ClientList = new List<(byte, string)>();
-        private int _index = 0;
 
         private byte _selectedUserId = 0;
         private string _selectedUserName = string.Empty;
 
         private LoadDataScreen _loadDataScreen = new LoadDataScreen();
         private static List<Client> clientList = new List<Client>();
+        private static List<DoctorScreen> screens = new List<DoctorScreen>();
         public DoctorScreen()
         {
             InitializeComponent();
             txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
 
+            Text = "Primary Doctor screen";
+
             Send(new MessageWriter(0x50).GetBytes());
             RefreshAvailableClients();
+        }
+
+        //constructor for a secundary screen, where the refresh and load buttons are disabled
+        private DoctorScreen(byte selectedUserId, string selectedUserName)
+        {
+            InitializeComponent();
+            txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
+
+            lstClients2.Enabled = false;
+            btnRefresh.Enabled = false;
+            btnConnect.Enabled = false;
+            lstClients2.Visible = false;
+            btnRefresh.Visible = false;
+            btnConnect.Visible = false;
+
+            Text = "Secondary screen, Connected with: " + selectedUserName;
+
+            _selectedUserId = selectedUserId;
+            _selectedUserName = selectedUserName;
         }
 
         private struct Client
@@ -50,6 +73,7 @@ namespace DoctorApllication
             }
         }
 
+        //clear the client lists and request a new list of clients
         public void RefreshAvailableClients()
         {
             clientList.Clear();
@@ -57,32 +81,62 @@ namespace DoctorApllication
             Send(new MessageWriter(0x42).GetBytes());
         }
 
+        /// <summary>
+        /// Add a client to the clientList and show it on lstClient2 from the client request
+        /// </summary>
+        /// <param name="clientId">Id of the client</param>
+        /// <param name="clientName">Name of the client</param>
+
         public void AddClient(byte clientId, string clientName)
         {
             //txtInfo.Text = clientName; 
             Console.WriteLine("got client: " + clientName + " " + clientId);
-            clientList.Add(new Client(clientId, clientName, false));
+            clientList.Add(new Client((byte)(clientId + clientList.Count), clientName, false));
             Invoke(new Action(new Action(() => {
 
                 // Do not change this string, the btnLoad_Click method is dependend on this format.
-                lstClients2.Items.Add($"id: {clientId}, name: {clientName}");
+                lstClients2.Items.Add($"{clientName}, {clientId + clientList.Count -1}");
             })));
         }
 
-        public void UpdateBikeData(decimal elapsedTime, int meter, decimal speed, int heartRate)
+        /// <summary>
+        /// Update the bikeeData
+        /// </summary>
+        /// <param name="elapsedTime">Time passed in seconds</param>
+        /// <param name="meter">meters cycled in meters</param>
+        /// <param name="speed">speed in m/st</param>
+        /// <param name="heartRate">in bpm</param>
+        public static void UpdateBikeData(byte id, decimal elapsedTime, int meter, decimal speed, int heartRate)
         {
-            // If a user is selected.
-            if(_selectedUserId != 0)
+            if (DoctorLogin.doctorScreen._selectedUserId == id)
             {
-                Invoke(new Action(new Action(() => {
-                    txtSpeed.Text = speed.ToString();
-                    txtDT.Text = meter.ToString();
-                    txtET.Text = elapsedTime.ToString();
-                    txtHR.Text = heartRate.ToString();
+                DoctorLogin.doctorScreen.Invoke(new Action(new Action(() => {
+                    DoctorLogin.doctorScreen.txtSpeed.Text = speed.ToString();
+                    DoctorLogin.doctorScreen.txtDT.Text = meter.ToString();
+                    DoctorLogin.doctorScreen.txtET.Text = elapsedTime.ToString();
+                    DoctorLogin.doctorScreen.txtHR.Text = heartRate.ToString();
 
-                    txtInfo.Text = $"Connected with: {_selectedUserName}";
+                    DoctorLogin.doctorScreen.txtInfo.Text = $"Connected with: {DoctorLogin.doctorScreen._selectedUserName}";
                 })));
             }
+
+                screens.ForEach(doctorScreen =>
+            {
+                // If a user is selected.
+                if (doctorScreen._selectedUserId == id)
+                {
+                    doctorScreen.Invoke(new Action(new Action(() => {
+                        doctorScreen.txtSpeed.Text = speed.ToString();
+                        doctorScreen.txtDT.Text = meter.ToString();
+                        doctorScreen.txtET.Text = elapsedTime.ToString();
+                        doctorScreen.txtHR.Text = heartRate.ToString();
+
+                        doctorScreen.txtInfo.Text = $"Connected with: {doctorScreen._selectedUserName}";
+                    })));
+                }
+            });
+            
+            
         }
 
         public void setTXTSpeed(string s)
@@ -101,66 +155,28 @@ namespace DoctorApllication
         {
             txtHR.Text = s;
         }
-        public void btnConnectClient_Click(object sender, EventArgs e)
-        {
-            
-        }
-        
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox5_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtSpeed_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtET_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDT_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtHR_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void DoctorScreen_Load(object sender, EventArgs e)
         {
+
+        }
+
+        private void SetConnectedUser(byte clientId, string clientName)
+        {
+            _selectedUserId = clientId;
+            _selectedUserName = clientName;
+
+            Name = "Secondary screen, Connected with: " + clientName;
         }
 
         private void btnLoadData_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Loading LoadDataScreen");
-            _loadDataScreen = new LoadDataScreen();
-            _loadDataScreen.Show();
+            // DEPRICATED
         }
 
-        private void txtChatBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+        /// <summary>
+        /// Make sure the input message isnt too long
+        /// </summary>
 
         private void txtChatInput_TextChanged(object sender, EventArgs e)
         {
@@ -171,7 +187,9 @@ namespace DoctorApllication
             }
         }
 
-        //currently only local, space the text out so that it fits on the chatbox
+        /// <summary>
+        /// React to an enter press while in txtCHatInput and then send the message to a client and add it to lstChatView
+        /// </summary>
         private void CheckEnterKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Return && txtChatInput.Text.Length > 0)
@@ -181,22 +199,37 @@ namespace DoctorApllication
                 if(message != "" && _selectedUserId != 0)
                 {
                     // Sends a message to the server, server send it to the client.
-                    MessageWriter writer = new MessageWriter(0x30);
+                    ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
                     writer.WriteByte(_selectedUserId);
-                    writer.WritePacket(Encoding.UTF8.GetBytes(message));
+                    writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    writer.WriteString(message);
                     DoctorClient.Send(writer.GetBytes());
                 }
 
+                AddChatMessage(txtChatInput.Text, "You", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+            }
+        }
 
+        /// <summary>
+        /// Add a message to lstChatView with a sender and time at 40 characters per line
+        /// </summary>
+        /// <param name="message">Id of the bike</param>
+        /// <param name="sender">Name of the person that send the message</param>
+        /// <param name="timeSend">The time the message was send in hh:mm:ss format</param>
+
+        public void AddChatMessage(string message, string sender, string timeSend)
+        {
+            Invoke(new Action(new Action(() =>
+            {
                 //put the time above the message, can later also have the sender
-                lstChatView.Items.Insert(0, new ListViewItem(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8) + " - You"));
+                lstChatView.Items.Insert(0, new ListViewItem(timeSend + " - " + sender));
 
                 //get all the words from the input
-                string[] words = txtChatInput.Text.Split(" ");
+                string[] words = message.Split(" ");
                 string line = "";
 
                 int lineNr = 1;
-                for (int i = 0; i < words.Length; i++) 
+                for (int i = 0; i < words.Length; i++)
                 {
                     //check if the word is bigger than a line
                     if (words[i].Length > 40)
@@ -233,7 +266,7 @@ namespace DoctorApllication
                             if ((line + " " + words[i + 1]).Length > 41)
                             {
                                 //print out the line
-                                lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length-1)));
+                                lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length - 1)));
                                 line = "";
                                 lineNr++;
                             }
@@ -241,7 +274,7 @@ namespace DoctorApllication
                         else
                         {
                             //print out the last line
-                            lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length-1)));
+                            lstChatView.Items.Insert(lineNr, new ListViewItem(line.Substring(1, line.Length - 1)));
                             line = "";
                             lineNr++;
                         }
@@ -251,46 +284,197 @@ namespace DoctorApllication
                 lstChatView.Items.Insert(lineNr, new ListViewItem());
                 //reset the chat input
                 txtChatInput.Text = "";
+            })));
+        }
+
+        /// <summary>
+        /// Add a received message to the connected client
+        /// </summary>
+        /// /// <param name="messageId">Id of the client</param>
+        /// <param name="message">Id of the bike</param>
+        /// <param name="name">Name of the person that send the message</param>
+        /// <param name="timeSend">The time the message was send in hh:mm:ss format</param>
+        public static void ReceiveMessage(byte messageId, string name, string message, string timeSend)
+        {
+            if (DoctorLogin.doctorScreen._selectedUserId == messageId)
+            {
+                DoctorLogin.doctorScreen.Invoke(new Action(new Action(() => {
+                    DoctorLogin.doctorScreen.AddChatMessage(message, name, timeSend);
+                })));
             }
+
+            screens.ForEach(doctorScreen =>
+            {
+                if (doctorScreen._selectedUserId == messageId)
+                {
+                    doctorScreen.Invoke(new Action(new Action(() => {
+                        doctorScreen.Invoke(new Action(new Action(() => {
+                            doctorScreen.AddChatMessage(message, name, timeSend);
+                        })));
+                    })));
+                }
+            });
         }
 
-        private void lstChatBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lstChatView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Request a new list of clients from the server
+        /// </summary>
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             RefreshAvailableClients();
             Console.WriteLine("Refreshing list");
         }
 
+        /// <summary>
+        /// Select the clients selected in lstClients2 and then open a window for each and allow bikedata to be send to them
+        /// </summary>
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Loading");
-            string? selectedUser = lstClients2.SelectedItem.ToString();
 
-            if(selectedUser != null)
+            Console.WriteLine("load button clicked");
+
+            if (lstClients2.SelectedItems.Count > 0)
             {
-                Regex reg = new Regex("id: ");
-                selectedUser = reg.Replace(selectedUser, string.Empty);
-                string[] data = selectedUser.Split(',');
+                foreach (DoctorScreen screen in screens)
+                {
+                    screen.Close();
+                }
 
-                reg = new Regex("name: ");
-                string name = reg.Replace(data[1], string.Empty);
+                screens.Clear();
+                SetConnectedUser(0, string.Empty);
 
-                _selectedUserName = name;
-                _selectedUserId = byte.Parse(data[0]);
-                Console.WriteLine($"selectedUser = {_selectedUserId}, name: {_selectedUserName}");
+                foreach (string selectedClient in lstClients2.SelectedItems)
+                {
+                    foreach (Client client in clientList)
+                    {
+                        if (selectedClient.Split(" ")[1] == client.Id.ToString())
+                        {
+                            if (_selectedUserName == string.Empty)
+                            {
+                                SetConnectedUser(client.Id, client.Name);
+                                Text = "Primary Doctor screen, Connected with: " + client.Name;
+                            }
+                            else
+                            {
+                                DoctorScreen secondaryScreen = new DoctorScreen(client.Id, client.Name);
+                                screens.Add(secondaryScreen);
+                                secondaryScreen.Show();
+                            }
+                        }
+                    }
+                }
+
+                UpdateBikeData(_selectedUserId, 0, 0, 0, 0);
+            }
+        }
+        /// <summary>
+        /// Send message to all selected clients
+        /// </summary>
+        private void btnToAll_Click(object sender, EventArgs e)
+        {
+            if (txtChatInput.Text != "") {
+                string message = txtChatInput.Text;
+
+                if (DoctorLogin.doctorScreen._selectedUserId > 0)
+                {
+                    
+                    ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
+                    writer.WriteByte(DoctorLogin.doctorScreen._selectedUserId);
+                    writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    writer.WriteString(txtChatInput.Text);
+                    DoctorClient.Send(writer.GetBytes());
+
+                    DoctorLogin.doctorScreen.AddChatMessage(message, "You - to All", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                }
+
+
+                screens.ForEach(screen =>
+                {
+                    screen.AddChatMessage(message, "You - to All", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                });
+
+                
+            }
+            else
+            {
+                txtInfo.Text = "No text input";
             }
         }
 
-        private void txtInfo_TextChanged(object sender, EventArgs e)
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                MessageWriter writer = new MessageWriter(0xA0);
+                writer.WriteByte(_selectedUserId);
+                Send(writer.GetBytes());
+
+                txtInfo.Text = "Starting session with: " + _selectedUserName;
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                MessageWriter writer = new MessageWriter(0xA1);
+                writer.WriteByte(_selectedUserId);
+                Send(writer.GetBytes());
+
+                txtInfo.Text = "Stopping session with: " + _selectedUserName;
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
+        }
+
+        private void btnEmergency_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                MessageWriter writer = new MessageWriter(0xA2);
+                writer.WriteByte(_selectedUserId);
+                Send(writer.GetBytes());
+
+                txtInfo.Text = "Emergency stop for: " + _selectedUserName;
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
+        }
+
+        /// <summary>
+        /// Show loadDataScreen when the loadData button is pressed
+        /// </summary>
+        private void btnLoadData_Click_1(object sender, EventArgs e)
+        {
+            Console.WriteLine("Loading LoadDataScreen");
+            _loadDataScreen = new LoadDataScreen();
+            _loadDataScreen.Show();
+        }
+
+        private void btnResIncrease_Click(object sender, EventArgs e)
+        {
+            if (_selectedUserId != 0)
+            {
+                MessageWriter writer = new MessageWriter(0x22);
+                writer.WriteByte(_selectedUserId);
+                writer.WriteByte((byte)nmrResInput.Value);
+                Send(writer.GetBytes());
+            }
+            else
+            {
+                txtInfo.Text = "Not connected with client";
+            }
+        }
+
+        private void textBox10_TextChanged(object sender, EventArgs e)
         {
 
         }

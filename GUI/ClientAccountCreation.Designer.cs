@@ -43,22 +43,26 @@ namespace RemoteHealthCare.GUI
             // 
             // txtPasswordAccountCreationClient
             // 
+            this.txtPasswordAccountCreationClient.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.txtPasswordAccountCreationClient.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtPasswordAccountCreationClient.Cursor = System.Windows.Forms.Cursors.Default;
             this.txtPasswordAccountCreationClient.Location = new System.Drawing.Point(43, 168);
             this.txtPasswordAccountCreationClient.Name = "txtPasswordAccountCreationClient";
-            this.txtPasswordAccountCreationClient.Size = new System.Drawing.Size(158, 20);
+            this.txtPasswordAccountCreationClient.Size = new System.Drawing.Size(158, 13);
             this.txtPasswordAccountCreationClient.TabIndex = 7;
-            this.txtPasswordAccountCreationClient.TextChanged += new System.EventHandler(this.textPasswordAccountCreationClient_TextChanged);
             // 
             // txtAccountNameAccountCreationClient
             // 
+            this.txtAccountNameAccountCreationClient.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.txtAccountNameAccountCreationClient.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtAccountNameAccountCreationClient.Location = new System.Drawing.Point(43, 80);
             this.txtAccountNameAccountCreationClient.Name = "txtAccountNameAccountCreationClient";
-            this.txtAccountNameAccountCreationClient.Size = new System.Drawing.Size(158, 20);
+            this.txtAccountNameAccountCreationClient.Size = new System.Drawing.Size(158, 13);
             this.txtAccountNameAccountCreationClient.TabIndex = 6;
-            this.txtAccountNameAccountCreationClient.TextChanged += new System.EventHandler(this.txtAccountNameAccountCreationClient_TextChanged);
             // 
             // textBox2
             // 
+            this.textBox2.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Location = new System.Drawing.Point(43, 149);
             this.textBox2.Name = "textBox2";
@@ -69,6 +73,7 @@ namespace RemoteHealthCare.GUI
             // 
             // textBox3
             // 
+            this.textBox3.BackColor = System.Drawing.Color.PapayaWhip;
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Location = new System.Drawing.Point(43, 61);
             this.textBox3.Name = "textBox3";
@@ -76,18 +81,19 @@ namespace RemoteHealthCare.GUI
             this.textBox3.Size = new System.Drawing.Size(158, 13);
             this.textBox3.TabIndex = 4;
             this.textBox3.Text = "Account name:";
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // txtPasswordConfirmAccountCreationClient
             // 
+            this.txtPasswordConfirmAccountCreationClient.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.txtPasswordConfirmAccountCreationClient.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtPasswordConfirmAccountCreationClient.Location = new System.Drawing.Point(43, 259);
             this.txtPasswordConfirmAccountCreationClient.Name = "txtPasswordConfirmAccountCreationClient";
-            this.txtPasswordConfirmAccountCreationClient.Size = new System.Drawing.Size(158, 20);
+            this.txtPasswordConfirmAccountCreationClient.Size = new System.Drawing.Size(158, 13);
             this.txtPasswordConfirmAccountCreationClient.TabIndex = 9;
-            this.txtPasswordConfirmAccountCreationClient.TextChanged += new System.EventHandler(this.txtPasswordConfirmAccountCreationClient_TextChanged);
             // 
             // txtConfirmPaswordAccountCreationClient
             // 
+            this.txtConfirmPaswordAccountCreationClient.BackColor = System.Drawing.Color.PapayaWhip;
             this.txtConfirmPaswordAccountCreationClient.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtConfirmPaswordAccountCreationClient.Location = new System.Drawing.Point(43, 240);
             this.txtConfirmPaswordAccountCreationClient.Name = "txtConfirmPaswordAccountCreationClient";
@@ -98,31 +104,36 @@ namespace RemoteHealthCare.GUI
             // 
             // btnCreateAccountCreationClient
             // 
+            this.btnCreateAccountCreationClient.BackColor = System.Drawing.Color.PaleGreen;
+            this.btnCreateAccountCreationClient.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnCreateAccountCreationClient.Location = new System.Drawing.Point(82, 338);
             this.btnCreateAccountCreationClient.Name = "btnCreateAccountCreationClient";
             this.btnCreateAccountCreationClient.Size = new System.Drawing.Size(75, 23);
             this.btnCreateAccountCreationClient.TabIndex = 10;
             this.btnCreateAccountCreationClient.Text = "Create";
-            this.btnCreateAccountCreationClient.UseVisualStyleBackColor = true;
+            this.btnCreateAccountCreationClient.UseVisualStyleBackColor = false;
             this.btnCreateAccountCreationClient.Click += new System.EventHandler(this.btnCreateAccountCreationClient_Click);
             // 
             // btnBack
             // 
+            this.btnBack.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnBack.Location = new System.Drawing.Point(12, 12);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(75, 23);
             this.btnBack.TabIndex = 11;
             this.btnBack.Text = "Back";
-            this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.UseVisualStyleBackColor = false;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
             // textBox1
             // 
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(141, 411);
+            this.textBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(97, 405);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(135, 13);
+            this.textBox1.Size = new System.Drawing.Size(140, 15);
             this.textBox1.TabIndex = 12;
             this.textBox1.Text = "Client account creator v1.0";
             // 
@@ -130,7 +141,8 @@ namespace RemoteHealthCare.GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(275, 432);
+            this.BackColor = System.Drawing.Color.PapayaWhip;
+            this.ClientSize = new System.Drawing.Size(236, 423);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.btnCreateAccountCreationClient);

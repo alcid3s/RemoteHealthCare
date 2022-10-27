@@ -21,6 +21,7 @@ namespace Server.Accounts
         private string _username;
         private string _password;
         private Socket _socket;
+        private byte _id;
 
         private AccountState _state;
 
@@ -38,12 +39,14 @@ namespace Server.Accounts
             CreateDoctor,
             RemoveDoctor
         }
-        public AccountManager(string username, string password, Socket socket, AccountState state)
+        public AccountManager(string username, string password, Socket socket, AccountState state, byte id)
         {
             _username = username;
             _password = password;
             _socket = socket;
             _state = state;
+            _id = id;
+
             GetData();
         }
         private void GetData()
@@ -65,14 +68,20 @@ namespace Server.Accounts
                     if (CheckCredentials(credentials, AccountState.Client))
                     {
                         LoggedIn = true;
-                        MessageWriter writer = new MessageWriter(0x81);
+                        MessageWriter writer = new MessageWriter(0x81, _id);
+                        writer.WriteByte(0x11);
+                        _socket.Send(writer.GetBytes());
+                    }
+                    else
+                    {
+                        MessageWriter writer = new MessageWriter(0x80, _id);
                         writer.WriteByte(0x11);
                         _socket.Send(writer.GetBytes());
                     }
                 }
                 else
                 {
-                    MessageWriter writer = new MessageWriter(0x80);
+                    MessageWriter writer = new MessageWriter(0x80, _id);
                     writer.WriteByte(0x11);
                     _socket.Send(writer.GetBytes());
                 }
@@ -106,14 +115,14 @@ namespace Server.Accounts
                     {
                         //send login is ok back
                         LoggedIn = true;
-                        MessageWriter writer = new MessageWriter(0x81);
+                        MessageWriter writer = new MessageWriter(0x81, _id);
                         writer.WriteByte(0x15);
                         _socket.Send(writer.GetBytes());
                     }
                     else
                     {
                         //send cannot log in back as password is incorrect
-                        MessageWriter writer = new MessageWriter(0x80);
+                        MessageWriter writer = new MessageWriter(0x80, _id);
                         writer.WriteByte(0x15);
                         _socket.Send(writer.GetBytes());
                     }
@@ -121,7 +130,7 @@ namespace Server.Accounts
                 else
                 {
                     //send cannot log in back as username is unused
-                    MessageWriter writer = new MessageWriter(0x80);
+                    MessageWriter writer = new MessageWriter(0x80, _id);
                     writer.WriteByte(0x15);
                     _socket.Send(writer.GetBytes());
                 }
@@ -145,7 +154,7 @@ namespace Server.Accounts
                 sr.Close();
 
                 Console.WriteLine("Sending data back");
-                MessageWriter writer = new MessageWriter(0x81);
+                MessageWriter writer = new MessageWriter(0x81, _id);
                 writer.WriteByte(0x14);
                 _socket.Send(writer.GetBytes());
             }
@@ -189,13 +198,17 @@ namespace Server.Accounts
         }
         public void SaveData(byte[] message, StreamWriter sr)
         {
-            Server.BikeData data = GetBikeData(message);
-            sr.WriteLine($"[{data.ElapsedTime}-{data.DistanceTravelled}-{data.Speed}-{data.HeartRate}]");
+            MessageReader reader = new MessageReader(message, _id);
+            sr.WriteLine('[' +
+                Encoding.UTF8.GetString(
+                Enumerable.Range(0, 7).
+                Select(_ => reader.ReadByte()).
+                ToArray()) + ']');
         }
 
         private BikeData GetBikeData(byte[] message)
         {
-            MessageReader reader = new MessageReader(message);
+            MessageReader reader = new MessageReader(message, _id);
             byte identifier = reader.Id;
             decimal elapsedTime = reader.ReadInt(2) / 4m;
             int distanceTravelled = reader.ReadInt(2);

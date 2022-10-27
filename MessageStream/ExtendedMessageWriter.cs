@@ -9,6 +9,7 @@ namespace MessageStream
     public class ExtendedMessageWriter : MessageWriter
     {
         public ExtendedMessageWriter(byte id) : base(id) { }
+        public ExtendedMessageWriter(byte id, byte address) : base(id, address) { }
 
         /// <summary>
         /// Writes bike data

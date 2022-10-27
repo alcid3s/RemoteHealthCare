@@ -1,6 +1,6 @@
 ﻿namespace DoctorApplication
 {
-    partial class DoctorScreenHistorie
+    partial class DoctorScreenHistory
     {
         /// <summary>
         /// Required designer variable.

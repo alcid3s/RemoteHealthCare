@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace DoctorApplication
 {
-    public partial class DoctorScreenHistorie : Form
+    public partial class DoctorScreenHistory : Form
     {
         public string clientUsername { private get; set; } = string.Empty;
         public string clientSession { private get; set; } = string.Empty;
@@ -37,7 +37,7 @@ namespace DoctorApplication
             }
         }
 
-        public DoctorScreenHistorie()
+        public DoctorScreenHistory()
         {
             InitializeComponent();
         }

@@ -117,7 +117,7 @@ namespace DoctorApllication
                 writer.WritePacket(Encoding.UTF8.GetBytes(selectedItem));
                 DoctorClient.Send(writer.GetBytes());
 
-                DoctorScreenHistorie doctorScreen = new DoctorScreenHistorie();
+                DoctorScreenHistory doctorScreen = new DoctorScreenHistory();
                 doctorScreen.clientUsername = _selectedUser;
                 doctorScreen.clientSession = selectedItem;
                 doctorScreen.Show();

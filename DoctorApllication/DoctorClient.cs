@@ -141,7 +141,7 @@ namespace DoctorApllication
                             break;
                         case 0x55:
                             Console.WriteLine("Received 0x55");
-                            DoctorScreenHistorie.ChangeValues(reader.ReadInt(2), reader.ReadInt(2), reader.ReadInt(2), reader.ReadByte());
+                            DoctorScreenHistory.ChangeValues(reader.ReadInt(2), reader.ReadInt(2), reader.ReadInt(2), reader.ReadByte());
                             Console.WriteLine("ChangeValues called");
                             break;
 

@@ -381,7 +381,7 @@ namespace DoctorApllication
                     ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
                     writer.WriteByte(DoctorLogin.doctorScreen._selectedUserId);
                     writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
-                    writer.WriteString(txtChatInput.Text);
+                    writer.WriteString(message);
                     DoctorClient.Send(writer.GetBytes());
 
                     DoctorLogin.doctorScreen.AddChatMessage(message, "You - to All", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
@@ -393,7 +393,7 @@ namespace DoctorApllication
                     ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
                     writer.WriteByte(screen._selectedUserId);
                     writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
-                    writer.WriteString(txtChatInput.Text);
+                    writer.WriteString(message);
                     DoctorClient.Send(writer.GetBytes());
                     screen.AddChatMessage(message, "You - to All", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
                     

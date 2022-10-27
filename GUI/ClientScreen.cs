@@ -75,7 +75,7 @@ namespace RemoteHealthCare.GUI
             Invoke(new Action(() =>
             {
                 _bike.Stop();
-                Program.BikeClient.UpdateSpeed(0);
+                
             }));
             
         }

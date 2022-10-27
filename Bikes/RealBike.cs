@@ -91,6 +91,7 @@ namespace RemoteHealthCare.Bikes
         public void Stop()
         {
             IsRunning = false;
+            _bike.CloseDevice();
         }
 
         private void UpdateBikeData(object sender, BLESubscriptionValueChangedEventArgs e)

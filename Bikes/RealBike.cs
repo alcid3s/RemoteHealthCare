@@ -1,4 +1,5 @@
 ﻿using Avans.TI.BLE;
+using RemoteHealthCare.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace RemoteHealthCare.Bikes
 
         public int HeartRate => _heartRate;
 
+        public bool IsRunning { get; set; }
+
         private decimal _elapsedTime;
         private int _distanceTravelled;
         private decimal _speed;
@@ -31,6 +34,8 @@ namespace RemoteHealthCare.Bikes
 
         private int _elapsedTimeOverflow;
         private int _distanceTravelledOverflow;
+
+        private BLE _bike;
 
         public async void Init()
         {
@@ -48,15 +53,16 @@ namespace RemoteHealthCare.Bikes
                     Console.WriteLine($"Device: {device}");
             });
 
-            string bikeCode = "24517";
-            Console.Write($"Please enter bike code, leave empty if you want to select bike {bikeCode}\n>: ");
-            string tempBikeCode = Console.ReadLine();
+            //string bikeCode = "24517";
+            //Console.Write($"Please enter bike code, leave empty if you want to select bike {bikeCode}\n>: ");
+            //string tempBikeCode = Console.ReadLine();
 
-            if (!string.IsNullOrEmpty(tempBikeCode))
-                bikeCode = tempBikeCode;
+            /*if (!string.IsNullOrEmpty(tempBikeCode))
+                bikeCode = tempBikeCode;*/
+            string bikeCode = AccountLogin.clientScreen.selectedBike;
 
             // Connecting
-            code = await bike.OpenDevice($"Tacx Flux {bikeCode}");
+            code = await bike.OpenDevice(bikeCode);
 
             List<BluetoothLEAttributeDisplay> serviceList = bike.GetServices;
             serviceList.ForEach(service =>
@@ -77,6 +83,14 @@ namespace RemoteHealthCare.Bikes
 
             heart.SubscriptionValueChanged += UpdateHeartrateData;
             await heart.SubscribeToCharacteristic("HeartRateMeasurement");
+            IsRunning = true;
+
+            _bike = bike;
+        }
+
+        public void Stop()
+        {
+            IsRunning = false;
         }
 
         private void UpdateBikeData(object sender, BLESubscriptionValueChangedEventArgs e)
@@ -122,7 +136,7 @@ namespace RemoteHealthCare.Bikes
                         case "Heart Rate":
                             break;
                         default:
-                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
+                            //Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
                             break;
                     }
                     OnUpdate();
@@ -154,6 +168,18 @@ namespace RemoteHealthCare.Bikes
                 }
             }
             OnUpdate();
+        }
+
+        /// <summary>
+        /// Sets the bike's resistance
+        /// </summary>
+        /// <param name="resistance">The resistance, between 0 and 1 inclusive</param>
+        public async void SetResistance(byte resistance)
+        {
+            Console.WriteLine("trying to write resistance " + resistance + " as " + resistance);
+            byte[] values = { 0xa4, 0x09, 0x4e, 0x05, 0x30, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, resistance, (byte)(0xe6 ^ resistance) };
+            while (_bike == null) ;
+            await _bike.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", values);
         }
 
         private static bool Checksum(byte[] bytes)

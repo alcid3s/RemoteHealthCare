@@ -17,29 +17,30 @@ namespace RemoteHealthCare.GUI
 {
     public partial class AccountLogin : Form
     {
-        internal static ClientScreen ClientScreen;
-        internal static bool IsLoggedIn = false;
+        public static ClientScreen clientScreen;
+        internal static bool isloggedIn = false;
+        public static ClientAccountCreation Creation;
+
         public AccountLogin()
         {
             InitializeComponent();
         }
-        AccountTypeSelector accountTypeSelector;
 
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            txtLoginInfo.Text = "";
             MessageWriter writer = new MessageWriter(0x11);
             writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameLogin.Text));
             writer.WritePacket(Encoding.UTF8.GetBytes(textPasswordLogin.Text));
+
             ServerClient.Send(writer.GetBytes());
 
-            int counter = 0;
+            /*int counter = 0;
             ServerClient.Reply = 0x00;
+
+            ServerClient.Send(writer.GetBytes());
+
             while (ServerClient.Reply == 0x00)
             {
                 Thread.Sleep(100);
@@ -61,42 +62,57 @@ namespace RemoteHealthCare.GUI
                 {
                     ClientScreen = new ClientScreen();
                     IsLoggedIn = true;
+
+                    if (Program.NetworkEngineRunning)
+                    {
+                        ClientScreen.LocalNetworkEngineRunning = true;
+                    }
                     Hide();
                     ClientScreen.Show();
-                }
-            }
+                }*/
+            //}
+
         }
+
 
         private void btnCreateAccount_Click(object sender, EventArgs e)
         {
-            if (accountTypeSelector == null)
-            {
-                accountTypeSelector = new AccountTypeSelector();
 
-                Hide();
-
-                accountTypeSelector.Show();
-            }
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtAccountNameLogin_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textPasswordLogin_TextChanged(object sender, EventArgs e)
-        {
-
+            Creation = new ClientAccountCreation();
+            Creation.Show();
+            
+            this.Hide();
         }
 
         private void AccountLogin_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void login(byte CanLogin)
+        {
+
+            if (CanLogin == 0x81 && this.InvokeRequired)
+            {
+                if (!isloggedIn)
+                {
+                    this.Invoke(new Action(new Action(() => {
+                        clientScreen = new ClientScreen();
+                        isloggedIn = true;
+                        clientScreen.Show();
+                        Hide();
+                    })));
+
+                }
+
+            }
+            else if (CanLogin == 0x80 && this.InvokeRequired)
+            {
+                this.Invoke(new Action(new Action(() => {
+                    txtLoginInfo.Text = "Incorrect credentials";
+                })));
+                Console.WriteLine("Faulty credentials");
+            }
         }
     }
 }

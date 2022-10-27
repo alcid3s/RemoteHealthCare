@@ -3,9 +3,18 @@
     "data": {
         "dest": "",
         "data": {
-            "id": "scene/skybox/settime",
+            "id": "scene/skybox/update",
             "data": {
-                "time": 12
+                "type": "static",
+                "files":
+                {
+                  "xpos" : "data/NetworkEngine/textures/SkyBoxes/clouds/bluecloud_ft.jpg",
+                  "xneg" : "data/NetworkEngine/textures/SkyBoxes/clouds/bluecloud_bk.jpg",
+                  "ypos" : "data/NetworkEngine/textures/SkyBoxes/clouds/bluecloud_up.jpg",
+                  "yneg" : "data/NetworkEngine/textures/SkyBoxes/clouds/bluecloud_dn.jpg",
+                  "zpos" : "data/NetworkEngine/textures/SkyBoxes/clouds/bluecloud_rt.jpg",
+                  "zneg" : "data/NetworkEngine/textures/SkyBoxes/clouds/bluecloud_lf.jpg"
+                }
             }
         }
     }

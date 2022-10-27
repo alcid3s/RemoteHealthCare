@@ -14,22 +14,29 @@ namespace MessageStream
         private byte _id;
         public byte Id { get => GetId(); }
 
-        public MessageReader(byte[] data)
+        public MessageReader(byte[] data) : this(data, 0) { }
+
+        public MessageReader(byte[] data, byte address)
         {
-            if (data.Length == 0)
+            MessageEncryption encryption = EncryptionManager.Manager.GetEncryption(address);
+
+            if (data.Length == 0 || data[0] < 2)
                 throw new ArgumentException();
 
             byte length = data[0];
             if (length + 1 > data.Length)
                 throw new ArgumentException();
 
-            _data = data.Take(length + 1).ToArray();
-            _index = 1;
+            _id = data[1];
 
-            _id = ReadByte();
+            if (_id == 0x91)
+                _data = data.Take(2).Concat(RsaCipher.Decrypt(data.Skip(2).Take(length - 1).ToArray())).ToArray();
+            else if (_id == 0x90)
+                _data = data;
+            else
+                _data = data.Take(2).Concat(encryption.Decrypt(data.Skip(2).Take(length - 1).ToArray())).ToArray();
+            _index = 2;
         }
-
-        
 
         /// <summary>
         /// Reads the current byte and moves the indexer
@@ -80,6 +87,27 @@ namespace MessageStream
         }
 
         /// <summary>
+        /// Reads a packet of bytes and turns them to booleans, with an amount of bytes represented by the first byte
+        /// </summary>
+        /// <returns>The booleans from the packet</returns>
+        public bool[] ReadBoolPacket()
+        {
+            if (!Checksum())
+                throw new InvalidOperationException();
+
+            byte[] bytes = ReadPacket();
+
+            bool[] packet = new bool[bytes.Length * 8];
+
+            for (int i = 0; i < packet.Length; i++)
+            {
+                packet[i] = (bytes[i / 8] >> (7 - i % 8) & 1) == 1;
+            }
+
+            return packet;
+        }
+
+        /// <summary>
         /// Validates a message using the checksum
         /// </summary>
         /// <returns>Whether the message is functional or not</returns>
@@ -90,7 +118,7 @@ namespace MessageStream
             {
                 checksum ^= value;
             }
-            return checksum == 0;
+            return checksum == _data[0];
         }
 
         private byte GetId()
@@ -98,6 +126,14 @@ namespace MessageStream
             if (!Checksum())
                 throw new InvalidOperationException();
             return _id;
+        }
+
+        public override string ToString()
+        {
+            string[] text = BitConverter.ToString(_data).Split('-');
+            if (_index < _data.Length)
+                text[_index] = '>' + text[_index] + '<';
+            return string.Join(" ", text);
         }
     }
 }

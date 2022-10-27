@@ -191,7 +191,7 @@ namespace RemoteHealthCare.GUI
             // 
             // btnBack
             // 
-            this.btnBack.BackColor = System.Drawing.Color.Red;
+            this.btnBack.BackColor = System.Drawing.Color.RosyBrown;
             this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnBack.Location = new System.Drawing.Point(12, 340);
             this.btnBack.Name = "btnBack";

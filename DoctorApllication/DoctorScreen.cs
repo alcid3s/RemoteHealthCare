@@ -91,11 +91,11 @@ namespace DoctorApllication
         {
             //txtInfo.Text = clientName; 
             Console.WriteLine("got client: " + clientName + " " + clientId);
-            clientList.Add(new Client((byte)(clientId + clientList.Count), clientName, false));
+            clientList.Add(new Client((byte)(clientId), clientName, false));
             Invoke(new Action(new Action(() => {
 
                 // Do not change this string, the btnLoad_Click method is dependend on this format.
-                lstClients2.Items.Add($"{clientName}, {clientId + clientList.Count -1}");
+                lstClients2.Items.Add($"{clientName}, {clientId}");
             })));
         }
 
@@ -390,7 +390,13 @@ namespace DoctorApllication
 
                 screens.ForEach(screen =>
                 {
+                    ExtendedMessageWriter writer = new ExtendedMessageWriter(0x30);
+                    writer.WriteByte(screen._selectedUserId);
+                    writer.WriteString(DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    writer.WriteString(txtChatInput.Text);
+                    DoctorClient.Send(writer.GetBytes());
                     screen.AddChatMessage(message, "You - to All", DateAndTime.Now.TimeOfDay.ToString().Substring(0, 8));
+                    
                 });
 
                 

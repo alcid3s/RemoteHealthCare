@@ -31,7 +31,7 @@ namespace DoctorApllication
             txtErrorMessage.ForeColor = Color.Red;
             if (txtAccountName.Text.Length < 41 && txtAccountName.Text.Length > 3)
             {
-                if (txtPassword.Text.Length > 7 && txtPassword.Text.Length < 32)
+                if (txtPassword.Text.Length > 3 && txtPassword.Text.Length < 32)
                 {
                     if (txtPassword.Text == txtConfirmPassword.Text)
                     {
@@ -43,7 +43,7 @@ namespace DoctorApllication
 
                         DoctorClient.Send(writer.GetBytes());
 
-                        int counter = 0;
+/*                        int counter = 0;
                         while (Succes == 0x00)
                         {
                             Thread.Sleep(100);
@@ -63,7 +63,7 @@ namespace DoctorApllication
                         }else if(Succes == 0x80)
                         {
                             Console.WriteLine("UnSuccessfull");
-                        }
+                        }*/
                     }
                     else
                     {
@@ -78,6 +78,26 @@ namespace DoctorApllication
             else
             {
                 txtErrorMessage.Text = "Username too short";
+            }
+        }
+
+        public void AccountCreatedReply(byte reply)
+        {
+            if (reply == 0x80)
+            {
+                Invoke(new Action(() =>
+                {
+                    Program.showDoctorLogin();
+                    this.Close();
+                }));
+
+            }
+            else
+            {
+                Invoke(new Action(() =>
+                    txtErrorMessage.Text = "Name taken"
+                ));
+
             }
         }
 

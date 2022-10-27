@@ -1,4 +1,5 @@
 ﻿using Avans.TI.BLE;
+using RemoteHealthCare.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,15 +53,16 @@ namespace RemoteHealthCare.Bikes
                     Console.WriteLine($"Device: {device}");
             });
 
-            string bikeCode = "24517";
-            Console.Write($"Please enter bike code, leave empty if you want to select bike {bikeCode}\n>: ");
-            string tempBikeCode = Console.ReadLine();
+            //string bikeCode = "24517";
+            //Console.Write($"Please enter bike code, leave empty if you want to select bike {bikeCode}\n>: ");
+            //string tempBikeCode = Console.ReadLine();
 
-            if (!string.IsNullOrEmpty(tempBikeCode))
-                bikeCode = tempBikeCode;
+            /*if (!string.IsNullOrEmpty(tempBikeCode))
+                bikeCode = tempBikeCode;*/
+            string bikeCode = AccountLogin.clientScreen.selectedBike;
 
             // Connecting
-            code = await bike.OpenDevice($"Tacx Flux {bikeCode}");
+            code = await bike.OpenDevice(bikeCode);
 
             List<BluetoothLEAttributeDisplay> serviceList = bike.GetServices;
             serviceList.ForEach(service =>
@@ -134,7 +136,7 @@ namespace RemoteHealthCare.Bikes
                         case "Heart Rate":
                             break;
                         default:
-                            Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
+                            //Console.WriteLine($"{dataType}: {e.Data.ElementAt(i)}");
                             break;
                     }
                     OnUpdate();

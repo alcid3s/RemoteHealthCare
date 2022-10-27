@@ -19,7 +19,8 @@ namespace RemoteHealthCare.GUI
     {
         public static ClientScreen clientScreen;
         internal static bool isloggedIn = false;
-        AccountTypeSelector accountTypeSelector;
+        public static ClientAccountCreation Creation;
+
         public AccountLogin()
         {
             InitializeComponent();
@@ -73,16 +74,14 @@ namespace RemoteHealthCare.GUI
 
         }
 
+
         private void btnCreateAccount_Click(object sender, EventArgs e)
         {
-            if (accountTypeSelector == null)
-            {
-                accountTypeSelector = new AccountTypeSelector();
 
-                Hide();
-
-                accountTypeSelector.Show();
-            }
+            Creation = new ClientAccountCreation();
+            Creation.Show();
+            
+            this.Hide();
         }
 
         private void AccountLogin_Load(object sender, EventArgs e)

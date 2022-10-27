@@ -20,50 +20,71 @@ namespace RemoteHealthCare.GUI
             InitializeComponent();
         }
 
-        AccountTypeSelector accountTypeSelector;
-
         private void btnCreateAccountCreationClient_Click(object sender, EventArgs e)
         {
             if (txtAccountNameAccountCreationClient.Text.Length < 41 && txtAccountNameAccountCreationClient.Text.Length > 3)
             {
                 if (txtPasswordAccountCreationClient.Text.Length > 7 && txtPasswordAccountCreationClient.Text.Length < 32)
                 {
-                    MessageWriter writer = new MessageWriter(0x10);
-                    writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameAccountCreationClient.Text));
-                    writer.WritePacket(Encoding.UTF8.GetBytes(txtPasswordAccountCreationClient.Text));
-                    ServerClient.Send(writer.GetBytes());
+                    if (txtPasswordAccountCreationClient.Text == txtPasswordConfirmAccountCreationClient.Text)
+                    {
+                        MessageWriter writer = new MessageWriter(0x10);
+                        writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameAccountCreationClient.Text));
+                        writer.WritePacket(Encoding.UTF8.GetBytes(txtPasswordAccountCreationClient.Text));
+                        ServerClient.Send(writer.GetBytes());
 
-                    // await successfull reply
+                        // await successfull reply
 
-                    AccountLogin login = new AccountLogin();
-                    Close();
-                    login.Show();
+                        //AccountLogin login = new AccountLogin();
+/*                        Close();
+                        login.Show();*/
+                    }
+                    else
+                    {
+                        txtErrorMsg.Text = "Passwords are not the same";
+                    }
                 }
                 else
                 {
-                    txtPasswordAccountCreationClient.Text = "TO LONG OR TO SHORT";
+                    txtErrorMsg.Text = "password size is wrong";
                 }
             }
             else
             {
-                txtAccountNameAccountCreationClient.Text = "TO LONG OR TO SHORT";
+                txtErrorMsg.Text = "account name size is wrong";
             }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            if(accountTypeSelector == null)
-            {
-                accountTypeSelector = new AccountTypeSelector();
-                accountTypeSelector.Show();
-            }
 
-            this.Hide();
+            Program.loginScreen.Show();
+            this.Close();
         }
 
         private void ClientAccountCreation_Load(object sender, EventArgs e)
         {
 
+        }
+
+        public void AccountCreatedReply(byte reply)
+        {
+            if (reply == 0x80)
+            {
+                Invoke(new Action(() =>
+                {
+                    Program.loginScreen.Show();
+                    this.Close();
+                }));
+                
+            }
+            else
+            {
+                Invoke(new Action(()=>
+                    txtErrorMsg.Text = "Name taken"
+                ));
+                
+            }
         }
     }
 }

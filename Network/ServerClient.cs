@@ -79,7 +79,7 @@ namespace RemoteHealthCare.Network
 
                     byte id = reader.Id;
 
-                    switch (Reply)
+                    switch (id)
                     {
                         //set the resistance
                         case 0x23:
@@ -119,11 +119,31 @@ namespace RemoteHealthCare.Network
                         //reply wether login was allowed or not
                         case 0x80:
                             Console.WriteLine("received 0x80");
-                            Program.loginScreen.login(Reply);
+                            switch (reader.ReadByte())
+                            {
+                                case 0x11:
+                                    Program.loginScreen.login(id);
+                                    break;
+
+                                case 0x10:
+                                    AccountLogin.Creation.AccountCreatedReply(id);
+                                    break;
+                            }
                             break;
+
                         case 0x81:
                             Console.WriteLine("received 0x81");
-                            Program.loginScreen.login(Reply);
+                            switch (reader.ReadByte())
+                            {
+                                case 0x11:
+                                    Program.loginScreen.login(id);
+                                    break;
+
+                                case 0x10:
+                                    AccountLogin.Creation.AccountCreatedReply(id);
+                                    break;
+                            }
+                            
                             break;
 
                         

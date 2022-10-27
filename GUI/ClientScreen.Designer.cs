@@ -246,11 +246,11 @@ namespace RemoteHealthCare.GUI
             // txtInfo
             // 
             this.txtInfo.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.txtInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtInfo.Location = new System.Drawing.Point(282, 381);
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
-            this.txtInfo.Size = new System.Drawing.Size(451, 13);
+            this.txtInfo.Size = new System.Drawing.Size(451, 20);
             this.txtInfo.TabIndex = 14;
             // 
             // textBox6
@@ -280,6 +280,7 @@ namespace RemoteHealthCare.GUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(934, 435);
             this.Controls.Add(this.textBox7);
             this.Controls.Add(this.txtChatInput);

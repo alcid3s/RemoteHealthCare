@@ -104,7 +104,7 @@
             // 
             // txtLoginInfo
             // 
-            this.txtLoginInfo.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.txtLoginInfo.BackColor = System.Drawing.Color.PapayaWhip;
             this.txtLoginInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtLoginInfo.Location = new System.Drawing.Point(12, 12);
             this.txtLoginInfo.Name = "txtLoginInfo";

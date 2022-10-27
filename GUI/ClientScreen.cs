@@ -25,23 +25,19 @@ namespace RemoteHealthCare.GUI
         private decimal _speed;
         private int _heartRate;
         private bool startedNetwerkEngine = false;
+        public string selectedBike { get; set; }
+        private enum _bikeType {noSelection, realBike, simBike };
+        private _bikeType type = _bikeType.noSelection;
 
         private int _elapsedTimeOverflow;
         private int _distanceTravelledOverflow;
         public bool LocalNetworkEngineRunning { get; set; } = false;
         private IBike _bike;
-        private Thread _bikeRunner;
         AccountLogin accountLogin;
         public ClientScreen()
         {
             InitializeComponent();
             txtChatInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(CheckEnterKeyPress);
-
-            _bikeRunner = new Thread(() =>
-            {
-                StartBike(false);
-            });
-
         }
 
         public void StartSession()
@@ -66,7 +62,7 @@ namespace RemoteHealthCare.GUI
                     Console.WriteLine("starting session");
                     new Thread(() =>
                     {
-                        StartBike(false);
+                        StartBike();
                     }).Start();
                 }
             }));
@@ -310,11 +306,14 @@ namespace RemoteHealthCare.GUI
             }
         }
 
-        private void StartBike(bool realBike)
+        private void StartBike()
         {
-            if (realBike)
-                _bike = new RealBike();
-            else
+            if (type == _bikeType.noSelection)
+                return;
+
+            if (type == _bikeType.realBike && _bike == null)
+                return;
+            else if(type == _bikeType.simBike)
                 _bike = new SimulationBike();
 
             /*if(!BikeClient.Connected)
@@ -389,20 +388,19 @@ namespace RemoteHealthCare.GUI
         // Connect button
         private async void button1_Click(object sender, EventArgs e)
         {
-            string selectedBike = lstBikes.SelectedItem.ToString();
+            selectedBike = lstBikes.SelectedItem.ToString();
             if(selectedBike != null)
             {
                 if (selectedBike.Equals("SimBike"))
                 {
-                    new Thread(() =>
-                    {
-                        StartBike(false);
-                    }).Start();
+                    type = _bikeType.simBike;
                 }
                 else
                 {
-                    int code = 0;
-                    BLE bike = new BLE();
+                    type = _bikeType.realBike;
+ //                   int code = 0;
+                    _bike = new RealBike();
+/*                    BLE bike = new BLE();
                     BLE heart = new BLE();
 
                     code = await bike.OpenDevice($"Tacx Flux {selectedBike}");
@@ -422,7 +420,7 @@ namespace RemoteHealthCare.GUI
 
                     heart.SubscriptionValueChanged += UpdateHeartrateData;
                     await heart.SubscribeToCharacteristic("HeartRateMeasurement");
-                    IsRunning = true;
+                    IsRunning = true;*/
                 }
             }
         }

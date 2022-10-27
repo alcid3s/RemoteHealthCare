@@ -94,8 +94,9 @@ namespace Server.Accounts
 
             else if (_state == AccountState.CreateClient)
             {
-                if (!Directory.Exists(pathClient))
-                    Directory.CreateDirectory(pathClient);
+                if (Directory.Exists(pathClient))
+                       
+                Directory.CreateDirectory(pathClient);
 
                 Thread.Sleep(10);
                 FileStream fs = File.Create(pathClient + "/credentials" + Suffix);

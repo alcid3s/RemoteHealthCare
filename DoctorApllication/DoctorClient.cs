@@ -119,8 +119,6 @@ namespace DoctorApllication
                             DoctorScreen.ReceiveMessage(reader.ReadByte(), Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()), Encoding.UTF8.GetString(reader.ReadPacket()));
                             break;
 
-
-                        
                         case 0x43:
                             Console.WriteLine("received 0x43");
                             byte id43 = reader.ReadByte();
@@ -143,8 +141,8 @@ namespace DoctorApllication
                             break;
                         case 0x55:
                             Console.WriteLine("Received 0x55");
-                            
                             DoctorScreenHistorie.ChangeValues(reader.ReadInt(2), reader.ReadInt(2), reader.ReadInt(2), reader.ReadByte());
+                            Console.WriteLine("ChangeValues called");
                             break;
 
                         case 0x91:

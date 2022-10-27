@@ -557,7 +557,7 @@ namespace Server
         }
         private void Logout(Client client)
         {
-            client.Socket.Send(new MessageWriter(0x61).GetBytes());
+            client.Socket.Send(new MessageWriter(0x61, client.Id).GetBytes());
             Console.WriteLine($"Client: {client.Id} has logged out");
         }
         private void PrintBikeInformation(BikeData data, Client client)

@@ -46,12 +46,12 @@ namespace RemoteHealthCare.GUI
                 }
                 else
                 {
-                    txtErrorMsg.Text = "Account name size is wrong";
+                    txtErrorMsg.Text = "password size is wrong";
                 }
             }
             else
             {
-                txtErrorMsg.Text = "Password size is wrong";
+                txtErrorMsg.Text = "account name size is wrong";
             }
         }
 

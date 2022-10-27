@@ -28,25 +28,32 @@ namespace RemoteHealthCare.GUI
             {
                 if (txtPasswordAccountCreationClient.Text.Length > 7 && txtPasswordAccountCreationClient.Text.Length < 32)
                 {
-                    MessageWriter writer = new MessageWriter(0x10);
-                    writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameAccountCreationClient.Text));
-                    writer.WritePacket(Encoding.UTF8.GetBytes(txtPasswordAccountCreationClient.Text));
-                    ServerClient.Send(writer.GetBytes());
+                    if (txtPasswordAccountCreationClient == txtPasswordConfirmAccountCreationClient)
+                    {
+                        MessageWriter writer = new MessageWriter(0x10);
+                        writer.WritePacket(Encoding.UTF8.GetBytes(txtAccountNameAccountCreationClient.Text));
+                        writer.WritePacket(Encoding.UTF8.GetBytes(txtPasswordAccountCreationClient.Text));
+                        ServerClient.Send(writer.GetBytes());
 
-                    // await successfull reply
+                        // await successfull reply
 
-                    AccountLogin login = new AccountLogin();
-                    Close();
-                    login.Show();
+                        AccountLogin login = new AccountLogin();
+                        Close();
+                        login.Show();
+                    }
+                    else
+                    {
+                        txtErrorMsg.Text = "Passwords are not the same";
+                    }
                 }
                 else
                 {
-                    txtPasswordAccountCreationClient.Text = "TO LONG OR TO SHORT";
+                    txtErrorMsg.Text = "Account name size is wrong";
                 }
             }
             else
             {
-                txtAccountNameAccountCreationClient.Text = "TO LONG OR TO SHORT";
+                txtErrorMsg.Text = "Password size is wrong";
             }
         }
 

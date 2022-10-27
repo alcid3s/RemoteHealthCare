@@ -405,7 +405,7 @@ namespace DoctorApllication
         {
             if (_selectedUserId != 0)
             {
-                MessageWriter writer = new MessageWriter(0xA0);
+                MessageWriter writer = new MessageWriter(0x70);
                 writer.WriteByte(_selectedUserId);
                 Send(writer.GetBytes());
 
@@ -421,7 +421,7 @@ namespace DoctorApllication
         {
             if (_selectedUserId != 0)
             {
-                MessageWriter writer = new MessageWriter(0xA1);
+                MessageWriter writer = new MessageWriter(0x71);
                 writer.WriteByte(_selectedUserId);
                 Send(writer.GetBytes());
 
@@ -437,7 +437,7 @@ namespace DoctorApllication
         {
             if (_selectedUserId != 0)
             {
-                MessageWriter writer = new MessageWriter(0xA2);
+                MessageWriter writer = new MessageWriter(0x73);
                 writer.WriteByte(_selectedUserId);
                 Send(writer.GetBytes());
 

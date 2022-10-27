@@ -471,7 +471,7 @@ namespace Server
                             Console.WriteLine("Received 0x73");
                             byte id73 = reader.ReadByte();
 
-                            MessageWriter writer73 = new MessageWriter(073, id73);
+                            MessageWriter writer73 = new MessageWriter(0x73, id73);
 
                             clientList.ForEach(clientTarget =>
                             {

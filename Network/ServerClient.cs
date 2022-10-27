@@ -102,7 +102,7 @@ namespace RemoteHealthCare.Network
                             break;
 
                         //stop a session
-                        case 0xA7:
+                        case 0x71:
                             Console.WriteLine("stopping session received");
                             AccountLogin.clientScreen.SetTxtInfo("stopping session");
                             AccountLogin.clientScreen.StopSession();

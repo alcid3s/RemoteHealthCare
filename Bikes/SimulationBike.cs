@@ -120,6 +120,7 @@ namespace RemoteHealthCare.Bikes
         public void Stop()
         {
             IsRunning = false;
+            Program.BikeClient.UpdateSpeed(0);
         }
 
         public void SetResistance(byte resistance)

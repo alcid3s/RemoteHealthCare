@@ -99,7 +99,7 @@ namespace Server
 
             bool firstRun = true;
 
-            bool firstTime0x54 = true;
+            bool firstTime0x54 = false;
 
             string rsaCode = "";
             EncryptionManager.Manager.GenerateEncryption(client.Id);
@@ -417,14 +417,16 @@ namespace Server
                                 path54 += $"/{sessionName}{AccountManager.Suffix}";
                                 if (File.Exists(path54))
                                 {
-
+                                    Console.WriteLine("File exists");
                                     if (!firstTime0x54)
                                     {
                                         firstTime0x54 = true;
                                         _streamReader0x54 = new StreamReader(File.OpenRead(path54));
+                                        Console.WriteLine("Opened file");
                                     }
                                     if (_streamReader0x54 != null)
                                     {
+                                        Console.WriteLine("Not null");
                                         string data = _streamReader0x54.ReadLine();
                                         if (data != null)
                                         {
@@ -434,6 +436,7 @@ namespace Server
                                             eWriter.WriteInt((short)Math.Round(bikeData.Speed * 1000), 2);
                                             eWriter.WriteInt(bikeData.HeartRate, 1);
                                             client.Socket.Send(eWriter.GetBytes());
+                                            Console.WriteLine("Send message");
                                         }
                                     }
                                 }

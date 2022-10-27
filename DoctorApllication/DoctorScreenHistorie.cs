@@ -19,6 +19,7 @@ namespace DoctorApplication
         public string clientSession { private get; set; } = "";
 
         public static List<BikeData> ReviewedData = new List<BikeData>();
+        private int _currentSize = 0;
         private int _index = 0;
         public struct BikeData
         {
@@ -39,34 +40,36 @@ namespace DoctorApplication
         public DoctorScreenHistorie()
         {
             InitializeComponent();
+            new Thread(UpdateValues).Start();
         }
         // btn forward
         private void button1_Click(object sender, EventArgs e)
         {
-            if(_index == ReviewedData.Count - 1)
+            Console.WriteLine($"Index: {_index}, list size: {ReviewedData.Count}");
+            if (_index == ReviewedData.Count)
             {
                 MessageWriter writer = new MessageWriter(0x54);
                 writer.WritePacket(Encoding.UTF8.GetBytes(clientUsername));
                 writer.WritePacket(Encoding.UTF8.GetBytes(clientSession));
                 DoctorClient.Send(writer.GetBytes());
-                _index = UpdateValues(_index);
+                Console.WriteLine("Send message to get more data");
             }
-            else
+            else if (_index < ReviewedData.Count)
             {
                 _index++;
-                UpdateValues(_index);
+                SetValues();
             }
 
         }
 
         private void btnDataBack_Click(object sender, EventArgs e)
         {
-            if(_index >= 1)
+            if (_index >= 1 && _index <= ReviewedData.Count)
             {
                 _index--;
-                UpdateValues(_index);
+                SetValues();
             }
-            
+
         }
 
         private void DoctorScreenHistorie_Load(object sender, EventArgs e)
@@ -76,32 +79,37 @@ namespace DoctorApplication
 
         public static void ChangeValues(decimal elapsedTime, int distanceTravelled, decimal speed, int heartRate)
         {
-            BikeData data = new BikeData(elapsedTime, distanceTravelled, speed, heartRate);
+            BikeData data = new BikeData(elapsedTime / 4m, distanceTravelled, speed / 1000m, heartRate);
             ReviewedData.Add(data);
         }
 
-        private int UpdateValues(int index)
+        private void UpdateValues()
         {
-            Console.WriteLine($"_currentSize = {index}, list size: {ReviewedData.Count}");
-            bool success = false;
-            for(int i = 0; i < 2; i++)
+            while (true)
             {
-                Thread.Sleep(10);
-                if (index < ReviewedData.Count - 1 && index >= 0)
+                // If a new request was answered
+                if (_currentSize < ReviewedData.Count)
                 {
-                    index++;
-                    txtET.Text = ReviewedData.ElementAt(_index).ElapsedTime.ToString();
-                    txtDT.Text = ReviewedData.ElementAt(_index).DistanceTravelled.ToString();
-                    txtSpeed.Text = ReviewedData.ElementAt(_index).Speed.ToString();
-                    txtHR.Text = ReviewedData.ElementAt(_index).HeartRate.ToString();
-                    success = true;
+                    _currentSize++;
+                    _index++;
+                    Invoke(new Action(new Action(() =>
+                    {
+                        SetValues();
+                    })));
+                    Console.WriteLine($"Values changed, index: {_index}, size: {ReviewedData.Count}");
                 }
             }
-            if (!success)
+        }
+
+        private void SetValues()
+        {
+            if(_index > 0)
             {
-                Console.WriteLine("Couldnt update value");
+                txtET.Text = ReviewedData.ElementAt(_index - 1).ElapsedTime.ToString();
+                txtDT.Text = ReviewedData.ElementAt(_index - 1).DistanceTravelled.ToString();
+                txtSpeed.Text = ReviewedData.ElementAt(_index - 1).Speed.ToString();
+                txtHR.Text = ReviewedData.ElementAt(_index - 1).HeartRate.ToString();
             }
-            return index;
         }
     }
 }

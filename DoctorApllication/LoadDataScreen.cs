@@ -95,6 +95,7 @@ namespace DoctorApllication
                     Thread.Sleep(10);
                     if (i >= wait)
                     {
+                        Console.WriteLine("No reply found");
                         txtError.Text = "Data got corrupted during transfer.";
                     }
                     else if (SessionNameList.Count == _sizeOfSessionList)

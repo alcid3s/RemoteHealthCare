@@ -12,12 +12,15 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace DoctorApllication
 {
     public partial class LoadDataScreen : Form
     {
         public static List<string> ClientNameList = new List<string>();
+        private int _clientNameSize = 0;
+
         public static List<string> SessionNameList = new List<string>();
         public static byte Succes { get; set; } = 0x00;
 
@@ -55,24 +58,40 @@ namespace DoctorApllication
 
         private void LoadDataScreen_Load(object sender, EventArgs e)
         {
-            int count = 0;
-            while (ClientNameList.Count == 0)
+            new Thread(LoadAccountData).Start();
+            new Thread(LoadDataFromAccount).Start();
+        }
+        private void LoadAccountData()
+        {
+            while (true)
             {
-                Thread.Sleep(100);
-                count++;
-                if (count > 50)
+                if(_clientNameSize < ClientNameList.Count)
                 {
-                    txtError.Text = "Error loading accounts";
-                }
-            }
-            if (ClientNameList.Count > 0)
-            {
-                foreach (string name in ClientNameList)
-                {
-                    lstAccounts.Items.Add(name);
+                    Invoke(new Action(new Action(() => {
+                        lstAccounts.Items.Add(ClientNameList.ElementAt(_clientNameSize));
+                    })));
+                    _clientNameSize++;
                 }
             }
         }
+
+        private void LoadDataFromAccount()
+        {
+            while (true)
+            {
+                if(SessionNameList.Count == _sizeOfSessionList)
+                {
+                    _sizeOfSessionList = 0;
+                    Invoke(new Action(new Action(() => {
+                        SessionNameList.ForEach(val =>
+                        {
+                            lstSessions.Items.Add(val);
+                        });
+                    })));
+                }
+            }
+        }
+
         private void btnLoad_Click(object sender, EventArgs e)
         {
             string selectedItem = lstAccounts.SelectedItem.ToString();
@@ -85,34 +104,6 @@ namespace DoctorApllication
                 writer.WritePacket(Encoding.UTF8.GetBytes(selectedItem));
                 Console.WriteLine($"Sending: {selectedItem} with id: 0x52");
                 DoctorClient.Send(writer.GetBytes());
-
-                // if this size is 14, it'll be 14 * 10 + 500 = 640, so we'll wait a total of 6400 miliseconds if the data actually arrives.
-                int wait = _sizeOfSessionList * 10 + 500;
-
-                bool success = false;
-                for (int i = 0; i < wait; i++)
-                {
-                    Thread.Sleep(10);
-                    if (i >= wait)
-                    {
-                        Console.WriteLine("No reply found");
-                        txtError.Text = "Data got corrupted during transfer.";
-                    }
-                    else if (SessionNameList.Count == _sizeOfSessionList)
-                    {
-                        success = true;
-                        break;
-                    }
-                }
-
-                if (success)
-                {
-                    _sizeOfSessionList = 0;
-                    SessionNameList.ForEach(val =>
-                    {
-                        lstSessions.Items.Add(val);
-                    });
-                }
             }
 
             if(lstSessions.SelectedItem != null)
@@ -133,6 +124,7 @@ namespace DoctorApllication
                 Close();
             }
         }
+
 
         private void lstSessions_SelectedIndexChanged(object sender, EventArgs e)
         {

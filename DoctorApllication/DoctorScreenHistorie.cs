@@ -91,10 +91,16 @@ namespace DoctorApplication
                 {
                     _currentSize++;
                     _index++;
+                    try
+                    {
                     Invoke(new Action(new Action(() =>
                     {
                         SetValues();
                     })));
+                    }catch(Exception ex)
+                    {
+                        txtInfo.Text = "cant view past session in a session";
+                    }
                     Console.WriteLine($"Values changed, index: {_index}, size: {ReviewedData.Count}");
                 }
             }

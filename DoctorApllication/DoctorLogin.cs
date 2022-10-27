@@ -17,7 +17,7 @@ namespace DoctorApllication
         public static DoctorScreen doctorScreen;
         internal static bool isloggedIn = false;
 
-        DoctorLoginCreation doctorLoginCreation;
+        public static DoctorLoginCreation doctorLoginCreation;
 
         public DoctorLogin()
         {
